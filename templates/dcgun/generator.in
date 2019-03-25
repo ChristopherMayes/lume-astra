@@ -1,0 +1,15 @@
+&INPUT
+FNAME = 'dist100.part'
+Add=F, N_add=0, IPart=1000, Species='electrons'
+Probe=T, Noise_reduc=T, Cathode=T, Q_total=0.1, Ref_zpos=0.0E0, Ref_clock=0.0E0, Ref_Ekin=1.0E-6
+High_Res=T
+Dist_z='p', lt=0.0329081, rt=0.002
+!  sig_clock=0.012E0,  C_sig_clock=5.
+Dist_pz='g',  sig_Ekin=0.50E-3,  C_sig_Ekin=5.
+!  emit_z=0.00E0 ,    cor_Ekin=0.E0
+
+Dist_x='r',  sig_x=0.192281, C_sig_x=5.
+Dist_px='g', Nemit_x=0.192281, C_sig_px=5., cor_px=0.0E0
+Dist_y='r' , sig_y=0.192281, C_sig_y=5.
+Dist_py='g', Nemit_y=0.192281, C_sig_px=5., cor_py=0.0E0
+/
