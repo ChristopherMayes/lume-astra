@@ -22,6 +22,25 @@ def execute(cmd):
     if return_code:
         raise subprocess.CalledProcessError(return_code, cmd)
         
+# Alternative execute
+def execute2(cmd, timeout=None):
+    """
+    Execute with time limit (timeout) in seconds, catching run errors. 
+    """
+    
+    output = {'error':True, 'log':''}
+    try:
+        p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, timeout = timeout)
+        output['log'] = p.stdout
+        output['error'] = False
+        output['why_error'] = None
+    except subprocess.TimeoutExpired as ex:
+        output['log'] = ex.stdout+'\n'+str(ex)
+        output['why_error'] = 'timeout'
+    except:
+        output['log'] = 'unknown run error'
+        output['why_error'] = 'unknown'
+    return output
         
         
 def runs_script(runscript=[], dir=None, log_file=None, verbose=True):
@@ -60,6 +79,10 @@ def mkdir_p(path):
         else:
             raise
     
+   
+
+    
+
     
 def replace_parameters(templatefile, outfile, replacements, delims='=', commentchar=None, endchars = '\n', warn=False): 
   """ looks for strings of the form:

@@ -13,31 +13,6 @@ from optparse import OptionParser
 #import matplotlib.pyplot as plt
 import numpy.polynomial.polynomial as poly
 
-# ---------------------------------------------------------------------------- #
-# Get the filename of the final screen (in terms of z position)
-# ---------------------------------------------------------------------------- #
-
-def get_final_screen_name(input_directory, input_basename):
-
-  phase_import_file = ''
-
-  phase_files = [];
-  for file in os.listdir(input_directory):
-    if re.match(input_basename + '.\d\d\d\d.001', file):
-      phase_files.append(input_directory + file)
-  phase_positions = []
-  if (len(phase_files) > 0):
-
-    # Find the last phase file 
-    for file in phase_files:
-	    decimal_string = file.replace(input_directory + input_basename + '.', '').replace('.001','')
-	    phase_positions.append(float(decimal_string))
-
-    last_phase_index = phase_positions.index(max(phase_positions))
-
-    phase_import_file = phase_files[last_phase_index]
-
-  return phase_import_file
 
 # ---------------------------------------------------------------------------- #
 # Get screen data
