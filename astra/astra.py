@@ -78,7 +78,7 @@ class Astra:
             dir = os.path.abspath(workdir)
             dest = tempfile.TemporaryDirectory(prefix='astra_', dir=dir).name
             if self.verbose: print(dest)
-            shutil.copytree(src, dest)
+            shutil.copytree(src, dest, symlinks=True)
             self.sim_path = dest
             self.tempdir = dest
             self.sim_input_file = os.path.join(dest, self.sim_input_file)
