@@ -8,8 +8,6 @@ import os
 import time
 
 
-
-
 class Astra:
     """ This class allows us to ..."""
     
@@ -94,13 +92,18 @@ class Astra:
     def load_output(self):
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
         outfiles = parsers.find_astra_output_files(self.sim_input_file, run_number)
+        
         for f in outfiles:
             self.output.update(parsers.parse_astra_output_file(f))
             # Save errors
             #if self.output['error']:
-             #   self.output['why_error'] = 'problem with output file: '+f
+            #    self.output['why_error'] = 'problem with output file: '+f
                 
     def load_screens(self, end_only=False):
+        # Clear existing screens
+        self.screen = []
+        
+        # Sort files by approximate z
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
         phase_files = parsers.find_phase_files(self.sim_input_file, run_number)           
         files   = [x[0] for x in phase_files] # This is sorted by approximate z
@@ -180,9 +183,15 @@ class Astra:
     def write_input_file(self):
         parsers.write_namelists(self.input, self.sim_input_file)
         
-        
+    # h5 writing
+    def write_input(self, h5):
+        writers.write_input_h5(h5, a.input)
+    
     def write_output(self, h5):
-        pass
+        writers.write_output_h5(h5, a.output)
+        
+    def write_screens(self, h5):
+        writers.write_screens_h5(h5, a.screen)        
         
 
 

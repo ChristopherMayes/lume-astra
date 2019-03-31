@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def write_astra_particles_h5(h5, name, astra_data, species='electron'):
     # Write particle data at a screen in openPMD BeamPhysics format
     # https://github.com/DavidSagan/openPMD-standard/blob/EXT_BeamPhysics/EXT_BeamPhysics.md
@@ -66,16 +69,17 @@ def write_astra_particles_h5(h5, name, astra_data, species='electron'):
 
 
 # Write input file to dataset
-def write_input(h5, astra_input, name='input'):
+def write_input_h5(h5, astra_input, name='input'):
     """
     astra_input is a dict with dicts
     Writes 
     """
-    g0 = h5.create_group('input')
+    g0 = h5.create_group(name)
     for n in astra_input:
+        namelist = astra_input[n]
         g = g0.create_group(n)
-        for k in a.input[n]:
-            g.attrs[k] = a.input[n][k]
+        for k in namelist:
+            g.attrs[k] = namelist[k]
 
     
 def write_output_h5(h5, astra_output, name='output'):
@@ -95,9 +99,9 @@ def write_screens_h5(h5, astra_screens, name='screen'):
     Write all screens to file, simply named by their index
     """
     g = h5.create_group(name)
-    for i in range(len(screens)):
+    for i in range(len(astra_screens)):
         name = str(i)        
-        pmd_write_astra_particles(g, name, screens[i])    
+        write_astra_particles_h5(g, name, astra_screens[i])    
         
         
         
