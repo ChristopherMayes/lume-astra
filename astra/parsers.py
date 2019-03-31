@@ -103,6 +103,10 @@ def parse_astra_output_file(filePath):
     Simple parsing of tabular output files, according to names in this file. 
     """
     data = np.loadtxt(filePath)
+    
+    if len(data) ==0:
+        return ERROR
+    
     d = {}
     type = astra_output_type(filePath)
     
@@ -167,54 +171,7 @@ def old_parse_astra_output_full(filename):
      for jj in range(len(headers)):
         res[headers[jj]].append(dat[ii][columns[headers[jj]]-1])
 
-  #print(res["E_kinetic"])
-
   return res
-
-def old_parse_astra_output(filename):
-  """
-  Returns a dict with information from an astra file
-  
-  Any NaNs detected will return ERROR
-  Uses the last line of Emit files only!!!
-  """
-  
-  if not os.path.exists(filename):
-    return ERROR
-  
-  type = astra_output_type(filename)
-  
-  dat = parse_table_output(filename)
-  if len(dat) == 0:
-    return ERROR
-  lastdat = dat[-1]
-  res = {'error': False}
-  if type   == 'Xemit':
-    columns = XemitColumn
-  elif type == 'Yemit':
-    columns = YemitColumn
-  elif type == 'Zemit':
-    columns = ZemitColumn
-  elif type == 'LandF':
-    # Quick hack to get the bunch charge and lost particles. Enable in Astra with LandFS = T
-    res['Qbunch'] = abs(lastdat[2])
-    n_lost = int(dat[0][1] - dat[-1][1])
-    res['n_lost'] = n_lost
-    return res
-  else:
-    print('unkown astra file type: ', type)
-    return ERROR
-
-  for key in columns:
-    x = lastdat[ columns[key] -1 ]  # 1 is the first column.
-    if isnan(x):  
-      return ERROR
-    else:
-      res[key] = x
-
-  return res
-
-
 
 
 
