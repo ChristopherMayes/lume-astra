@@ -3,23 +3,76 @@
 import os
 from numbers import Number
 from math import isnan
+import numpy as np
+import re
 
 # ------ Astra output parsing--------
 
+
+
 XemitColumnNames   = ['z', 't',  'x_average', 'x_rms', 'xp_rms', 'x_normemit', 'xxp_average']
 XemitColumnUnits   = ['m', 'ns', 'mm',  'mm', 'mrad', 'mm-mrad',   'mrad' ]
+XemitColumnFactors = [1,    1e-9, 1e-3,  1e-3, 1e-3,   1e-6,   1e-3] # Factors to make standard units
 XemitColumn = dict( zip(XemitColumnNames, list(range(1, 1+len(XemitColumnNames) ) ) ) )
 XemitUnits  = dict( zip(XemitColumnNames, XemitColumnUnits) )
 
 YemitColumnNames   = ['z', 't',  'y_average', 'y_rms', 'yp_rms', 'y_normemit', 'yyp_average']
 YemitColumnUnits   = ['m', 'ns', 'mm',  'mm', 'mrad', 'mm-mrad',   'mrad' ]
+YemitColumnFactors = [1,   1e-9, 1e-3,  1e-3, 1e-3, 1e-6,   1e-3] # Factors to make standard units
 YemitColumn = dict( zip(YemitColumnNames, list(range(1, 1+len(YemitColumnNames) ) ) ) )
 YemitUnits  = dict( zip(YemitColumnNames, YemitColumnUnits) )
 
 ZemitColumnNames   = ['z', 't',  'E_kinetic', 'z_rms', 'deltaE_rms', 'z_normemit', 'zEp_average']
 ZemitColumnUnits   = ['m', 'ns', 'MeV',       'mm',    'keV',        'mm-keV',  'keV' ]
+ZemitColumnFactors = [1,   1e-9,  1e6,        1e-3,    1e3,           1,   1e3] # Factors to make standard units
 ZemitColumn = dict( zip(ZemitColumnNames, list(range(1, 1+len(ZemitColumnNames) ) ) ) )
 ZemitUnits  = dict( zip(ZemitColumnNames, ZemitColumnUnits) )
+
+# New style
+OutputColumnNames = {}
+OutputColumnUnits = {}
+OutputColumnFactors = {}
+
+OutputColumnNames['Xemit'] = XemitColumnNames
+OutputColumnNames['Yemit'] = YemitColumnNames
+OutputColumnNames['Zemit'] = ZemitColumnNames
+
+OutputColumnFactors['Xemit'] = XemitColumnFactors
+OutputColumnFactors['Yemit'] = YemitColumnFactors
+OutputColumnFactors['Zemit'] = ZemitColumnFactors
+
+OutputColumnNames['LandF']   = ['z', 'Npart', 'charge', 'n_lost', 'energy_deposited', 'energy exchange']
+OutputColumnUnits['LandF']   = ['m', '1', 'nC', '1', 'J', 'J']
+OutputColumnFactors['LandF'] = [1, 1, 1e-9, 1, 1, 1]
+
+ERROR = {'error': True}
+
+
+
+def astra_run_extension(run_number):
+    """
+    Astra adds an extension according to the run number: 1 -> '001'
+    """
+    return str(run_number).zfill(3)
+
+
+
+def find_astra_output_files(input_filePath, run_number,
+                            types= ['LandF', 'Xemit', 'Yemit', 'Zemit']
+                           ):
+    """
+    Finds the existing output files, based on standard Astra extensions. 
+    """
+    
+    extensions = ['.'+x+'.'+astra_run_extension(run_number) for x in types]
+    
+    # List of output files
+    path, infile = os.path.split(input_filePath)
+    prefix = infile.split('.')[0] # Astra uses inputfile to name output
+    outfiles = [os.path.join(path, prefix+x) for x in extensions]
+    
+    return [o for o in outfiles if os.path.exists(o)]
+    
 
 
 def parse_table_output(filename, headerlines=0, header=[]):
@@ -44,9 +97,34 @@ def parse_table_output(filename, headerlines=0, header=[]):
 def astra_output_type(filename):
   return filename.split('.')[-2]
   
-ERROR = {'error': True}
 
-def parse_astra_output_full(filename):
+def parse_astra_output_file(filePath):   
+    """
+    Simple parsing of tabular output files, according to names in this file. 
+    """
+    data = np.loadtxt(filePath)
+    d = {}
+    type = astra_output_type(filePath)
+    
+    if type == 'LandF':
+    # Quick hack to get the bunch charge and lost particles. Enable in Astra with LandFS = T
+    
+        d['Qbunch'] = abs(data[-1][2]) * 1e-9 # nC -> C
+        n_lost = int(data[0][1] - data[-1][1])
+        d['n_lost'] = n_lost
+        return d
+    
+    
+    keys = OutputColumnNames[type]
+    factors = OutputColumnFactors[type]
+    
+    
+    for i in range(len(keys)):
+        d[keys[i]] = data[:,i]*factors[i]
+    return d
+
+
+def old_parse_astra_output_full(filename):
   """
   Returns a dict with information from an astra file
   
@@ -93,7 +171,7 @@ def parse_astra_output_full(filename):
 
   return res
 
-def parse_astra_output(filename):
+def old_parse_astra_output(filename):
   """
   Returns a dict with information from an astra file
   
@@ -359,4 +437,113 @@ def write_namelists(namelists, filePath):
                 f.write(l+'\n')
 
 
+
+# ------------------------------------------------------------------ 
+# ------------------------- Astra particles ------------------------ 
+def find_phase_files(input_filePath, run_number=1):
+    """
+    Returns a list of the phase space files, sorted by z position
+        (filemname , z_approx)
+    """
+    path, infile = os.path.split(input_filePath)
+    prefix = infile.split('.')[0] # Astra uses inputfile to name output    
+    phase_import_file = ''
+    phase_files = [];
+    run_extension = astra_run_extension(run_number)
+    for file in os.listdir(path):
+        if re.match(prefix + '.\d\d\d\d.'+run_extension, file):
+            # Get z position
+            z = float(file.replace(prefix+ '.', '').replace('.'+run_extension,''))
+            phase_file=os.path.join(path, file)
+            phase_files.append((phase_file, z))
+    # Sort by z
+    return sorted(phase_files, key=lambda x: x[1])
+
+
+
+astra_species_names = {1:'electron', 2:'positrion', 3:'proton', 4:'hydrogen'}
+
+astra_particle_status_names = {-1:'standard particle, at the cathode',
+                        3:'trajectory probe particle',
+                        5:'standard particle'}
+
+def parse_astra_phase_file(filePath):
+    """
+
+    Parses astra particle dumps to numpy arrays, in m, eV/c, and s.
+    
+    """
+    
+    #
+    # Internal Astra Columns
+    # x   y   z   px   py   pz   t macho_charge astra_index status_flag
+    # m   m   m   eV/c eV/c eV/c ns    nC           1              1
+    
+    #  The first line is the reference particle in absolute corrdinate. Subsequent particles have:
+    #  z pz t
+    #  relative to the reference. 
+    #
+    #
+    # astra_index represents the species: 1:electrons, 2:positrons, 3:protons, 4:hydroger, ...
+    # There is a large table of status. Status_flag = 5 is a standard particle. 
+    
+    data = np.loadtxt(filePath)
+    ref = data[0,:] # Reference particle. 
+
+    # position in m
+    x = data[1:,0]
+    y = data[1:,1]
+    
+    z_rel = data[1:,2]    
+    z_ref = ref[2]
+    #z = z_rel + z_ref
+    
+    # momenta in eV/c
+    px = data[1:,3]
+    py = data[1:,4]
+    pz_rel = data[1:,5]
+    
+    pz_ref = ref[5]
+    #pz = pz_rel + pz_ref
+    
+    # Time in seconds
+    t_ref = ref[6]*1e-9
+    t_rel = data[1:,6]*1e-9
+    #t = t_rel + t_ref
+    
+    # macro charge in Coulomb
+    qmacro = data[1:,7]*1e-9
+    
+    species_index = data[1:,8].astype(np.int)
+    status = data[1:,9].astype(np.int)  
+    
+    # Select particle by status 
+    #probe_particles = np.where(status == 3) 
+    #good_particles  = np.where(status == 5) 
+
+    d = {}
+    d['x'] = x
+    d['y'] = y
+    #d['z'] = z
+    d['z_ref'] = z_ref
+    d['z_rel'] = z_rel
+    d['px'] = px
+    d['py'] = py
+    #d['pz'] = pz
+    d['pz_ref'] = pz_ref
+    d['pz_rel'] = pz_rel
+    #d['t'] = t
+    d['t_ref']=t_ref
+    d['t_rel'] = t_rel
+    d['qmacro'] = qmacro
+    d['status'] = status
+    d['species_index'] = species_index
+    
+    return d
+    
+    
+    
+    
+    
+    
 

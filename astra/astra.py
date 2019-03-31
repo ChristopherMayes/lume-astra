@@ -4,11 +4,8 @@ from astra import parsers, tools
 
 import tempfile
 import shutil
-import subprocess
 import os
 import time
-import re
-
 
 
 
@@ -41,6 +38,7 @@ class Astra:
         self.tempdir = None
         self.log = []
         self.output = {}
+        self.screen = [] # list of screens
         self.auto_cleanup = True
         self.timeout=None
         
@@ -50,6 +48,10 @@ class Astra:
         
         # Call configure
         self.configure()
+        
+    #@property
+    #def run_number(self):
+    #    return self.input['newrun']['run']
         
     def configure(self):
         self.configure_astra(self.original_input_file, self.workdir)
@@ -90,19 +92,40 @@ class Astra:
         self.configured = True
     
     def load_output(self):
-        outfiles = find_astra_output_files(self.sim_input_file)
+        run_number = parsers.astra_run_extension(self.input['newrun']['run'])
+        outfiles = parsers.find_astra_output_files(self.sim_input_file, run_number)
         for f in outfiles:
-            self.output.update(parsers.parse_astra_output_full(f))
+            self.output.update(parsers.parse_astra_output_file(f))
             # Save errors
-            if self.output['error']:
-                self.output['why_error'] = 'problem with output file: '+f
-
+            #if self.output['error']:
+             #   self.output['why_error'] = 'problem with output file: '+f
+                
+    def load_screens(self, end_only=False):
+        run_number = parsers.astra_run_extension(self.input['newrun']['run'])
+        phase_files = parsers.find_phase_files(self.sim_input_file, run_number)           
+        files   = [x[0] for x in phase_files] # This is sorted by approximate z
+        zapprox = [x[1] for x in phase_files]
+        
+        if end_only: 
+            files = files[-1:]
+        if self.verbose:
+            print('loading '+str(len(files))+ ' screens')
+            print(zapprox)
+        for f in files:
+            pdat = parsers.parse_astra_phase_file(f)
+            self.screen.append(pdat)
+        
+        
+        
+        
     def run(self):
         if not self.configured:
             print('not configured to run')
             return
         self.run_astra(verbose=self.verbose, timeout=self.timeout)
-    
+        
+        
+        
     
     def run_astra(self, verbose=False, parse_output=True, timeout=None):
         # Move to local directory
@@ -115,7 +138,7 @@ class Astra:
         if verbose: print('running astra in '+os.getcwd())
 
         # Write input file from internal dict
-        self.write_input()
+        self.write_input_file()
         _, infile = os.path.split(self.sim_input_file)
         
         runscript = [self.astra_bin, infile]
@@ -154,56 +177,16 @@ class Astra:
         # Option for cleaning on exit
     
     
-    def write_input(self):
+    def write_input_file(self):
         parsers.write_namelists(self.input, self.sim_input_file)
+        
+        
+    def write_output(self, h5):
+        pass
         
 
 
-def find_astra_output_files(input_filePath, 
-                            extensions= ['.LandF.001', '.Xemit.001', '.Yemit.001', '.Zemit.001']
-                           ):
-    """
-    Finds the existing output files, based on standard Astra extensions. 
-    """
-    
-    # List of output files
-    path, infile = os.path.split(input_filePath)
-    prefix = infile.split('.')[0] # Astra uses inputfile to name output
-    outfiles = [os.path.join(path, prefix+x) for x in extensions]
-    
-    return [o for o in outfiles if os.path.exists(o)]
-    
-    
 
-def find_phase_files(input_filePath):
-    """
-    Returns a list of the phase space files, sorted by z position
-        (filemname , z_approx)
-    """
-    path, infile = os.path.split(input_filePath)
-    prefix = infile.split('.')[0] # Astra uses inputfile to name output    
-    phase_import_file = ''
-    phase_files = [];
-    for file in os.listdir(path):
-        if re.match(prefix + '.\d\d\d\d.001', file):
-            # Get z position
-            z = float(file.replace(prefix+ '.', '').replace('.001',''))
-            phase_file=os.path.join(path, file)
-            phase_files.append((phase_file, z))
-    # Sort by z
-    return sorted(phase_files, key=lambda x: x[1])
-    
-def write_namelists(namelists, filePath):
-    with open(filePath, 'w') as f:
-        for key in namelists:
-            lines = namelist_lines(namelists[key], key)
-            for l in lines:
-                print(l)
-                f.write(l+'\n')
-
-
-
-    
 
 
   
