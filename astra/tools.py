@@ -33,7 +33,7 @@ def execute2(cmd, timeout=None):
         p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, timeout = timeout)
         output['log'] = p.stdout
         output['error'] = False
-        output['why_error'] = None
+        output['why_error'] =''
     except subprocess.TimeoutExpired as ex:
         output['log'] = ex.stdout+'\n'+str(ex)
         output['why_error'] = 'timeout'

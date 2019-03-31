@@ -8,6 +8,7 @@ import os
 import time
 
 
+
 class Astra:
     """ This class allows us to ..."""
     
@@ -20,6 +21,19 @@ class Astra:
         if self.tempdir:
             print('deleting: ', self.tempdir)
             shutil.rmtree(self.tempdir)
+            
+    def clean_output(self):
+        run_number = parsers.astra_run_extension(self.input['newrun']['run'])
+        outfiles = parsers.find_astra_output_files(self.sim_input_file, run_number)
+        for f in outfiles:
+            os.remove(f)
+            
+    def clean_screens(self):
+        run_number = parsers.astra_run_extension(self.input['newrun']['run'])
+        phase_files = parsers.find_phase_files(self.sim_input_file, run_number)           
+        files   = [x[0] for x in phase_files] # This is sorted by approximate z
+        for f in files:
+            os.remove(f)
                    
     def __init__(self,
                  astra_bin='Astra',
@@ -193,8 +207,6 @@ class Astra:
     def write_screens(self, h5):
         writers.write_screens_h5(h5, a.screen)        
         
-
-
 
 
 
