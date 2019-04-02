@@ -57,6 +57,7 @@ def astra_run_extension(run_number):
 
 
 
+
 def find_astra_output_files(input_filePath, run_number,
                             types= ['LandF', 'Xemit', 'Yemit', 'Zemit']
                            ):
@@ -103,16 +104,18 @@ def parse_astra_output_file(filePath):
     Simple parsing of tabular output files, according to names in this file. 
     """
     data = np.loadtxt(filePath)
-    
-    if len(data) ==0:
+    if data.shape == ():
         return ERROR
+    
+    if len(data) == 0:
+        return ERROR
+        
     
     d = {}
     type = astra_output_type(filePath)
     
     if type == 'LandF':
     # Quick hack to get the bunch charge and lost particles. Enable in Astra with LandFS = T
-    
         d['Qbunch'] = abs(data[-1][2]) * 1e-9 # nC -> C
         n_lost = int(data[0][1] - data[-1][1])
         d['n_lost'] = n_lost

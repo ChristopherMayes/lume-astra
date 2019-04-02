@@ -101,7 +101,9 @@ def write_screens_h5(h5, astra_screens, name='screen'):
     g = h5.create_group(name)
     for i in range(len(astra_screens)):
         name = str(i)        
-        write_astra_particles_h5(g, name, astra_screens[i])    
+        write_astra_particles_h5(g, name, astra_screens[i])   
+        
+         
         
         
         
