@@ -8,7 +8,6 @@ import os
 import time
 
 
-
 class Astra:
     """ This class allows us to ..."""
     
@@ -53,6 +52,7 @@ class Astra:
         self.screen = [] # list of screens
         self.auto_cleanup = True
         self.timeout=None
+        self.error = False
         
         # Run control
         self.finished = False
@@ -111,7 +111,7 @@ class Astra:
             self.output.update(parsers.parse_astra_output_file(f))
             # Save errors
             #if self.output['error']:
-            #    self.output['why_error'] = 'problem with output file: '+f
+            #self.output['why_error'] = 'problem with output file: '+f
                 
     def load_screens(self, end_only=False):
         # Clear existing screens
@@ -163,9 +163,13 @@ class Astra:
     
         if timeout:
             res = tools.execute2(runscript, timeout=timeout)
-            self.log = res['log']
+            log = res['log']
             self.output['run_error'] = res['error']
             self.output['why_run_error'] = res['why_error']
+            # Log file must have this to have finished properly
+            if log.find('finished simulation') == -1:
+                self.output.update({'error': True, 'why_error': "Couldn't find finished simulation"})
+
         else:
             # Interactive output, for Jupyter
             log = []
@@ -173,6 +177,9 @@ class Astra:
                 if verbose:
                     print(path, end="")
                 log.append(path)
+
+        self.log = log
+                
         
         #with open(self.sim_log_file, 'w') as f:
         #    for line in self.log:
@@ -207,7 +214,6 @@ class Astra:
     def write_screens(self, h5):
         writers.write_screens_h5(h5, a.screen)        
         
-
 
 
   
