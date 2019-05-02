@@ -81,11 +81,10 @@ class Astra:
         
         self.source_input_file = os.path.abspath(input_file) # Save original source
         self.sim_path, self.sim_input_file = os.path.split(self.source_input_file)
-        self.workdir=os.path.abspath(workdir)        
-        
-                  
+             
         # All paths should be absolute    
         if workdir:
+            self.workdir=os.path.abspath(workdir)   
             src = self.sim_path
             if not os.path.exists(src):
                 print(src, 'does not exist:')
@@ -214,6 +213,4 @@ class Astra:
     def write_screens(self, h5):
         writers.write_screens_h5(h5, a.screen)        
         
-
-
   
