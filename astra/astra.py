@@ -214,3 +214,86 @@ class Astra:
         writers.write_screens_h5(h5, a.screen)        
         
   
+  
+  
+  
+class AstraGenerator:
+    """
+    Class to run Astra's particle generator
+    
+    """
+    def __init__(self, 
+                 generator_bin = None,
+                 input_file = None,
+                 sim_path=None,
+                 verbose=False
+                ):
+        # Save init
+        self.generator_bin = generator_bin 
+        self.original_input_file = os.path.abspath(input_file)  
+        self.sim_path = sim_path
+        self.verbose=verbose  
+        
+        # Run control
+        self.configured = False
+        self.finished = False
+        
+        # Call configure
+        self.input_file = None # This will be made
+        self.configure()
+        
+    def configure(self):
+       
+        if not os.path.exists(self.original_input_file):
+            print('input_file does not exist:', self.input_file)
+            return
+        
+        # Get absolute path, then separate to sim_path/input_file
+        # Parse
+        self.input = parsers.parse_astra_input_file(self.original_input_file)['input']       
+        
+        # File, path setup
+        # Split file
+        path, file = os.path.split(self.original_input_file)
+        if not self.sim_path:
+            # Use original path
+            self.sim_path = path
+        self.input_file = 'temp_'+file
+              
+        if not os.path.exists(self.sim_path):
+            print('sim_path does not exist:', self.sim_path)
+            return
+        
+        self.configured = True
+        
+    def run(self):
+        # Save initil directory
+        init_dir = os.getcwd()
+        os.chdir(self.sim_path)
+        
+        self.write_input_file()
+        
+        runscript = [self.generator_bin, self.input_file]
+        res = tools.execute2(runscript, timeout=None)
+        self.log = res['log']
+        if self.verbose:
+            print(self.log)
+        
+        # This is the file that should be written
+        if os.path.exists(self.input['fname']):
+            self.finished = True
+        else:
+            print('problem!')
+             
+        # Return to init_dir
+        os.chdir(init_dir)     
+        
+    def write_input_file(self):
+        parsers.write_namelists({'input':self.input}, self.input_file)        
+        
+              
+        
+             
+        
+          
+  
