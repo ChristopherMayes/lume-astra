@@ -10,6 +10,14 @@ import re
 
 
 
+CemitColumnNames   = ['z_for_coreemit',  'x_normemit', 'x_coreemit_95percent', 'x_coreemit_90percent', 'x_coreemit_80percent',
+                            'y_normemit', 'y_coreemit_95percent', 'y_coreemit_90percent', 'y_coreemit_80percent',
+                            'z_normemit', 'z_coreemit_95percent', 'z_coreemit_90percent', 'z_coreemit_80percent']
+CemitColumnUnits   = ['m'] + 8*['mm-mrad'] + 4*['kev-mm']
+CemitColumnFactors = [1] + 12*[1e-6]  # Factors to make standard units
+CemitColumn = dict( zip(CemitColumnNames, list(range(1, 1+len(CemitColumnNames) ) ) ) )
+CemitUnits  = dict( zip(CemitColumnNames, CemitColumnUnits) )
+
 XemitColumnNames   = ['z', 't',  'x_average', 'x_rms', 'xp_rms', 'x_normemit', 'xxp_average']
 XemitColumnUnits   = ['m', 'ns', 'mm',  'mm', 'mrad', 'mm-mrad',   'mrad' ]
 XemitColumnFactors = [1,    1e-9, 1e-3,  1e-3, 1e-3,   1e-6,   1e-3] # Factors to make standard units
@@ -33,10 +41,12 @@ OutputColumnNames = {}
 OutputColumnUnits = {}
 OutputColumnFactors = {}
 
+OutputColumnNames['Cemit'] = CemitColumnNames
 OutputColumnNames['Xemit'] = XemitColumnNames
 OutputColumnNames['Yemit'] = YemitColumnNames
 OutputColumnNames['Zemit'] = ZemitColumnNames
 
+OutputColumnFactors['Cemit'] = CemitColumnFactors
 OutputColumnFactors['Xemit'] = XemitColumnFactors
 OutputColumnFactors['Yemit'] = YemitColumnFactors
 OutputColumnFactors['Zemit'] = ZemitColumnFactors
@@ -59,7 +69,7 @@ def astra_run_extension(run_number):
 
 
 def find_astra_output_files(input_filePath, run_number,
-                            types= ['Xemit', 'Yemit', 'Zemit'] #'LandF', 
+                            types= ['Cemit', 'Xemit', 'Yemit', 'Zemit'] #'LandF', 
                            ):
     """
     Finds the existing output files, based on standard Astra extensions. 

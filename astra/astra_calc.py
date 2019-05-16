@@ -192,8 +192,8 @@ def calc_uncorr_espread(sigma2x2):
 
 def calc_ho_energy_spread(screen_data, verbose):
 
-  Energy = screen_data["Energy"]
-  t = screen_data["t"]
+  Energy = screen_data["Energy"] 
+  t = screen_data["t"] 
 
   # Calculate higher order energy spread
   best_fit_coeffs = poly.polyfit(t, Energy, 2)
