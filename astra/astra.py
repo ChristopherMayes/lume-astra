@@ -133,9 +133,7 @@ class Astra:
             pdat = parsers.parse_astra_phase_file(f)
             self.screen.append(pdat)
         
-        
-        
-        
+          
     def run(self):
         if not self.configured:
             print('not configured to run')
