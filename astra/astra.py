@@ -10,7 +10,22 @@ import time
 
 
 class Astra:
-    """ This class allows us to ..."""
+    """ 
+    Astra simulation object. Essential methods:
+    .__init__(...)
+    .configure()
+    .run()
+    
+    Input deck is held in .input
+    Output data is parsed into .output
+    .load_screens() will load particle data into .screen[...]
+    
+    The Astra binary file can be set on init. If it doesn't exist, configure will check the
+        $ASTRA_BIN
+    environmental variable.
+    
+    
+    """
     
     def __del__(self):
         if  self.auto_cleanup:
@@ -19,8 +34,7 @@ class Astra:
     def clean(self):   
         # Only remove temporary directory. Never delete anything else!!!
         if self.tempdir:
-            if self.verbose:
-                print('deleting: ', self.tempdir)
+            print('deleting: ', self.tempdir)
             shutil.rmtree(self.tempdir)
             
     def clean_output(self):
@@ -73,6 +87,11 @@ class Astra:
  
     def configure_astra(self, input_file, workdir):
         
+        # Search for Astra executable
+        if not os.path.exists(self.astra_bin):
+            if 'ASTRA_BIN' in os.environ:
+                self.astra_bin = os.environ['ASTRA_BIN']        
+        
         # Get absolute path, then separate to sim_path/input_file
         if not os.path.exists(input_file):
             print('input_file does not exist:', input_file)
@@ -98,7 +117,7 @@ class Astra:
             self.tempdir = dest
             self.sim_input_file = os.path.join(dest, self.sim_input_file)
         else:
-            self.sim_input_file = os.path.join(self.sim_path, self.sim_input_file)
+            self.sim_input_file = os.path.join(self.sim_path, 'temp_'+self.sim_input_file)
             # work in place, do not delete
             self.auto_cleanup=False
             
@@ -133,7 +152,9 @@ class Astra:
             pdat = parsers.parse_astra_phase_file(f)
             self.screen.append(pdat)
         
-          
+        
+        
+        
     def run(self):
         if not self.configured:
             print('not configured to run')
@@ -218,14 +239,13 @@ class Astra:
   
   
   
-  
 class AstraGenerator:
     """
     Class to run Astra's particle generator
     
     """
     def __init__(self, 
-                 generator_bin = None,
+                 generator_bin = 'generator',
                  input_file = None,
                  sim_path=None,
                  verbose=False
@@ -245,6 +265,12 @@ class AstraGenerator:
         self.configure()
         
     def configure(self):
+        
+        # Search for generator executable
+        if not os.path.exists(self.generator_bin):
+            if 'GENERATOR_BIN' in os.environ:
+                self.generator_bin = os.environ['GENERATOR_BIN']             
+        
        
         if not os.path.exists(self.original_input_file):
             print('input_file does not exist:', self.input_file)
@@ -291,8 +317,9 @@ class AstraGenerator:
         os.chdir(init_dir)     
         
     def write_input_file(self):
-        parsers.write_namelists({'input':self.input}, self.input_file)    
+        parsers.write_namelists({'input':self.input}, self.input_file)        
         
+          
         
         
         
