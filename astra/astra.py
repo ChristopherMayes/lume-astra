@@ -57,7 +57,7 @@ class Astra:
                  workdir=None,
                  verbose=False):
         # Save init
-        self.original_input_file = input_file
+        self.original_input_file = os.path.expandvars(input_file)
         self.workdir = workdir
         self.verbose=verbose
         self.astra_bin = astra_bin
