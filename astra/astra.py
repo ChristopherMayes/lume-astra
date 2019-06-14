@@ -57,7 +57,7 @@ class Astra:
                  workdir=None,
                  verbose=False):
         # Save init
-        self.original_input_file = os.path.expandvars(input_file)
+        self.original_input_file = input_file
         self.workdir = workdir
         self.verbose=verbose
         self.astra_bin = astra_bin
@@ -83,6 +83,7 @@ class Astra:
     #    return self.input['newrun']['run']
         
     def configure(self):
+        self.original_input_file = os.path.abspath(os.path.expandvars(self.original_input_file))
         self.configure_astra(self.original_input_file, self.workdir)
         self.configured = True
  
@@ -253,7 +254,7 @@ class AstraGenerator:
                 ):
         # Save init
         self.generator_bin = generator_bin 
-        self.original_input_file = os.path.abspath(input_file)  
+        self.original_input_file = input_file
         self.sim_path = sim_path
         self.verbose=verbose  
         
@@ -266,7 +267,7 @@ class AstraGenerator:
         self.configure()
         
     def configure(self):
-        
+        self.original_input_file = os.path.abspath(os.path.expandvars(self.original_input_file))
         # Search for generator executable
         if not os.path.exists(self.generator_bin):
             if 'GENERATOR_BIN' in os.environ:
