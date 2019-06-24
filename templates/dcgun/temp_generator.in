@@ -1,0 +1,34 @@
+&input
+fname = 'dist100.part'
+add = False
+n_add = 0
+ipart = 9999
+species = 'electrons'
+probe = True
+noise_reduc = True
+cathode = True
+q_total = 0.1
+ref_zpos = 0
+ref_clock = 0
+ref_ekin = 1e-06
+high_res = True
+dist_z = 'p'
+lt = 0.0329081
+rt = 0.002
+dist_pz = 'g'
+sig_ekin = 0.0005
+c_sig_ekin = 5
+dist_x = 'r'
+sig_x = 0.192281
+c_sig_x = 5
+dist_px = 'g'
+nemit_x = 0.192281
+c_sig_px = 5
+cor_px = 0
+dist_y = 'r'
+sig_y = 0.192281
+c_sig_y = 5
+dist_py = 'g'
+nemit_y = 0.192281
+cor_py = 0
+/

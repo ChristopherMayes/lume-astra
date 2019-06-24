@@ -30,15 +30,15 @@ def write_astra_particles_h5(h5, name, astra_data, species='electron'):
     g2.attrs['unitDimension'] = g['position'].attrs['unitDimension']
     
     # momenta
-    g['momentum/px']=astra_data['px'] # m*c*gamma*beta_x in eV/c
-    g['momentum/py']=astra_data['py']
-    g['momentum/pz']=astra_data['pz_rel']
+    g['momentum/x']=astra_data['px'] # m*c*gamma*beta_x in eV/c
+    g['momentum/y']=astra_data['py']
+    g['momentum/z']=astra_data['pz_rel']
     g['momentum'].attrs['unitSI']= 5.34428594864784788094e-28 # eV/c in J/(m/s) =  kg*m / s
     g['momentum'].attrs['unitDimension']=(1., 1., -1., 0., 0., 0., 0.) # kg*m / s
     
     # momentumOffset (Constant record)
     # Just pz
-    g2 = g.create_group('momentumOffset/pz')
+    g2 = g.create_group('momentumOffset/z')
     g2.attrs['value'] = astra_data['pz_ref']
     g2.attrs['shape'] = (n_particle)
     g2.attrs['unitSI'] = g['momentum'].attrs['unitSI']
