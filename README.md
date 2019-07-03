@@ -4,7 +4,7 @@ Python wrapper for Astra (A Space Charge Tracking Algorithm, DESY) for use in LU
 
 
 ## Installation
-Clone this repository to `=/path/to/lume-astra`, and add that to your path:
+Clone this repository to `/path/to/lume-astra`, and add that to your path:
 
 `export PYTHONPATH=/path/to/lume-astra:$PYTHONPATH`
 
