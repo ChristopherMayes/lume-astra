@@ -2,7 +2,7 @@
 
 from astra import parsers, tools
 
-
+import urllib.request
 import tempfile
 import shutil
 import os
@@ -419,7 +419,19 @@ def run_astra_with_generator(settings=None, astra_input_file=None, generator_inp
         
               
         
-             
+def install_astra(dest, source_url='http://www.desy.de/~mpyflo/Astra_for_64_Bit_Linux/Astra'):
+    """
+    Simple Astra download
+    """
+    print('Installing Astra into:', dest)
+    urllib.request.urlretrieve(url, dest)
+
+def install_generator(dest, source_url='http://www.desy.de/~mpyflo/Astra_for_64_Bit_Linux/generator'):
+    """
+    Simple Astra generator download
+    """
+    print('Installing Astra generator into:', dest)
+    urllib.request.urlretrieve(url, dest)                 
         
           
   
