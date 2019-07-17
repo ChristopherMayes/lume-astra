@@ -313,8 +313,10 @@ class AstraGenerator:
         if os.path.exists(self.input['fname']):
             self.finished = True
         else:
-            print('problem!')
-             
+            print(self.input['fname'])
+            print('The input file already exists! This is a problem!')
+            print('Here is what the current working dir looks like:')
+            os.listdir()
         # Return to init_dir
         os.chdir(init_dir)     
         
@@ -322,8 +324,6 @@ class AstraGenerator:
         parsers.write_namelists({'input':self.input}, self.input_file)        
         
           
-        
-        
         
 def set_astra(astra_input, generator_input, settings, verbose=False):
     """
