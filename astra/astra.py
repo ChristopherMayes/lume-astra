@@ -33,7 +33,7 @@ class Astra:
 
     def clean(self):   
         # Only remove temporary directory. Never delete anything else!!!
-        if self.tempdir:
+        if self.tempdir and os.path.exists(self.tempdir):
             if self.verbose:
                 print('deleting: ', self.tempdir)
             shutil.rmtree(self.tempdir)
