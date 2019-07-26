@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
-from astra import parsers, tools
+from astra import parsers, tools, writers
 
 import urllib.request
 import tempfile
 import shutil
 import os
-import time
+from time import time
+
+
 
 
 class Astra:
@@ -27,43 +29,20 @@ class Astra:
     
     """
     
-    def __del__(self):
-        if  self.auto_cleanup:
-            self.clean() # clean directory before deleting
-
-    def clean(self):   
-        # Only remove temporary directory. Never delete anything else!!!
-        if self.tempdir and os.path.exists(self.tempdir):
-            if self.verbose:
-                print('deleting: ', self.tempdir)
-            shutil.rmtree(self.tempdir)
-            
-    def clean_output(self):
-        run_number = parsers.astra_run_extension(self.input['newrun']['run'])
-        outfiles = parsers.find_astra_output_files(self.sim_input_file, run_number)
-        for f in outfiles:
-            os.remove(f)
-            
-    def clean_screens(self):
-        run_number = parsers.astra_run_extension(self.input['newrun']['run'])
-        phase_files = parsers.find_phase_files(self.sim_input_file, run_number)           
-        files   = [x[0] for x in phase_files] # This is sorted by approximate z
-        for f in files:
-            os.remove(f)
-                   
     def __init__(self,
-                 astra_bin='Astra',
                  input_file='astra.in',
+                 astra_bin='$ASTRA_BIN',      
                  workdir=None,
+                 path = None, # Actual simulation path. If set on init, will not make a temporary directory. 
                  verbose=False):
         # Save init
         self.original_input_file = input_file
         self.workdir = workdir
         self.verbose=verbose
         self.astra_bin = astra_bin
+        self.path = path
         
         # These will be set
-        self.tempdir = None
         self.log = []
         self.output = {}
         self.screen = [] # list of screens
@@ -74,60 +53,82 @@ class Astra:
         # Run control
         self.finished = False
         self.configured = False
+        self.using_tempdir = False
         
         # Call configure
-        self.configure()
-        
+        if input_file:
+            self.load_input(input_file)
+            self.configure()
+        else:
+            self.vprint('Warning: Input file does not exist. Not configured.')
+    
+    
+    def __del__(self):
+        if self.auto_cleanup:
+            self.clean() # clean directory before deleting
+
+    def clean(self, override=False):   
+        # Only remove temporary directory. Never delete anything else!!!
+        if (self.using_tempdir or override) and os.path.exists(self.path):
+            self.vprint('deleting: ', self.path)
+            shutil.rmtree(self.path)
+        else: 
+            self.vprint('Warning: no cleanup because path is not a temporary directory:', self.path)
+            
+    def clean_output(self):
+        run_number = parsers.astra_run_extension(self.input['newrun']['run'])
+        outfiles = parsers.find_astra_output_files(self.sim_input_file, run_number)
+        for f in outfiles:
+            os.remove(f)
+            
+    def clean_screens(self):
+        run_number = parsers.astra_run_extension(self.input['newrun']['run'])
+        phase_files = parsers.find_phase_files(self.input_file, run_number)           
+        files   = [x[0] for x in phase_files] # This is sorted by approximate z
+        for f in files:
+            os.remove(f)
+                   
     #@property
     #def run_number(self):
     #    return self.input['newrun']['run']
         
     def configure(self):
-        self.original_input_file = os.path.abspath(os.path.expandvars(self.original_input_file))
-        self.configure_astra(self.original_input_file, self.workdir)
-        self.configured = True
+        self.configure_astra(workdir=self.workdir)
  
-    def configure_astra(self, input_file, workdir):
+    def configure_astra(self, input_filePath=None, workdir=None):
         
-        # Search for Astra executable
-        if not os.path.exists(self.astra_bin):
-            if 'ASTRA_BIN' in os.environ:
-                self.astra_bin = os.environ['ASTRA_BIN']        
+        if input_filePath:
+            self.load_input(input_filePath)
         
-        # Get absolute path, then separate to sim_path/input_file
-        if not os.path.exists(input_file):
-            print('input_file does not exist:', input_file)
-            return
-        
-        # Internal dict of input
-        self.input = parsers.parse_astra_input_file(input_file)
-        
-        self.source_input_file = os.path.abspath(input_file) # Save original source
-        self.sim_path, self.sim_input_file = os.path.split(self.source_input_file)
-             
-        # All paths should be absolute    
-        if workdir:
-            self.workdir=os.path.abspath(workdir)   
-            src = self.sim_path
-            if not os.path.exists(src):
-                print(src, 'does not exist:')
-            dir = os.path.abspath(workdir)
-            dest = tempfile.TemporaryDirectory(prefix='astra_', dir=dir).name
-            if self.verbose: print(dest)
-            shutil.copytree(src, dest, symlinks=True)
-            self.sim_path = dest
-            self.tempdir = dest
-            self.sim_input_file = os.path.join(dest, self.sim_input_file)
+        # Check that binary exists
+        self.astra_bin = tools.full_path(self.astra_bin)
+        assert os.path.exists(self.astra_bin), 'ERROR: Astra binary does not exist:'+self.astra_bin
+                
+        # Temporary directory for path
+        if not self.path:
+            self.path = os.path.abspath(tempfile.TemporaryDirectory(prefix='temp_', dir=workdir).name)
+           # os.mkdir(self.path)
+            # Copy everything in original_path
+            shutil.copytree(self.original_path, self.path, symlinks=True)
+            # Form input file
+            self.input_file = os.path.join(self.path, self.original_input_file)
+            self.using_tempdir = True
         else:
-            self.sim_input_file = os.path.join(self.sim_path, 'temp_'+self.sim_input_file)
-            # work in place, do not delete
-            self.auto_cleanup=False
-            
+            # Work in place
+            self.input_file = os.path.join(self.path, 'temp_'+self.original_input_file)
+            self.using_tempdir = False            
+                        
         self.configured = True
+    
+    
+    def load_input(self, input_filePath):
+        f = tools.full_path(input_filePath)
+        self.original_path, self.original_input_file = os.path.split(f) # Get original path, filename
+        self.input = parsers.parse_astra_input_file(f)            
     
     def load_output(self):
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
-        outfiles = parsers.find_astra_output_files(self.sim_input_file, run_number)
+        outfiles = parsers.find_astra_output_files(self.input_file, run_number)
         
         for f in outfiles:
             self.output.update(parsers.parse_astra_output_file(f))
@@ -141,7 +142,7 @@ class Astra:
         
         # Sort files by approximate z
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
-        phase_files = parsers.find_phase_files(self.sim_input_file, run_number)           
+        phase_files = parsers.find_phase_files(self.input_file, run_number)           
         files   = [x[0] for x in phase_files] # This is sorted by approximate z
         zapprox = [x[1] for x in phase_files]
         
@@ -164,82 +165,130 @@ class Astra:
         self.run_astra(verbose=self.verbose, timeout=self.timeout)
         
         
+
+        
+    def get_run_script(self, write_to_path=True):
+        """
+        Assembles the run script. Optionally writes a file 'run' with this line to path.
+        """
+        
+        _, infile = os.path.split(self.input_file)
+        
+        runscript = [self.astra_bin, infile]
+            
+        if write_to_path:
+            with open(os.path.join(self.path, 'run'), 'w') as f:
+                f.write(' '.join(runscript))
+            
+        return runscript
+
         
     
     def run_astra(self, verbose=False, parse_output=True, timeout=None):
+
+        
+        run_info = {}
+        t1 = time()
+        run_info['start_time'] = t1
+        
         # Move to local directory
-        t1 = time.time()
+
         # Save init dir
-        if verbose: print('init dir: ', os.getcwd())
         init_dir = os.getcwd()
-        os.chdir(self.sim_path)
+        self.vprint('init dir: ', init_dir)
+        
+        os.chdir(self.path)
         # Debugging
-        if verbose: print('running astra in '+os.getcwd())
+        self.vprint('running astra in '+os.getcwd())
 
         # Write input file from internal dict
         self.write_input_file()
-        _, infile = os.path.split(self.sim_input_file)
         
-        runscript = [self.astra_bin, infile]
+        runscript = self.get_run_script()
     
+        try:
+            if timeout:
+                res = tools.execute2(runscript, timeout=timeout)
+                log = res['log']
+                self.error = res['error']
+                run_info['why_error'] = res['why_error']
+                # Log file must have this to have finished properly
+                if log.find('finished simulation') == -1:
+                    run_info['error'] = True
+                    run_info.update({'error': True, 'why_error': "Couldn't find finished simulation"})
     
-        if timeout:
-            res = tools.execute2(runscript, timeout=timeout)
-            log = res['log']
-            self.error = res['error']
-            self.output['run_error'] = self.error
-            self.output['why_run_error'] = res['why_error']
-            # Log file must have this to have finished properly
-            if log.find('finished simulation') == -1:
-                self.error = True
-                self.output.update({'error': True, 'why_error': "Couldn't find finished simulation"})
-
-        else:
-            # Interactive output, for Jupyter
-            log = []
-            for path in tools.execute(runscript):
-                if verbose:
-                    print(path, end="")
-                log.append(path)
-
-        self.log = log
-                
-        
-        #with open(self.sim_log_file, 'w') as f:
-        #    for line in self.log:
-        #        f.write(line)
+            else:
+                # Interactive output, for Jupyter
+                log = []
+                for path in tools.execute(runscript):
+                    self.vprint(path, end="")
+                    log.append(path)
     
-        if parse_output:
-            self.load_output()
-
-        t2 = time.time()
-        self.output['run_time'] = t2 - t1
-        self.output['start_time'] = t1
+            self.log = log
+                    
+            if parse_output:
+                self.load_output()
+        except Exception as ex:
+            print('Run Aborted', ex)
+            self.error = True
+            run_info['why_error'] = str(ex)
+        finally:
+            run_info['run_time'] = time() - t1
+            run_info['run_error'] = self.error
+            
+            # Add run_info
+            self.output.update(run_info)
+            
+            # Return to init_dir
+            os.chdir(init_dir)                        
         
         self.finished = True
-        
-        
-        # Return to init_dir
-        os.chdir(init_dir)            
-  
-        # Option for cleaning on exit
+    
+    def fingerprint(self):
+        """
+        Data fingerprint using the input. 
+        """
+        return tools.fingerprint(self.input)
+                
+    def vprint(self, *args, **kwargs):
+        # Verbose print
+        if self.verbose:
+            print(*args, **kwargs)    
     
     
     def write_input_file(self):
-        parsers.write_namelists(self.input, self.sim_input_file)
+        parsers.write_namelists(self.input, self.input_file)
         
     # h5 writing
     def write_input(self, h5):
-        writers.write_input_h5(h5, a.input)
+        writers.write_input_h5(h5, self.input)
     
     def write_output(self, h5):
-        writers.write_output_h5(h5, a.output)
+        writers.write_output_h5(h5, self.output)
         
     def write_screens(self, h5):
-        writers.write_screens_h5(h5, a.screen)        
+        writers.write_screens_h5(h5, self.screen)        
         
-  
-  
+    def archive(self, h5):
+        """
+        Archive all data to an h5 handle. 
+        """
+        
+        # All input
+        self.write_input(h5)
+
+        # All output
+        self.write_output(h5)
+            
+        # Particles    
+        self.write_screens(h5)          
+        
+
+        
+        
+
+           
+
   
 class AstraGenerator:
     """
