@@ -439,7 +439,7 @@ def run_astra_with_generator(settings=None, astra_input_file=None, generator_inp
     A = Astra(astra_bin=astra_bin, input_file=astra_input_file, workdir=workdir)
     A.timeout=timeout
     A.verbose = verbose
-    G = AstraGenerator(generator_bin=generator_bin, input_file=generator_input_file, sim_path=A.sim_path)
+    G = AstraGenerator(generator_bin=generator_bin, input_file=generator_input_file, sim_path=A.path)
     G.verbose = verbose
     
     # Link particle files
