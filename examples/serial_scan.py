@@ -4,42 +4,51 @@ from functools import partial
 import numpy as np
 import h5py, os, sys
 
+
+# Path where you have saved lume-astra:
+lume_path = os.path.expandvars('$HOME/Code/Github/lume-astra/')
+
+# Path where you have ASTRA executables saved
+astra_exec = os.path.expandvars('$HOME/Code/astra/')
+
 # Path to ASTRA executable file
-astra_bin = os.path.expandvars('$HOME/Code/astra/Astra')
+astra_bin = astra_exec + 'Astra'
 # Path to ASTRA executable file
-generator_bin = os.path.expandvars('$HOME/Code/astra/generator')
-# Directory where simulations will run
-workdir = os.path.expandvars('$HOME/Code/Github/benchmarking/lcls2/astra/')
+generator_bin = astra_exec + 'generator'
+
 # Input template file 
-astra_input_file = os.path.expandvars('$HOME/Code/Github/benchmarking/lcls2/astra/gunb/gunb.in')
+astra_input_file = lume_path + 'templates/srfgun/srfgun_astra.in'
 # Input generator template file 
-generator_input_file = os.path.expandvars('$HOME/Code/Github/benchmarking/lcls2/astra/gunb/generator.in')
-# Making clean working directory
-tools.mkdir_p(workdir)
+generator_input_file = lume_path + 'templates/srfgun/srfgun_generator.in'
+
 # Checking that all files / folders exist
-os.path.exists(astra_bin), os.path.exists(astra_input_file), os.path.exists(workdir)
+os.path.exists(astra_bin), os.path.exists(astra_input_file)
+
 
 # Location to save h5file with scan data
-mydir = '/Users/nneveu/Code/Github/benchmarking/lcls2/astra/'
-h5file_name = mydir+'solscan'+'.h5'
-h5file      = h5py.File(h5file_name, 'w')
+#mydir = '/Users/nneveu/Code/Github/benchmarking/lcls2/astra/'
+
+# Name of file to save scan data to
+h5file      = h5py.File('solscan.h5', 'w')
 
 # Solenoid values to scan through
-sol_vals = np.around(np.arange(0.054, 0.0605, 0.0005), 6)
-#np.array([0.054,0.06])
+sol_vals = np.around(np.arange(0.1, 0.3, 0.1), 6)
+
 
 settings = {}
+settings['zstop']=0.5
+
 for value in sol_vals:
-    # Settings for astra simulation
-    settings['maxb(2)'] = value
+    # Setting that will be scanned in astra simulation
+    settings['maxb(1)'] = value
     
     # Return astra object with data
     obj = run_astra_with_generator( astra_input_file=astra_input_file,
-                                    generator_input_file=generator_input_file, workdir=workdir,
+                                    generator_input_file=generator_input_file, 
                                     astra_bin=astra_bin, generator_bin=generator_bin, timeout=2500, verbose=True,
                                     auto_set_spacecharge_mesh=True, settings=settings)
     
-    groupname = str(obj.input['solenoid']['maxb(2)']) 
+    groupname = str(obj.input['solenoid']['maxb(1)']) 
     writers.write_output_h5(h5file, obj.output, name=groupname+'/output')
     writers.write_input_h5(h5file, obj.input, name=groupname+'/input')
 
