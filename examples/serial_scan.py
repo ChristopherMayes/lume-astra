@@ -24,11 +24,9 @@ generator_input_file = lume_path + 'templates/srfgun/srfgun_generator.in'
 # Checking that all files / folders exist
 os.path.exists(astra_bin), os.path.exists(astra_input_file)
 
-
-# Location to save h5file with scan data
-#mydir = '/Users/nneveu/Code/Github/benchmarking/lcls2/astra/'
-
 # Name of file to save scan data to
+# Data file will be saved in working dir 
+# i.e. same location as this script
 h5file      = h5py.File('solscan.h5', 'w')
 
 # Solenoid values to scan through
