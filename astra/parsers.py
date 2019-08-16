@@ -407,6 +407,22 @@ def write_namelists(namelists, filePath):
                 f.write(l+'\n')
 
 
+def fix_input_paths(input_dict, root='', prefix='file_'):
+    """
+    Looks for keys in the input dict of dicts, that start with prefix. This should indicate a file. Then, fill in the absoulute path. 
+    root should be the original input file path. 
+    """
+    for nl in input_dict:
+        #print(nl)
+        for key in input_dict[nl]:
+            if key.startswith(prefix):
+                val = input_dict[nl][key]
+                newval = os.path.abspath(os.path.join(root, val))
+                #assert os.path.exists(newval)
+                #print(key, val, newval)
+                input_dict[nl][key] = newval                
+                
+                
 
 # ------------------------------------------------------------------ 
 # ------------------------- Astra particles ------------------------ 
