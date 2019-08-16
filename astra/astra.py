@@ -77,7 +77,7 @@ class Astra:
             
     def clean_output(self):
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
-        outfiles = parsers.find_astra_output_files(self.sim_input_file, run_number)
+        outfiles = parsers.find_astra_output_files(self.input_file, run_number)
         for f in outfiles:
             os.remove(f)
             
