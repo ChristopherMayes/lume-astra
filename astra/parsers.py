@@ -53,7 +53,7 @@ OutputColumnFactors['Zemit'] = ZemitColumnFactors
 
 OutputColumnNames['LandF']   = ['z_for_landf', 'Npart', 'charge', 'n_lost', 'energy_deposited', 'energy exchange']
 OutputColumnUnits['LandF']   = ['m', '1', 'nC', '1', 'J', 'J']
-OutputColumnFactors['LandF'] = [1, 1, 1e-9, 1, 1, 1]
+OutputColumnFactors['LandF'] = [1, 1, -1e-9, 1, 1, 1]
 
 ERROR = {'error': True}
 
