@@ -397,9 +397,10 @@ def set_astra(astra_input, generator_input, settings, verbose=False):
                 generator_input[k] = settings[k]
                 if verbose:
                     print(k, 'is in generator')
-        assert found
+        
         if not found and verbose:
             print(k, 'not found')
+        assert found    
 
 
 def recommended_spacecharge_mesh(n_particles):
