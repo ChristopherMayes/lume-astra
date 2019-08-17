@@ -124,12 +124,12 @@ def parse_astra_output_file(filePath):
     d = {}
     type = astra_output_type(filePath)
     
-    if type == 'LandF':
+    #if type == 'LandF':
     # Quick hack to get the bunch charge and lost particles. Enable in Astra with LandFS = T
-        d['Qbunch'] = abs(data[-1][2]) * 1e-9 # nC -> C
-        n_lost = int(data[0][1] - data[-1][1])
-        d['n_lost'] = n_lost
-        return d
+    #    d['Qbunch'] = abs(data[-1][2]) * 1e-9 # nC -> C
+    #    n_lost = int(data[0][1] - data[-1][1])
+    #    d['n_lost'] = n_lost
+    #    return d
     
     
     keys = OutputColumnNames[type]
