@@ -51,7 +51,7 @@ OutputColumnFactors['Xemit'] = XemitColumnFactors
 OutputColumnFactors['Yemit'] = YemitColumnFactors
 OutputColumnFactors['Zemit'] = ZemitColumnFactors
 
-OutputColumnNames['LandF']   = ['z', 'Npart', 'charge', 'n_lost', 'energy_deposited', 'energy exchange']
+OutputColumnNames['LandF']   = ['z_for_landf', 'Npart', 'charge', 'n_lost', 'energy_deposited', 'energy exchange']
 OutputColumnUnits['LandF']   = ['m', '1', 'nC', '1', 'J', 'J']
 OutputColumnFactors['LandF'] = [1, 1, 1e-9, 1, 1, 1]
 
