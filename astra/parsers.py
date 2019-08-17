@@ -69,7 +69,7 @@ def astra_run_extension(run_number):
 
 
 def find_astra_output_files(input_filePath, run_number,
-                            types= ['Cemit', 'Xemit', 'Yemit', 'Zemit'] #'LandF', 
+                            types= ['Cemit', 'Xemit', 'Yemit', 'Zemit', 'LandF']
                            ):
     """
     Finds the existing output files, based on standard Astra extensions. 
