@@ -20,7 +20,7 @@ See [simple_astra_run.ipynb](./examples/simple_astra_run.ipynb). In short:
 ```python
 from astra import Astra
 
-A = Astra('../templates/Astra.in', workdir='work')
+A = Astra('../templates/Astra.in')
 
 A.verbose = True
 A.run()
