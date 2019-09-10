@@ -1,6 +1,27 @@
 import numpy as np
 
 
+
+
+
+def opmd_init(h5):
+    """
+    Root attribute initialization.
+    
+    h5 should be the root of the file.
+    """
+    d = {
+        'basePath':'/screen/%T/',
+        'dataType':'openPMD',
+        'openPMD':'2.0.0',
+        'openPMDextension':'BeamPhysics;SpeciesType',
+        'particlesPath':'/'        
+    }
+    for k,v in d.items():
+        h5.attrs[k] = v
+
+
+
 def write_astra_particles_h5(h5, name, astra_data, species='electron'):
     # Write particle data at a screen in openPMD BeamPhysics format
     # https://github.com/DavidSagan/openPMD-standard/blob/EXT_BeamPhysics/EXT_BeamPhysics.md

@@ -32,15 +32,17 @@ class Astra:
     def __init__(self,
                  input_file='astra.in',
                  astra_bin='$ASTRA_BIN',      
+                 use_tempdir=True,
                  workdir=None,
-                 path = None, # Actual simulation path. If set on init, will not make a temporary directory. 
                  verbose=False):
         # Save init
         self.original_input_file = input_file
+        self.use_tempdir = use_tempdir
         self.workdir = workdir
+        if workdir:
+            assert os.path.exists(workdir), 'workdir does not exist: '+workdir        
         self.verbose=verbose
         self.astra_bin = astra_bin
-        self.path = path
         
         # These will be set
         self.log = []
@@ -61,19 +63,7 @@ class Astra:
             self.configure()
         else:
             self.vprint('Warning: Input file does not exist. Not configured.')
-    
-    
-    def __del__(self):
-        if self.auto_cleanup:
-            self.clean() # clean directory before deleting
 
-    def clean(self, override=False):   
-        # Only remove temporary directory. Never delete anything else!!!
-        if (self.using_tempdir or override) and os.path.exists(self.path):
-            self.vprint('deleting: ', self.path)
-            shutil.rmtree(self.path)
-        else: 
-            self.vprint('Warning: no cleanup because path is not a temporary directory:', self.path)
             
     def clean_output(self):
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
@@ -103,21 +93,20 @@ class Astra:
         # Check that binary exists
         self.astra_bin = tools.full_path(self.astra_bin)
         assert os.path.exists(self.astra_bin), 'ERROR: Astra binary does not exist:'+self.astra_bin
-                
-        # Temporary directory for path
-        if not self.path:
-            self.path = os.path.abspath(tempfile.TemporaryDirectory(prefix='temp_', dir=workdir).name)
-           # os.mkdir(self.path)
+              
+        # Set paths
+        if self.use_tempdir:
+            # Need to attach this to the object. Otherwise it will go out of scope.
+            self.tempdir = tempfile.TemporaryDirectory(dir=self.workdir)
+            # Make yet another directory to overcome the limitations of shutil.copytree
+            self.path = os.path.join(self.tempdir.name, 'astra/')
             # Copy everything in original_path
             shutil.copytree(self.original_path, self.path, symlinks=True)
-            # Form input file
-            self.input_file = os.path.join(self.path, self.original_input_file)
-            self.using_tempdir = True
         else:
             # Work in place
-            self.input_file = os.path.join(self.path, 'temp_'+self.original_input_file)
-            self.using_tempdir = False            
-                        
+            self.path = self.original_path            
+
+        self.input_file = os.path.join(self.path, self.original_input_file)                
         self.configured = True
     
     
