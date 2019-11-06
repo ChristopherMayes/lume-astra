@@ -3,6 +3,13 @@ import numpy as np
 
 
 
+def fstr(s):
+    """
+    Makes a fixed string for h5 files
+    """
+    return np.string_(s)
+
+
 
 def opmd_init(h5):
     """
@@ -18,7 +25,7 @@ def opmd_init(h5):
         'particlesPath':'/'        
     }
     for k,v in d.items():
-        h5.attrs[k] = v
+        h5.attrs[k] = fstr(v)
 
 
 
@@ -28,11 +35,27 @@ def write_astra_particles_h5(h5, name, astra_data, species='electron'):
     
     g = h5.create_group(name)
     
-    g.attrs['speciesType'] = species
+    
+    n_particle = len(astra_data['x'])
+    # Indices of good particles
+    good = np.where(astra_data['status'] == 5)
+    
+    
+    
+    g.attrs['speciesType'] = fstr(species)
+    g.attrs['numParticles'] = n_particle
+    g.attrs['chargeLive'] = np.sum(astra_data['qmacro'][good])
+    g.attrs['chargeUnitSI'] = 1
+    g.attrs['chargeUnitDimension']=(0., 0., 1, 1., 0., 0., 0.) # Amp*s = Coulomb
+    g.attrs['totalCharge'] = np.sum(astra_data['qmacro'])
     
     #g.attrs['totalCharge'] = np.sum(astra_data[''])
     
-    n_particle = len(astra_data['x'])
+
+    
+    
+    # Attributes
+    
     
     # Position
     g['position/x']=astra_data['x'] # in meters

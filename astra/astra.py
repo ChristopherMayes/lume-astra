@@ -281,8 +281,6 @@ class Astra:
         
 
            
-
-  
 class AstraGenerator:
     """
     Class to run Astra's particle generator
@@ -291,13 +289,13 @@ class AstraGenerator:
     def __init__(self, 
                  generator_bin = '$GENERATOR_BIN',
                  input_file = None,
-                 sim_path=None,
+                 path=None,
                  verbose=False
                 ):
         # Save init
         self.generator_bin = generator_bin 
         self.original_input_file = input_file
-        self.sim_path = sim_path
+        self.path = path
         self.verbose=verbose  
         
         # Run control
@@ -309,13 +307,11 @@ class AstraGenerator:
         self.configure()
         
     def configure(self):
-        self.original_input_file = os.path.abspath(os.path.expandvars(self.original_input_file))
+        self.original_input_file = tools.full_path(self.original_input_file)
         
         # Check that binary exists
         self.generator_bin = tools.full_path(self.generator_bin)
-        assert os.path.exists(self.generator_bin), 'ERROR: Generator binary does not exist:'+self.generator_bin
-        
-                
+        assert os.path.exists(self.generator_bin), 'ERROR: Generator binary does not exist:'+self.generator_bin    
        
         if not os.path.exists(self.original_input_file):
             print('input_file does not exist:', self.input_file)
@@ -328,13 +324,13 @@ class AstraGenerator:
         # File, path setup
         # Split file
         path, file = os.path.split(self.original_input_file)
-        if not self.sim_path:
+        if not self.path:
             # Use original path
-            self.sim_path = path
+            self.path = path
         self.input_file = 'temp_'+file
               
-        if not os.path.exists(self.sim_path):
-            print('sim_path does not exist:', self.sim_path)
+        if not os.path.exists(self.path):
+            print('sim_path does not exist:', self.path)
             return
         
         self.configured = True
@@ -342,7 +338,7 @@ class AstraGenerator:
     def run(self):
         # Save initil directory
         init_dir = os.getcwd()
-        os.chdir(self.sim_path)
+        os.chdir(self.path)
         
         self.write_input_file()
         
@@ -364,7 +360,7 @@ class AstraGenerator:
         os.chdir(init_dir)     
         
     def write_input_file(self):
-        parsers.write_namelists({'input':self.input}, self.input_file)        
+        parsers.write_namelists({'input':self.input}, self.input_file)           
         
           
         
@@ -418,6 +414,38 @@ def recommended_spacecharge_mesh(n_particles):
         nlong_in = round(0.143*n_particles**(0.603) + 6.5)
     return {'nrad':nrad, 'nlong_in':nlong_in}
            
+    
+    
+def run_astra(settings=None, 
+              astra_input_file=None, 
+              workdir=None, 
+              astra_bin='$ASTRA_BIN', 
+              timeout=2500, 
+              verbose=False):
+    """
+    Run Astra. 
+    
+        settings: dict with keys that can appear in an Astra input file. 
+    """
+    if verbose:
+        print('run_astra') 
+
+    # Make astra object
+    A = Astra(astra_bin=astra_bin, input_file=astra_input_file, workdir=workdir)
+    A.timeout=timeout
+    A.verbose = verbose
+    
+    A.input['newrun']['l_rm_back'] = True # Remove backwards particles
+      
+    # Set inputs
+    if settings:
+        set_astra(A.input, {}, settings, verbose=verbose)
+            
+    # Run
+    A.run()
+    
+    return A  
+    
             
 def run_astra_with_generator(settings=None, astra_input_file=None, generator_input_file=None, workdir=None, 
                              astra_bin='$ASTRA_BIN', generator_bin='$GENERATOR_BIN', timeout=2500, verbose=False,
