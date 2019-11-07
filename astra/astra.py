@@ -455,6 +455,17 @@ def run_astra_with_generator(settings=None, astra_input_file=None, generator_inp
     
         settings: dict with keys that can appear in an Astra or Generator input file. 
     """
+
+    # Call simpler evaluation if there is no generator:
+    if not generator_input_file:
+        return run_astra(settings=settings, 
+                         astra_input_file=astra_input_file, 
+                         workdir=workdir,
+                         astra_bin=astra_bin, 
+                         timeout=timeout, 
+                         verbose=verbose)
+        
+    
     if verbose:
         print('run_astra_with_generator') 
 
