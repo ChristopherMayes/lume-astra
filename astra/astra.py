@@ -317,7 +317,7 @@ class AstraGenerator:
             print('input_file does not exist:', self.input_file)
             return
         
-        # Get absolute path, then separate to sim_path/input_file
+        # Get absolute path, then separate to path/input_file
         # Parse
         self.input = parsers.parse_astra_input_file(self.original_input_file)['input']       
         
@@ -330,7 +330,7 @@ class AstraGenerator:
         self.input_file = 'temp_'+file
               
         if not os.path.exists(self.path):
-            print('sim_path does not exist:', self.path)
+            print('path does not exist:', self.path)
             return
         
         self.configured = True
@@ -473,7 +473,7 @@ def run_astra_with_generator(settings=None, astra_input_file=None, generator_inp
     A = Astra(astra_bin=astra_bin, input_file=astra_input_file, workdir=workdir)
     A.timeout=timeout
     A.verbose = verbose
-    G = AstraGenerator(generator_bin=generator_bin, input_file=generator_input_file, sim_path=A.path)
+    G = AstraGenerator(generator_bin=generator_bin, input_file=generator_input_file, path=A.path)
     G.verbose = verbose
     
     # Link particle files
