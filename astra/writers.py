@@ -30,39 +30,36 @@ def opmd_init(h5):
 
 
 def write_astra_particles_h5(h5, name, astra_data, species='electron'):
-    # Write particle data at a screen in openPMD BeamPhysics format
-    # https://github.com/DavidSagan/openPMD-standard/blob/EXT_BeamPhysics/EXT_BeamPhysics.md
-    
+    """
+    Write particle data at a screen in openPMD BeamPhysics format
+    https://github.com/DavidSagan/openPMD-standard/blob/EXT_BeamPhysics/EXT_BeamPhysics.md
+    """
+
     g = h5.create_group(name)
-    
-    
+      
     n_particle = len(astra_data['x'])
     # Indices of good particles
     good = np.where(astra_data['status'] == 5)
     
-    
-    
+    #-----------
+    # Attributes
     g.attrs['speciesType'] = fstr(species)
     g.attrs['numParticles'] = n_particle
-    g.attrs['chargeLive'] = np.sum(astra_data['qmacro'][good])
+    g.attrs['chargeLive'] = abs(np.sum(astra_data['qmacro'][good])) # Make positive
     g.attrs['chargeUnitSI'] = 1
-    g.attrs['chargeUnitDimension']=(0., 0., 1, 1., 0., 0., 0.) # Amp*s = Coulomb
-    g.attrs['totalCharge'] = np.sum(astra_data['qmacro'])
-    
-    #g.attrs['totalCharge'] = np.sum(astra_data[''])
-    
-
-    
-    
-    # Attributes
-    
+    #g.attrs['chargeUnitDimension']=(0., 0., 1, 1., 0., 0., 0.) # Amp*s = Coulomb
+    g.attrs['totalCharge'] = abs(np.sum(astra_data['qmacro'])) 
+   
+    #---------
+    # Datasets
     
     # Position
     g['position/x']=astra_data['x'] # in meters
     g['position/y']=astra_data['y']
     g['position/z']=astra_data['z_rel']
-    g['position'].attrs['unitSI'] = 1.0
-    g['position'].attrs['unitDimension']=(1., 0., 0., 0., 0., 0., 0.) # m
+    for component in ['position/x', 'position/y', 'position/z', 'position']: # Add units to all components
+        g[component].attrs['unitSI'] = 1.0
+        g[component].attrs['unitDimension']=(1., 0., 0., 0., 0., 0., 0.) # m
     
     
     # positionOffset (Constant record)
@@ -77,8 +74,9 @@ def write_astra_particles_h5(h5, name, astra_data, species='electron'):
     g['momentum/x']=astra_data['px'] # m*c*gamma*beta_x in eV/c
     g['momentum/y']=astra_data['py']
     g['momentum/z']=astra_data['pz_rel']
-    g['momentum'].attrs['unitSI']= 5.34428594864784788094e-28 # eV/c in J/(m/s) =  kg*m / s
-    g['momentum'].attrs['unitDimension']=(1., 1., -1., 0., 0., 0., 0.) # kg*m / s
+    for component in ['momentum/x', 'momentum/y', 'momentum/z', 'momentum']: 
+        g[component].attrs['unitSI']= 5.34428594864784788094e-28 # eV/c in J/(m/s) =  kg*m / s
+        g[component].attrs['unitDimension']=(1., 1., -1., 0., 0., 0., 0.) # kg*m / s
     
     # momentumOffset (Constant record)
     # Just pz
@@ -107,8 +105,18 @@ def write_astra_particles_h5(h5, name, astra_data, species='electron'):
     
     
     # Status
-    g['particleStatus'] = astra_data['status']
+    # The standard defines 1 as a live particle, but astra uses 1 as a 'passive' particle
+    # and 5 as a 'standard' particle. 2 is not used. 
+    # To preserve this information, make 1->2 and then 5->1
     
+    status = astra_data['status'].copy()
+    where_1 = np.where(status==1)
+    where_5 = good # was defined above
+    status[where_1] = 2
+    status[where_5] = 1
+    g['particleStatus'] = status
+    g['particleStatus'].attrs['unitSI'] = 1.0
+    g['particleStatus'].attrs['unitDimension']=(0., 0., 0, 0., 0., 0., 0.) # Dimensionless
     
 
 

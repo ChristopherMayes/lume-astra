@@ -497,8 +497,8 @@ def parse_astra_phase_file(filePath):
     t_rel = data[1:,6]*1e-9
     #t = t_rel + t_ref
     
-    # macro charge in Coulomb
-    qmacro = data[1:,7]*1e-9
+    # macro charge in Coulomb. The sign doesn't matter, so make positive
+    qmacro = np.abs(data[1:,7]*1e-9)
     
     species_index = data[1:,8].astype(np.int)
     status = data[1:,9].astype(np.int)  

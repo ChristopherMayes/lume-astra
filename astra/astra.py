@@ -43,7 +43,7 @@ class Astra:
             assert os.path.exists(workdir), 'workdir does not exist: '+workdir        
         self.verbose=verbose
         self.astra_bin = astra_bin
-        
+
         # These will be set
         self.log = []
         self.output = {}
