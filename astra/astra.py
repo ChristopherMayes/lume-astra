@@ -7,7 +7,7 @@ import tempfile
 import shutil
 import os
 from time import time
-
+import h5py
 
 
 
@@ -262,22 +262,35 @@ class Astra:
     def write_screens(self, h5):
         writers.write_screens_h5(h5, self.screen)        
         
-    def archive(self, h5):
+    def archive(self, h5=None):
         """
-        Archive all data to an h5 handle. 
+        Archive all data to an h5 handle or filename.
+        
+        If no file is given, a file based on the fingerprint will be created.
+        
         """
+        if not h5:
+            h5 = 'astra_'+self.fingerprint()+'.h5'
+            mode = 'w'
+        else:
+            mode = 'a'
+         
+        if isinstance(h5, str):
+            g = h5py.File(h5, mode)
+            self.vprint(f'Archiving to file {h5}')
+        else:
+            g = h5
         
         # All input
-        self.write_input(h5)
+        self.write_input(g)
 
         # All output
-        self.write_output(h5)
+        self.write_output(g)
             
         # Particles    
-        self.write_screens(h5)          
+        self.write_screens(g)          
         
-
-        
+        return h5
         
 
            
@@ -495,6 +508,9 @@ def run_astra_with_generator(settings=None, astra_input_file=None, generator_inp
     # Run
     G.run()
     A.run()
+    
+    if verbose:
+        print('run_astra_with_generator finished')     
     
     return A
 # Usage:

@@ -11,18 +11,18 @@ def fstr(s):
 
 
 
-def opmd_init(h5):
+def opmd_init(h5, basePath='/screen/%T/', particlesPath='/' ):
     """
     Root attribute initialization.
     
     h5 should be the root of the file.
     """
     d = {
-        'basePath':'/screen/%T/',
+        'basePath':basePath,
         'dataType':'openPMD',
         'openPMD':'2.0.0',
         'openPMDextension':'BeamPhysics;SpeciesType',
-        'particlesPath':'/'        
+        'particlesPath':particlesPath    
     }
     for k,v in d.items():
         h5.attrs[k] = fstr(v)
@@ -151,6 +151,11 @@ def write_screens_h5(h5, astra_screens, name='screen'):
     Write all screens to file, simply named by their index
     """
     g = h5.create_group(name)
+    
+    # Set base attributes
+    opmd_init(h5, basePath='/'+name+'/%T/', particlesPath='/' )
+    
+    # Loop over screens
     for i in range(len(astra_screens)):
         name = str(i)        
         write_astra_particles_h5(g, name, astra_screens[i])   
