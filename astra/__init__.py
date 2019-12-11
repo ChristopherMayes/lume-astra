@@ -1,4 +1,5 @@
 from .astra import *
+from .evaluate import evaluate_astra_with_generator
 
 import os
 # Used to access data directory

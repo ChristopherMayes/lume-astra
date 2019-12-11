@@ -30,7 +30,7 @@ class Astra:
     """
     
     def __init__(self,
-                 input_file='astra.in',
+                 input_file=None,
                  astra_bin='$ASTRA_BIN',      
                  use_tempdir=True,
                  workdir=None,
@@ -271,12 +271,9 @@ class Astra:
         """
         if not h5:
             h5 = 'astra_'+self.fingerprint()+'.h5'
-            mode = 'w'
-        else:
-            mode = 'a'
          
         if isinstance(h5, str):
-            g = h5py.File(h5, mode)
+            g = h5py.File(h5, 'w')
             self.vprint(f'Archiving to file {h5}')
         else:
             g = h5
@@ -292,6 +289,7 @@ class Astra:
         
         return h5
         
+    
 
            
 class AstraGenerator:

@@ -370,7 +370,11 @@ def parse_astra_input_file(filePath, condense=False):
 
 def namelist_lines(namelist_dict, name):
     """
-    Converts namelist dict to output lines, for writing to file
+    Converts namelist dict to output lines, for writing to file.
+    
+    Only allow scalars or lists. 
+    
+    Do not allow np arrays or any other types from simplicity.
     """
     lines = []
     lines.append('&'+name)
@@ -388,7 +392,8 @@ def namelist_lines(namelist_dict, name):
             line = key + ' = ' + "'" + value.strip("''") + "'"  # input may need apostrophes
         else:
             #print 'skipped: key, value = ', key, value
-            pass
+            raise ValueError(f'Problem writing input key: {key}, value: {value}, type: {type(value)}')
+           
         lines.append(line)
     
     lines.append('/')
