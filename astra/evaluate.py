@@ -58,7 +58,7 @@ def default_astra_merit(A):
     return m
 
 
-def evaluate_astra_with_generator(settings, archive_path=None, **run_astra_with_generator_params):
+def evaluate_astra_with_generator(settings, archive_path=None, merit_f=None, **run_astra_with_generator_params):
     """
     Simple evaluate astra.
     
@@ -69,7 +69,10 @@ def evaluate_astra_with_generator(settings, archive_path=None, **run_astra_with_
     """
     A = run_astra_with_generator(settings, **run_astra_with_generator_params)
         
-    output = default_astra_merit(A)
+    if merit_f:
+        output = merit_f(A)
+    else:
+        output = default_astra_merit(A)
     
     if output['error']:
         raise
@@ -79,8 +82,9 @@ def evaluate_astra_with_generator(settings, archive_path=None, **run_astra_with_
     output['fingerprint'] = fingerprint
     
     if archive_path:
-        assert os.path.exists(archive_path), f'archive path does not exist: {archive_path}'
-        archive_file = full_path(os.path.join(archive_path, fingerprint+'.h5'))
+        path = full_path(archive_path)
+        assert os.path.exists(path), f'archive path does not exist: {path}'
+        archive_file = os.path.join(path, fingerprint+'.h5')
         A.archive(archive_file)
         output['archive'] = archive_file
         
