@@ -3,9 +3,33 @@
 
 from astra import Astra
 from astra.tools import full_path
+from .astra import recommended_spacecharge_mesh
+
 from distgen import Generator   
 from distgen.writers import write_astra
+from distgen.tools import update_nested_dict
+
+import json
+import os
+
+def set_astra_and_distgen(astra_input, distgen_input, settings, verbose=False):
+    """
+    Searches astra and distgen input for keys in settings, and sets their values to the appropriate input.
+    """
+    for k, v in settings.items():
+        found=False
+        for nl in astra_input:
+            if k in astra_input[nl]:
+                found = True
+                if verbose:
+                    print(k, 'is in astra', nl)
+                astra_input[nl][k] = settings[k]
+        
+        if not found:
+            distgen_input = update_nested_dict(distgen_input, {k:v}, verbose=verbose)
+            #set_nested_dict(distgen_input, k, v)    
     
+    return astra_input, distgen_input
     
 def run_astra_with_distgen(settings=None, astra_input_file=None, distgen_input_file=None, workdir=None, 
                              astra_bin='$ASTRA_BIN', timeout=2500, verbose=False,
@@ -58,11 +82,8 @@ def run_astra_with_distgen(settings=None, astra_input_file=None, distgen_input_f
     
     # Set inputs
     if settings:
-        set_astra_and_distgen(A.input, distgen_params, settings, verbose=verbose)
-    
-    # Set a
-    distgen_params['output']['type'] = 'astra' 
-    #distgen_params['output']['file'] = os.path.join(A.path, particle_file)
+        A.input, distgen_params = set_astra_and_distgen(A.input, distgen_params, settings, verbose=verbose)
+
     
     # Configure distgen
     G.parse_input(distgen_params)
@@ -83,3 +104,35 @@ def run_astra_with_distgen(settings=None, astra_input_file=None, distgen_input_f
     
     return A
 
+
+def evaluate_astra_with_distgen(settings, archive_path=None, merit_f=None, **run_astra_with_distgen_params):
+    """
+    Simple evaluate astra.
+    
+    Similar to run_astra_with_distgen, but returns a flat dict of outputs. 
+    
+    Will raise an exception if there is an error. 
+    
+    """
+    A = run_astra_with_distgen(settings, **run_astra_with_distgen_params)
+        
+    if merit_f:
+        output = merit_f(A)
+    else:
+        output = default_astra_merit(A)
+    
+    if output['error']:
+        raise
+    
+    fingerprint = A.fingerprint()
+    
+    output['fingerprint'] = fingerprint
+    
+    if archive_path:
+        path = full_path(archive_path)
+        assert os.path.exists(path), f'archive path does not exist: {path}'
+        archive_file = os.path.join(path, fingerprint+'.h5')
+        A.archive(archive_file)
+        output['archive'] = archive_file
+        
+    return output
