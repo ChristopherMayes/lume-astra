@@ -58,16 +58,41 @@ def default_astra_merit(A):
     return m
 
 
-def evaluate_astra_with_generator(settings, archive_path=None, merit_f=None, **run_astra_with_generator_params):
+
+
+
+def evaluate(settings, simulation='astra', archive_path=None, merit_f=None, **params):
     """
-    Simple evaluate astra.
+    Evaluate astra using possible simulations:
+        'astra'
+        'astra_with_generator'
+        'astra_with_distgen'
     
-    Similar to run_astra_with generator, but returns a flat dict of outputs. 
+    Returns a flat dict of outputs. 
+    
+    If merit_f is provided, this function will be used to form the outputs. 
+    Otherwise a default funciton will be applied.
     
     Will raise an exception if there is an error. 
     
     """
-    A = run_astra_with_generator(settings, **run_astra_with_generator_params)
+    
+    # Pick simulation to run
+    
+    if simulation=='astra':
+        A = run_astra(settings, **params)
+
+    elif simulation=='astra_with_generator':
+        A = run_astra_with_generator(settings, **params)
+        
+    elif simulation == 'astra_with_distgen':
+
+        # Import here to limit dependency on distge
+        from .astra_distgen import run_astra_with_distgen
+        A = run_astra_with_distgen(settings, **params)
+        
+    else:
+        raise 
         
     if merit_f:
         output = merit_f(A)
@@ -89,3 +114,12 @@ def evaluate_astra_with_generator(settings, archive_path=None, merit_f=None, **r
         output['archive'] = archive_file
         
     return output
+
+
+# Convenience wrappers
+def evaluate_astra_with_generator(settings, archive_path=None, merit_f=None, **params):
+    """
+    Convenience wrapper. See evaluate. 
+    """
+    return evaluate(settings, simulation='astra_with_generator', 
+                    archive_path=archive_path, merit_f=merit_f, **params)
