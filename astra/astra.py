@@ -443,6 +443,7 @@ def run_astra(settings=None,
 
     # Make astra object
     A = Astra(astra_bin=astra_bin, input_file=astra_input_file, workdir=workdir)
+    
     A.timeout=timeout
     A.verbose = verbose
     
@@ -467,6 +468,8 @@ def run_astra_with_generator(settings=None, astra_input_file=None, generator_inp
         settings: dict with keys that can appear in an Astra or Generator input file. 
     """
 
+    assert astra_input_file, 'No astra input file'
+    
     # Call simpler evaluation if there is no generator:
     if not generator_input_file:
         return run_astra(settings=settings, 

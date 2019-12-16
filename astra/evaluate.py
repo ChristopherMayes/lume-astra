@@ -3,6 +3,7 @@ from .astra_calc import calc_ho_energy_spread
 from .tools import full_path
 import numpy as np
 import json
+from inspect import getfullargspec
 import os
 
 
@@ -60,6 +61,18 @@ def default_astra_merit(A):
 
 
 
+# Get defaults for **params in evaluate for each type of simulation
+def _get_defaults(run_f, extra=None):
+    spec = getfullargspec(run_f)
+    d = dict(zip(spec.args, spec.defaults))
+    d.pop('settings')
+    if extra:
+        d.update(extra)
+    return d
+
+
+
+
 
 def evaluate(settings, simulation='astra', archive_path=None, merit_f=None, **params):
     """
@@ -87,7 +100,7 @@ def evaluate(settings, simulation='astra', archive_path=None, merit_f=None, **pa
         
     elif simulation == 'astra_with_distgen':
 
-        # Import here to limit dependency on distge
+        # Import here to limit dependency on distgen
         from .astra_distgen import run_astra_with_distgen
         A = run_astra_with_distgen(settings, **params)
         
@@ -116,10 +129,68 @@ def evaluate(settings, simulation='astra', archive_path=None, merit_f=None, **pa
     return output
 
 
-# Convenience wrappers
+# Convenience wrappers, and their full options
+
+# Get all kwargs from run_astra routines. Save these as the complete set of options
+EXTRA = {'archive_path':None, 'merit_f':None}
+EXTRA2 = {'archive_path':None, 'merit_f':None, 'distgen_input_file':None}
+DEFAULTS = {
+    'evaluate_astra':                _get_defaults(run_astra, EXTRA ),
+    'evaluate_astra_with_generator': _get_defaults(run_astra_with_generator, EXTRA) ,
+    'evaluate_astra_with_distgen':   _get_defaults(run_astra, EXTRA2)
+}
+
+
+def evaluate_astra(settings, archive_path=None, merit_f=None, **params):
+    """
+    Convenience wrapper. See evaluate. 
+    """
+    return evaluate(settings, simulation='astra', 
+                    archive_path=archive_path, merit_f=merit_f, **params)
+
+
 def evaluate_astra_with_generator(settings, archive_path=None, merit_f=None, **params):
     """
     Convenience wrapper. See evaluate. 
     """
     return evaluate(settings, simulation='astra_with_generator', 
                     archive_path=archive_path, merit_f=merit_f, **params)
+
+def evaluate_astra_with_distgen(settings, archive_path=None, merit_f=None, **params):
+    """
+    Convenience wrapper. See evaluate. 
+    """
+    return evaluate(settings, simulation='astra_with_distgen', 
+                    archive_path=archive_path, merit_f=merit_f, **params)
+
+
+#-------------
+# Return evaluate and its options. 
+
+def configure_astra_evaluate(simulation='astra', config={}):
+    """
+    Returns a dict:
+        'evaluate_f' : function that evaluates the simulation with one positional argument, and options. 
+                       settings, **options
+        'options'    : The optional arguments for that function, configured with config and templates. 
+    
+    
+    Example:
+        configure_astra_evaluate('astra', {'astra_input_file':'astra.in'})
+    
+    """
+
+    
+    # opts will become the new config
+    opts = {'simulation':simulation}
+    # Get defaults
+    opts.update(DEFAULTS['evaluate_'+simulation])
+    for k, v in config.items():
+        if k in opts:
+            opts[k] = v
+        else:
+            print(f'Uknown option for {simulation}:{k}:{v}')
+            raise
+    
+    return {'evaluate_f':evaluate, 'options': opts}
+
