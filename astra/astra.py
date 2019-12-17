@@ -10,7 +10,6 @@ from time import time
 import h5py
 
 
-
 class Astra:
     """ 
     Astra simulation object. Essential methods:
@@ -97,11 +96,8 @@ class Astra:
         # Set paths
         if self.use_tempdir:
             # Need to attach this to the object. Otherwise it will go out of scope.
-            self.tempdir = tempfile.TemporaryDirectory(dir=self.workdir)
-            # Make yet another directory to overcome the limitations of shutil.copytree
-            self.path = os.path.join(self.tempdir.name, 'astra/')
-            # Copy everything in original_path
-            shutil.copytree(self.original_path, self.path, symlinks=True)
+            self.tempdir = tempfile.TemporaryDirectory(dir=workdir)
+            self.path = self.tempdir.name
         else:
             # Work in place
             self.path = self.original_path            
@@ -117,7 +113,7 @@ class Astra:
     
         if absolute_paths:
             parsers.fix_input_paths(self.input, root=self.original_path)
-    
+            
     
     def load_output(self):
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
@@ -298,8 +294,8 @@ class AstraGenerator:
     
     """
     def __init__(self, 
-                 generator_bin = '$GENERATOR_BIN',
                  input_file = None,
+                 generator_bin = '$GENERATOR_BIN',
                  path=None,
                  verbose=False
                 ):

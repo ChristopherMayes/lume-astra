@@ -412,17 +412,30 @@ def write_namelists(namelists, filePath):
                 f.write(l+'\n')
 
 
-def fix_input_paths(input_dict, root='', prefix='file_'):
+def fix_input_paths(input_dict, root='', prefixes=['file_', 'distribution']):
     """
-    Looks for keys in the input dict of dicts, that start with prefix. This should indicate a file. Then, fill in the absoulute path. 
-    root should be the original input file path. 
+    Looks for keys in the input dict of dicts, that start with any strings as in the prefixes list.
+    This should indicate a file. Then, fill in the absoulute path. 
+    root should be the original input file path.
+    
+    Does not replace absolute paths, or paths where the file does not exist. 
+    
     """
     for nl in input_dict:
         #print(nl)
         for key in input_dict[nl]:
-            if key.startswith(prefix):
+            if any([key.startswith(prefix) for prefix in prefixes]):
                 val = input_dict[nl][key]
+                
+                # Skip absolute paths
+                if os.path.isabs(val):
+                    continue
                 newval = os.path.abspath(os.path.join(root, val))
+
+                # Skip if does not exist
+                if not os.path.exists(newval):
+                    continue
+                
                 #assert os.path.exists(newval)
                 #print(key, val, newval)
                 input_dict[nl][key] = newval                
