@@ -39,13 +39,12 @@ def default_astra_merit(A):
         m= {'error':False}
     
     # Gather output
-    m.update(end_output_data(A.output))
+    m.update(end_output_data(A.output['stats']))
     
-    # Load final screen for calc
-    A.load_screens(end_only=True)
-    screen = A.screen[-1]        
-    # TODO: time in screen isn't correct??? 
-    m['end_higher_order_energy_spread'] = calc_ho_energy_spread( {'t':screen['z_rel'], 'Energy':(screen['pz_rel'])*1e-3},verbose=False) # eV
+    screen = A.particles[-1]  
+    
+    # TODO: Use ParticleGroup's calc. z or t??
+    m['end_higher_order_energy_spread'] = calc_ho_energy_spread( {'t':screen['z'], 'Energy':(screen['pz'])*1e-3},verbose=False) # eV
     
     # Lost particles have status < -6
     nlost = len(np.where(screen['status'] < -6)[0])    

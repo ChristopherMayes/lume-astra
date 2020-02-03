@@ -120,31 +120,6 @@ def write_astra_particles_h5(h5, name, astra_data, species='electron'):
     
 
 
-# Write input file to dataset
-def write_input_h5(h5, astra_input, name='input'):
-    """
-    astra_input is a dict with dicts
-    Writes 
-    """
-    g0 = h5.create_group(name)
-    for n in astra_input:
-        namelist = astra_input[n]
-        g = g0.create_group(n)
-        for k in namelist:
-            g.attrs[k] = namelist[k]
-
-    
-def write_output_h5(h5, astra_output, name='output'):
-    """
-    Writes scalar data as attributes, otherwise makes datasets
-    """
-    g = h5.create_group(name)
-    for key in astra_output:
-        val = astra_output[key]
-        if np.isscalar(val):
-            g.attrs[key] = val
-        else:
-            g[key] = val    
     
 def write_screens_h5(h5, astra_screens, name='screen'):
     """

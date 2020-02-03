@@ -1,4 +1,14 @@
-#!/usr/bin/env python3
+"""
+Astra output parsing
+ 
+References:
+
+PHYSICAL REVIEW SPECIAL TOPICS - ACCELERATORS AND BEAMS,VOLUME 6, 034202 (2003)
+https://journals.aps.org/prab/pdf/10.1103/PhysRevSTAB.6.034202
+
+"""
+
+from pmd_beamphysics.units import unit
 
 import os
 from numbers import Number
@@ -6,57 +16,80 @@ from math import isnan
 import numpy as np
 import re
 
-# ------ Astra output parsing--------
+# ------------
 
 
+def unit_dict(keys, unit_symbols):
+    """
+    Forms a dict mapping keys to pmd_unit objects
+    """
+    d = {}
+    for k, s in zip(keys, unit_symbols):
+        d[k] = unit(s)
+    return d
 
-CemitColumnNames   = ['z_for_coreemit',  'x_normemit', 'x_coreemit_95percent', 'x_coreemit_90percent', 'x_coreemit_80percent',
-                            'y_normemit', 'y_coreemit_95percent', 'y_coreemit_90percent', 'y_coreemit_80percent',
-                            'z_normemit', 'z_coreemit_95percent', 'z_coreemit_90percent', 'z_coreemit_80percent']
-CemitColumnUnits   = ['m'] + 8*['mm-mrad'] + 4*['kev-mm']
-CemitColumnFactors = [1] + 12*[1e-6]  # Factors to make standard units
-CemitColumn = dict( zip(CemitColumnNames, list(range(1, 1+len(CemitColumnNames) ) ) ) )
-CemitUnits  = dict( zip(CemitColumnNames, CemitColumnUnits) )
-
-XemitColumnNames   = ['z', 't',  'x_average', 'x_rms', 'xp_rms', 'x_normemit', 'xxp_average']
-XemitColumnUnits   = ['m', 'ns', 'mm',  'mm', 'mrad', 'mm-mrad',   'mrad' ]
-XemitColumnFactors = [1,    1e-9, 1e-3,  1e-3, 1e-3,   1e-6,   1e-3] # Factors to make standard units
-XemitColumn = dict( zip(XemitColumnNames, list(range(1, 1+len(XemitColumnNames) ) ) ) )
-XemitUnits  = dict( zip(XemitColumnNames, XemitColumnUnits) )
-
-YemitColumnNames   = ['z', 't',  'y_average', 'y_rms', 'yp_rms', 'y_normemit', 'yyp_average']
-YemitColumnUnits   = ['m', 'ns', 'mm',  'mm', 'mrad', 'mm-mrad',   'mrad' ]
-YemitColumnFactors = [1,   1e-9, 1e-3,  1e-3, 1e-3, 1e-6,   1e-3] # Factors to make standard units
-YemitColumn = dict( zip(YemitColumnNames, list(range(1, 1+len(YemitColumnNames) ) ) ) )
-YemitUnits  = dict( zip(YemitColumnNames, YemitColumnUnits) )
-
-ZemitColumnNames   = ['z', 't',  'E_kinetic', 'z_rms', 'deltaE_rms', 'z_normemit', 'zEp_average']
-ZemitColumnUnits   = ['m', 'ns', 'MeV',       'mm',    'keV',        'mm-keV',  'keV' ]
-ZemitColumnFactors = [1,   1e-9,  1e6,        1e-3,    1e3,           1,   1e3] # Factors to make standard units
-ZemitColumn = dict( zip(ZemitColumnNames, list(range(1, 1+len(ZemitColumnNames) ) ) ) )
-ZemitUnits  = dict( zip(ZemitColumnNames, ZemitColumnUnits) )
 
 # New style
 OutputColumnNames = {}
-OutputColumnUnits = {}
 OutputColumnFactors = {}
+OutputUnits = {}  # This collects all units
+
+CemitColumnNames   = ['mean_z',  'norm_emit_x', 'core_emit_95percent_x', 'core_emit_90percent_x', 'core_emit_80percent_x',
+                            'norm_emit_y', 'core_emit_95percent_y', 'core_emit_90percent_y', 'core_emit_80percent_y',
+                            'norm_emit_z', 'core_emit_95percent_z', 'core_emit_905percent_z', 'core_emit_80percent_z']
+CemitOriginalUnits   = ['m'] + 8*['mm-mrad'] + 4*['kev-mm'] # Units that Astra writes
+CemitColumnFactors = [1] + 12*[1e-6]  # Factors to make standard units
+CemitColumnUnits   = ['m'] + 8*['m'] + 4*['eV*m']
+CemitColumn = dict( zip(CemitColumnNames, list(range(1, 1+len(CemitColumnNames) ) ) ) )
+OutputUnits.update(unit_dict(CemitColumnNames, CemitColumnUnits))
+
+XemitColumnNames   = ['mean_z', 'mean_t',  'mean_x', 'sigma_x', 'sigma_xp', 'norm_emit_x', 'cov_x__xp/sigma_x']
+XemitOriginalUnits = ['m', 'ns',  'mm',    'mm',      'mrad',     'mm-mrad',     'mrad' ]  # Units that Astra writes
+XemitColumnFactors = [1,    1e-9, 1e-3,    1e-3,      1e-3,        1e-6,         1e-3]     # Factors to make standard units
+XemitColumnUnits   = ['m',  's',  'm',     'm',       '1',         'm',          'rad' ]
+XemitColumn = dict( zip(XemitColumnNames, list(range(1, 1+len(XemitColumnNames) ) ) ) )
+OutputUnits.update(unit_dict(XemitColumnNames, XemitColumnUnits))
+
+
+YemitColumnNames     = ['mean_z', 'mean_t',  'mean_y', 'sigma_y', 'sigma_yp', 'norm_emit_y', 'cov_y__yp/sigma_y']
+YemitOriginalUnits   = ['m', 'ns', 'mm',  'mm', 'mrad', 'mm-mrad',   'mrad' ] # Units that Astra writes
+YemitColumnFactors   = [1,   1e-9, 1e-3,  1e-3, 1e-3, 1e-6,   1e-3] # Factors to make standard units
+YemitColumnUnits     = ['m', 's', 'm',  'm', '1', 'm',   'rad' ]
+YemitColumn = dict( zip(YemitColumnNames, list(range(1, 1+len(YemitColumnNames) ) ) ) )
+OutputUnits.update(unit_dict(YemitColumnNames, YemitColumnUnits) )
+
+ZemitColumnNames   = ['mean_z', 'mean_t',  'mean_kinetic_energy', 'sigma_z', 'sigma_energy', 'norm_emit_z', 'cov_z__energy/sigma_z']
+ZemitOriginalUnits = ['m', 'ns', 'MeV',            'mm',     'keV',           'mm-keV',      'keV' ]
+ZemitColumnFactors = [1,   1e-9, 1e6,              1e-3,     1e3,              1,             1e3] # Factors to make standard units
+ZemitColumnUnits   = ['m', 's',  'eV',             'm',      'eV',            'm*eV',         'eV' ]
+ZemitColumn = dict( zip(ZemitColumnNames, list(range(1, 1+len(ZemitColumnNames) ) ) ) )
+OutputUnits.update(unit_dict(ZemitColumnNames, ZemitColumnUnits))
+
+LandFColumnNames =   ['landf_z', 'landf_n_particles', 'landf_total_charge', 'landf_n_lost', 'landf_energy_deposited', 'landf_energy_exchange']
+LandFOriginalUnits = ['m', '1', 'nC', '1', 'J', 'J']
+LandFColumnFactors = [1, 1, -1e-9, 1, 1, 1]
+LandFColumnUnits =   ['m', '1', 'C', '1', 'J', 'J']
+OutputUnits.update(unit_dict(LandFColumnNames, LandFColumnUnits))
 
 OutputColumnNames['Cemit'] = CemitColumnNames
 OutputColumnNames['Xemit'] = XemitColumnNames
 OutputColumnNames['Yemit'] = YemitColumnNames
 OutputColumnNames['Zemit'] = ZemitColumnNames
+OutputColumnNames['LandF'] = LandFColumnNames
 
 OutputColumnFactors['Cemit'] = CemitColumnFactors
 OutputColumnFactors['Xemit'] = XemitColumnFactors
 OutputColumnFactors['Yemit'] = YemitColumnFactors
 OutputColumnFactors['Zemit'] = ZemitColumnFactors
-
-OutputColumnNames['LandF']   = ['z_for_landf', 'n_particles', 'total_charge', 'n_lost', 'energy_deposited', 'energy_exchange']
-OutputColumnUnits['LandF']   = ['m', '1', 'nC', '1', 'J', 'J']
-OutputColumnFactors['LandF'] = [1, 1, -1e-9, 1, 1, 1]
+OutputColumnFactors['LandF'] = LandFColumnFactors
 
 ERROR = {'error': True}
 
+
+# Special additions
+OutputUnits['cov_x__xp'] = unit('m')
+OutputUnits['cov_y__yp'] = unit('m')
+OutputUnits['cov_z__energy'] = unit('m*eV')
 
 
 def astra_run_extension(run_number):
@@ -86,32 +119,19 @@ def find_astra_output_files(input_filePath, run_number,
     
 
 
-def parse_table_output(filename, headerlines=0, header=[]):
-  """
-  Gets general table data and converts to floats.
-  'headerlines' number of lines are stored in the optional header
-  blank lines are ignored
-  """
-  f = open(filename, 'r')
-  dat = []
-  if headerlines > 0:
-    for dummy in range(headerlines):
-      header.append(f.readline().split())
-  for line in f:
-    s = line.split()
-    if len(s) > 0:
-      dat.append( [float(x) for x in s ] )
-  f.close()
-  return  dat
-
-
 def astra_output_type(filename):
   return filename.split('.')[-2]
   
 
-def parse_astra_output_file(filePath):   
+    
+    
+    
+def parse_astra_output_file(filePath, standardize_labels=True):   
     """
     Simple parsing of tabular output files, according to names in this file. 
+    
+    If standardize labels, the covariance labels and data will be simplified. 
+    
     """
     data = np.loadtxt(filePath)
     if data.shape == ():
@@ -119,72 +139,35 @@ def parse_astra_output_file(filePath):
     
     if len(data) == 0:
         return ERROR
-        
     
     d = {}
-    type = astra_output_type(filePath)
+    type = astra_output_type(filePath) 
     
-    #if type == 'LandF':
-    # Quick hack to get the bunch charge and lost particles. Enable in Astra with LandFS = T
-    #    d['Qbunch'] = abs(data[-1][2]) * 1e-9 # nC -> C
-    #    n_lost = int(data[0][1] - data[-1][1])
-    #    d['n_lost'] = n_lost
-    #    return d
-    
-    
+    # Get the appropriate keys and factors 
     keys = OutputColumnNames[type]
     factors = OutputColumnFactors[type]
-    
-    
+     
     for i in range(len(keys)):
         d[keys[i]] = data[:,i]*factors[i]
+
+    
+    if standardize_labels:
+        if type == 'Xemit':
+            d['cov_x__xp'] = d.pop('cov_x__xp/sigma_x')*d['sigma_x']
+            
+        if type == 'Yemit':
+            d['cov_y__yp'] = d.pop('cov_y__yp/sigma_y')*d['sigma_y']     
+            
+        if type == 'Zemit':
+            d['cov_z__energy'] = d.pop('cov_z__energy/sigma_z')*d['sigma_z']                   
+        
+    # Special modifications
+    #if type in ['Xemit', 'Yemit', 'Zemit']:
+        
+        
     return d
 
 
-def old_parse_astra_output_full(filename):
-  """
-  Returns a dict with information from an astra file
-  
-  Any NaNs detected will return ERROR
-  Uses the last line of Emit files only!!!
-  """
-  
-  if not os.path.exists(filename):
-    return ERROR
-  
-  type = astra_output_type(filename)
-  
-  dat = parse_table_output(filename)
-  if len(dat) == 0:
-    return ERROR
-  lastdat = dat[-1]
-  res = {'error': False}
-  if type   == 'Xemit':
-    columns = XemitColumn
-  elif type == 'Yemit':
-    columns = YemitColumn
-  elif type == 'Zemit':
-    columns = ZemitColumn
-  elif type == 'LandF':
-    # Quick hack to get the bunch charge and lost particles. Enable in Astra with LandFS = T
-    res['Qbunch'] = abs(lastdat[2])
-    n_lost = int(dat[0][1] - dat[-1][1])
-    res['n_lost'] = n_lost
-    return res
-  else:
-    print('unkown astra file type: ', type)
-    return ERROR
-
-  headers = list(columns.keys())
-
-  for header in headers:
-     res[header]=[]
-
-  for ii in range(len(dat)):
-     for jj in range(len(headers)):
-        res[headers[jj]].append(dat[ii][columns[headers[jj]]-1])
-
-  return res
 
 
 
@@ -379,17 +362,23 @@ def namelist_lines(namelist_dict, name):
     lines = []
     lines.append('&'+name)
     # parse
+    
+    
     for key, value in namelist_dict.items():
         #if type(value) == type(1) or type(value) == type(1.): # numbers
+
         if isinstance(value, Number): # numbers
             line= key + ' = ' + str(value) 
-        elif type(value) == type([]): # lists
+        elif type(value) == type([]) or isinstance(value, np.ndarray): # lists or np arrays
             liststr = ''
             for item in value:
                 liststr += str(item) + ' '
             line = key + ' = ' + liststr 
         elif type(value) == type('a'): # strings
             line = key + ' = ' + "'" + value.strip("''") + "'"  # input may need apostrophes
+       
+        elif bool(value) == value:
+            line= key + ' = ' + str(value) 
         else:
             #print 'skipped: key, value = ', key, value
             raise ValueError(f'Problem writing input key: {key}, value: {value}, type: {type(value)}')
@@ -471,10 +460,19 @@ astra_particle_status_names = {-1:'standard particle, at the cathode',
                         3:'trajectory probe particle',
                         5:'standard particle'}
 
+
+
+
 def parse_astra_phase_file(filePath):
     """
 
-    Parses astra particle dumps to numpy arrays, in m, eV/c, and s.
+    Parses astra particle dumps to data dict, that corresponds to the
+    openpmd-beamphysics ParticeGroup data= input. 
+    
+    Units are in m, s, eV/c
+    
+    Live particles (status==5) are relabeled as status = 1.
+    Original status == 2 are relabeled to status = 2 (previously unused by Astra)
     
     """
     
@@ -525,25 +523,40 @@ def parse_astra_phase_file(filePath):
     #probe_particles = np.where(status == 3) 
     #good_particles  = np.where(status == 5) 
 
-    d = {}
-    d['x'] = x
-    d['y'] = y
-    #d['z'] = z
-    d['z_ref'] = z_ref
-    d['z_rel'] = z_rel
-    d['px'] = px
-    d['py'] = py
-    #d['pz'] = pz
-    d['pz_ref'] = pz_ref
-    d['pz_rel'] = pz_rel
-    #d['t'] = t
-    d['t_ref']=t_ref
-    d['t_rel'] = t_rel
-    d['qmacro'] = qmacro
-    d['status'] = status
-    d['species_index'] = species_index
+    data = {}
     
-    return d
+    n_particle = len(x)
+    
+    data['x'] = x
+    data['y'] = y
+    data['z'] = z_rel + z_ref
+    data['px'] = px
+    data['py'] = py
+    data['pz'] = pz_rel + pz_ref
+    data['t'] = np.full(n_particle, t_ref) # full array
+    
+    
+    # Status
+    # The standard defines 1 as a live particle, but astra uses 1 as a 'passive' particle
+    # and 5 as a 'standard' particle. 2 is not used. 
+    # To preserve this information, make 1->2 and then 5->1
+    where_1 = np.where(status==1)
+    where_5 = np.where(status == 5)
+    status[where_1] = 2
+    status[where_5] = 1
+    data['status'] = status 
+    
+    data['weight'] = qmacro
+    
+    unique_species = set(species_index)
+    assert len(unique_species) == 1, 'All species must be the same'
+    
+    # Scalars
+    data['species'] = astra_species_names[list(unique_species)[0]]
+    data['n_particle'] = n_particle
+
+    return data
+
     
     
     

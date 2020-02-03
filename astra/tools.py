@@ -62,9 +62,9 @@ def runs_script(runscript=[], dir=None, log_file=None, verbose=True):
     log = []
     
     for path in execute(runscript):
-         if verbose:
+        if verbose:
             print(path, end="")
-         log.append(path)
+        log.append(path)
     if log_file:
         with open(log_file, 'w') as f:
             for line in log:

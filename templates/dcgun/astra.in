@@ -5,7 +5,7 @@
 
     RUN = 1
     Loop = F
-    Lmagnetized = F
+    Lmagnetized = T
     EmitS = T
     PhaseS = F
 
@@ -128,4 +128,7 @@
 
 /
 
-
+&output
+high_res = T
+binary = F
+/

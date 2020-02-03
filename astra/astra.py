@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
-from astra import parsers, tools, writers
+from astra import parsers, tools, archive
+
+from pmd_beamphysics import ParticleGroup
+
+import numpy as np
 
 import urllib.request
 import tempfile
@@ -8,6 +12,7 @@ import shutil
 import os
 from time import time
 import h5py
+
 
 
 class Astra:
@@ -19,7 +24,7 @@ class Astra:
     
     Input deck is held in .input
     Output data is parsed into .output
-    .load_screens() will load particle data into .screen[...]
+    .load_particles() will load particle data into .output['particles'][...]
     
     The Astra binary file can be set on init. If it doesn't exist, configure will check the
         $ASTRA_BIN
@@ -45,9 +50,7 @@ class Astra:
 
         # These will be set
         self.log = []
-        self.output = {}
-        self.screen = [] # list of screens
-        self.auto_cleanup = True
+        self.output = {'stats':{}, 'particles':{}, 'run_info':{}}
         self.timeout=None
         self.error = False
         
@@ -62,7 +65,7 @@ class Astra:
             self.configure()
         else:
             self.vprint('Warning: Input file does not exist. Not configured.')
-
+            self.original_input_file = 'astra.in'
             
     def clean_output(self):
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
@@ -70,16 +73,31 @@ class Astra:
         for f in outfiles:
             os.remove(f)
             
-    def clean_screens(self):
+    def clean_particles(self):
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
         phase_files = parsers.find_phase_files(self.input_file, run_number)           
         files   = [x[0] for x in phase_files] # This is sorted by approximate z
         for f in files:
             os.remove(f)
                    
-    #@property
+                
+    # Convenience routines
+    @property
+    def particles(self):
+        return self.output['particles']
+    @property
+    def stat(self):
+        return self.output['stats']   
+
+    def particle_stat(self, key):
+        """
+        Compute a statistic from the particles
+        """
+        return np.array([P[key] for P in self.particles ] )
+    
+    
     #def run_number(self):
-    #    return self.input['newrun']['run']
+   #    return self.input['newrun']['run']
         
     def configure(self):
         self.configure_astra(workdir=self.workdir)
@@ -115,19 +133,46 @@ class Astra:
             parsers.fix_input_paths(self.input, root=self.original_path)
             
     
-    def load_output(self):
+    def load_output(self, include_particles=True):
+        """
+        Loads Astra output files into .output
+        
+        .output is a dict with dicts:
+            .stats
+            .run_info
+            .other
+            
+        and if include_particles,
+            .particles = list of ParticleGroup objects
+        
+        """
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
         outfiles = parsers.find_astra_output_files(self.input_file, run_number)
         
+        stats = self.output['stats'] = {}
+        
         for f in outfiles:
-            self.output.update(parsers.parse_astra_output_file(f))
-            # Save errors
-            #if self.output['error']:
-            #self.output['why_error'] = 'problem with output file: '+f
+            type = parsers.astra_output_type(f)
+            d = parsers.parse_astra_output_file(f)
+            if type in ['Cemit', 'Xemit', 'Yemit', 'Zemit']:
+                stats.update(d)
+            elif type in ['LandF']:
+                self.output['other'] = d
+            else:
+                raise ValueError(f'Unknown output type: {type}')
+        
+        # Check that the lengths of all arrays are the same
+        nlist = {len(stats[k]) for k in stats}
+        assert len(nlist)==1, 'Stat keys do not all have the same length'
+            
+            
+        if include_particles:
+            self.load_particles()
+
                 
-    def load_screens(self, end_only=False):
-        # Clear existing screens
-        self.screen = []
+    def load_particles(self, end_only=False):
+        # Clear existing particles
+        self.output['particles'] = []
         
         # Sort files by approximate z
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
@@ -138,11 +183,12 @@ class Astra:
         if end_only: 
             files = files[-1:]
         if self.verbose:
-            print('loading '+str(len(files))+ ' screens')
+            print('loading '+str(len(files))+ ' particle files')
             print(zapprox)
         for f in files:
             pdat = parsers.parse_astra_phase_file(f)
-            self.screen.append(pdat)
+            P = ParticleGroup(data=pdat)
+            self.output['particles'].append(P)
         
         
         
@@ -176,7 +222,9 @@ class Astra:
     def run_astra(self, verbose=False, parse_output=True, timeout=None):
 
         
-        run_info = {}
+        run_info = self.output['run_info'] = {}
+        
+        
         t1 = time()
         run_info['start_time'] = t1
         
@@ -194,7 +242,8 @@ class Astra:
         self.write_input_file()
         
         runscript = self.get_run_script()
-    
+        run_info['run_script'] = ' '.join(runscript)
+        
         try:
             if timeout:
                 res = tools.execute2(runscript, timeout=timeout)
@@ -224,10 +273,6 @@ class Astra:
         finally:
             run_info['run_time'] = time() - t1
             run_info['run_error'] = self.error
-            
-            # Add run_info
-            self.output.update(run_info)
-            
             # Return to init_dir
             os.chdir(init_dir)                        
         
@@ -244,20 +289,35 @@ class Astra:
         if self.verbose:
             print(*args, **kwargs)    
     
+    def units(self, key):
+        if key in parsers.OutputUnits:
+            return parsers.OutputUnits[key]
+        else:
+            return 'unknown unit'
     
     def write_input_file(self):
         parsers.write_namelists(self.input, self.input_file)
-        
-    # h5 writing
-    def write_input(self, h5):
-        writers.write_input_h5(h5, self.input)
+     
     
-    def write_output(self, h5):
-        writers.write_output_h5(h5, self.output)
+    
+    def load_archive(self, h5=None):
+        """
+        Loads input and output from archived h5 file.
         
-    def write_screens(self, h5):
-        writers.write_screens_h5(h5, self.screen)        
+        See: Astra.archive
+        """
+        if isinstance(h5, str):
+            g = h5py.File(h5, 'r')
+            self.vprint(f'Reading archive file {h5}')
+        else:
+            g = h5
         
+        self.input = archive.read_input_h5(g['input'])
+        self.output = archive.read_output_h5(g['output'])
+        
+        self.vprint('Loaded from archive. Note: Must reconfigure to run again.')
+        self.configured = False    
+
     def archive(self, h5=None):
         """
         Archive all data to an h5 handle or filename.
@@ -275,17 +335,13 @@ class Astra:
             g = h5
         
         # All input
-        self.write_input(g)
+        archive.write_input_h5(g, self.input)
 
         # All output
-        self.write_output(g)
-            
-        # Particles    
-        self.write_screens(g)          
+        archive.write_output_h5(g, self.output)       
         
         return h5
         
-    
 
            
 class AstraGenerator:
