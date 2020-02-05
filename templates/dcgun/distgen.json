@@ -1,0 +1,47 @@
+{
+  "beam": {
+    "start_type": "cathode",
+    "rand_type": "hammersley",
+    "particle_count": 100000,
+    "params": {
+      "total_charge": {
+        "value": 100,
+        "units": "pC"
+      },
+      "MTE": {
+        "value": 250,
+        "units": "meV"
+      }
+    }
+  },
+  "r_dist": {
+    "type": "rtg",
+    "params": {
+      "pinhole_size": {
+        "value": 1,
+        "units": "mm"
+      },
+      "fraction": {
+        "value": 0.5,
+        "units": "dimensionless"
+      }
+    }
+  },
+  "t_dist": {
+    "type": "gaussian",
+    "params": {
+      "avg_t": {
+        "value": 0,
+        "units": "ps"
+      },
+      "sigma_t": {
+        "value": 8.5,
+        "units": "ps"
+      }
+    }
+  },
+  "output": {
+    "type": "astra",
+    "file": "distgen.part"
+  }
+}

@@ -1,6 +1,6 @@
 &NEWRUN
     Head='astra input file for L0 injector (20070501_1)'
-    Distribution='dist100.part'
+    Distribution='generator.part'
 
 
     RUN = 1
