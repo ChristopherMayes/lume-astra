@@ -44,8 +44,9 @@
 
     Lproject_emit = F
 
-    Trms = 8.7E-03 !keep fixed 
-    XYrms = 1.1 !vary between 0 and 2mm rms
+   !! Particle file should set these
+   !! Trms = 8.7E-03 !keep fixed 
+   !! XYrms = 1.1 !vary between 0 and 2mm rms
 
 /
 
