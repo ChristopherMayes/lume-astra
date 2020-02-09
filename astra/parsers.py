@@ -533,8 +533,8 @@ def parse_astra_phase_file(filePath):
     data['px'] = px
     data['py'] = py
     data['pz'] = pz_rel + pz_ref
-    data['t'] = np.full(n_particle, t_ref) # full array
-    
+    data['t_clock']  = t_rel + t_ref #np.full(n_particle, t_ref) # full array
+    data['t'] =  t_ref
     
     # Status
     # The standard defines 1 as a live particle, but astra uses 1 as a 'passive' particle

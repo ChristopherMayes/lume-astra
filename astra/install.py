@@ -18,7 +18,7 @@ GENERATOR_URL = {
 
 
 
-def install_executable(url, dest):
+def install_executable(url, dest, verbose=False):
     """
     Downloads a url into a destination and makes it executable. Will not overwrite.
     """
@@ -26,12 +26,14 @@ def install_executable(url, dest):
     if os.path.exists(dest):
         print(os.path.abspath(dest), 'exists, will not overwrite')
     else:
+        if verbose:
+            print(f'Downloading {url} to {dest}')
         urllib.request.urlretrieve(url, dest)   
         make_executable(dest)
     
     return dest
 
-def install_astra(dest_dir=None, name='Astra'):
+def install_astra(dest_dir=None, name='Astra', verbose=False):
     """
     Installs Astra from Klaus Floettmann's DESY website for the detected platform.
     
@@ -40,13 +42,17 @@ def install_astra(dest_dir=None, name='Astra'):
     system = platform.system()
     url=ASTRA_URL[system]
     dest = os.path.abspath(os.path.join(dest_dir, name))
-    install_executable(url,  dest)
+
+    install_executable(url,  dest, verbose=verbose)
     
     os.environ['ASTRA_BIN'] = dest
     
+    if verbose:
+        print(f'Installed Astra in {dest}, and set $ASTRA_BIN equal to this.')
+    
     return dest
 
-def install_generator(dest_dir=None, name='generator'):
+def install_generator(dest_dir=None, name='generator', verbose=False):
     """
     Installs Astra's generator from Klaus Floettmann's DESY website for the detected platform.
     
@@ -55,9 +61,12 @@ def install_generator(dest_dir=None, name='generator'):
     system = platform.system()
     url=GENERATOR_URL[system]
     dest = os.path.abspath(os.path.join(dest_dir, name))
-    install_executable(url,  dest)
+    install_executable(url,  dest, verbose=verbose)
     
     os.environ['GENERATOR_BIN'] = dest
+    
+    if verbose:
+        print(f'Installed Astra\'s generator in {dest}, and set $GENERATOR_BIN equal to this.')    
     
     return dest
     

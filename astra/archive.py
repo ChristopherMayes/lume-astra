@@ -110,7 +110,7 @@ def read_output_h5(h5):
 #----------------------------        
 # particles
         
-def write_particles_h5(h5, particles, name='screen'):
+def write_particles_h5(h5, particles, name='particles'):
     """
     Write all screens to file, simply named by their index
     
@@ -119,7 +119,7 @@ def write_particles_h5(h5, particles, name='screen'):
     g = h5.create_group(name)
     
     # Set base attributes
-    opmd_init(h5, basePath='/'+name+'/%T/', particlesPath='/' )
+    opmd_init(h5, basePath=name+'/%T/', particlesPath='/' )
     
     # Loop over screens
     for i, particle_group in enumerate(particles):

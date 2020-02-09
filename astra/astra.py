@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from astra import parsers, tools, archive
+from . import parsers, tools, archive
+from .generator import AstraGenerator
 
 from pmd_beamphysics import ParticleGroup
 
@@ -35,12 +36,14 @@ class Astra:
     
     def __init__(self,
                  input_file=None,
+                 initial_particles = None,
                  astra_bin='$ASTRA_BIN',      
                  use_tempdir=True,
                  workdir=None,
                  verbose=False):
         # Save init
         self.original_input_file = input_file
+        self.initial_particles = initial_particles
         self.use_tempdir = use_tempdir
         self.workdir = workdir
         if workdir:
@@ -48,6 +51,8 @@ class Astra:
         self.verbose=verbose
         self.astra_bin = astra_bin
 
+        
+        
         # These will be set
         self.log = []
         self.output = {'stats':{}, 'particles':{}, 'run_info':{}}
@@ -85,20 +90,34 @@ class Astra:
     @property
     def particles(self):
         return self.output['particles']
-    @property
-    def stat(self):
-        return self.output['stats']   
+    
+    def stat(self, key):
+        return self.output['stats'][key]
 
-    def particle_stat(self, key):
+    def particle_stat(self, key, alive_only=True):
         """
-        Compute a statistic from the particles
-        """
-        return np.array([P[key] for P in self.particles ] )
-    
-    
-    #def run_number(self):
-   #    return self.input['newrun']['run']
+        Compute a statistic from the particles.
         
+        Alive particles have status == 1. By default, statistics will only be computed on these.
+        
+        n_dead will override the alive_only flag, 
+        and return the number of particles with status < -6 (Astra convention)
+        """
+        
+        
+        if key == 'n_dead':
+            return np.array([len(np.where(P.status < -6)[0]) for P in self.particles])
+        
+        if key == 'n_alive':
+            return np.array([len(np.where(P.status > -6)[0]) for P in self.particles])
+        
+        pstats = []
+        for P in self.particles:
+            if alive_only and P.n_dead > 0:
+                P = P.where(P.status==1)
+            pstats.append(P[key])
+        return np.array(pstats)
+    
     def configure(self):
         self.configure_astra(workdir=self.workdir)
  
@@ -123,6 +142,10 @@ class Astra:
         self.input_file = os.path.join(self.path, self.original_input_file)                
         self.configured = True
     
+    def load_initial_particles(self, h5):
+        """Loads a openPMD-beamphysics particle h5 handle or file"""
+        P = ParticleGroup(h5=h5)
+        self.initial_particles = P
     
     def load_input(self, input_filePath, absolute_paths=True):
         f = tools.full_path(input_filePath)
@@ -237,6 +260,10 @@ class Astra:
         os.chdir(self.path)
         # Debugging
         self.vprint('running astra in '+os.getcwd())
+        
+        if self.initial_particles:
+            fname = self.write_initial_particles('astra.particles')
+            self.input['newrun']['distribution'] = fname        
 
         # Write input file from internal dict
         self.write_input_file()
@@ -278,6 +305,8 @@ class Astra:
         
         self.finished = True
     
+        self.vprint(run_info)
+        
     def fingerprint(self):
         """
         Data fingerprint using the input. 
@@ -297,7 +326,13 @@ class Astra:
     
     def write_input_file(self):
         parsers.write_namelists(self.input, self.input_file)
-     
+
+    def write_initial_particles(self, fname=None):
+        if not fname:
+            fname = os.path.join(self.path, 'astra.particles')
+        self.initial_particles.write_astra(fname)
+        self.vprint(f'Initial particles written to {fname}')
+        return fname        
     
     
     def load_archive(self, h5=None):
@@ -314,6 +349,8 @@ class Astra:
         
         self.input = archive.read_input_h5(g['input'])
         self.output = archive.read_output_h5(g['output'])
+        if 'initial_particles' in g:
+            self.initial_particles = ParticleGroup(h5=g['initial_particles'])
         
         self.vprint('Loaded from archive. Note: Must reconfigure to run again.')
         self.configured = False    
@@ -334,6 +371,10 @@ class Astra:
         else:
             g = h5
         
+        # Initial particles
+        if self.initial_particles:
+            self.initial_particles.write(g, name='initial_particles')
+        
         # All input
         archive.write_input_h5(g, self.input)
 
@@ -343,87 +384,7 @@ class Astra:
         return h5
         
 
-           
-class AstraGenerator:
-    """
-    Class to run Astra's particle generator
-    
-    """
-    def __init__(self, 
-                 input_file = None,
-                 generator_bin = '$GENERATOR_BIN',
-                 path=None,
-                 verbose=False
-                ):
-        # Save init
-        self.generator_bin = generator_bin 
-        self.original_input_file = input_file
-        self.path = path
-        self.verbose=verbose  
-        
-        # Run control
-        self.configured = False
-        self.finished = False
-        
-        # Call configure
-        self.input_file = None # This will be made
-        self.configure()
-        
-    def configure(self):
-        self.original_input_file = tools.full_path(self.original_input_file)
-        
-        # Check that binary exists
-        self.generator_bin = tools.full_path(self.generator_bin)
-        assert os.path.exists(self.generator_bin), 'ERROR: Generator binary does not exist:'+self.generator_bin    
-       
-        if not os.path.exists(self.original_input_file):
-            print('input_file does not exist:', self.input_file)
-            return
-        
-        # Get absolute path, then separate to path/input_file
-        # Parse
-        self.input = parsers.parse_astra_input_file(self.original_input_file)['input']       
-        
-        # File, path setup
-        # Split file
-        path, file = os.path.split(self.original_input_file)
-        if not self.path:
-            # Use original path
-            self.path = path
-        self.input_file = 'temp_'+file
-              
-        if not os.path.exists(self.path):
-            print('path does not exist:', self.path)
-            return
-        
-        self.configured = True
-        
-    def run(self):
-        # Save initil directory
-        init_dir = os.getcwd()
-        os.chdir(self.path)
-        
-        self.write_input_file()
-        
-        runscript = [self.generator_bin, self.input_file]
-        res = tools.execute2(runscript, timeout=None)
-        self.log = res['log']
-        if self.verbose:
-            print(self.log)
-        
-        # This is the file that should be written
-        if os.path.exists(self.input['fname']):
-            self.finished = True
-        else:
-            print(self.input['fname'])
-            print('The input file already exists! This is a problem!')
-            print('Here is what the current working dir looks like:')
-            os.listdir()
-        # Return to init_dir
-        os.chdir(init_dir)     
-        
-    def write_input_file(self):
-        parsers.write_namelists({'input':self.input}, self.input_file)           
+
         
           
         
@@ -454,7 +415,8 @@ def set_astra(astra_input, generator_input, settings, verbose=False):
 def recommended_spacecharge_mesh(n_particles):
     """
     ! --------------------------------------------------------
-    ! Suggested Nrad, Nlong_in settings
+    ! Suggested Nrad, Nlong_in settings from:
+    !    A. Bartnik and C. Gulliford (Cornell University)
     !
     ! Nrad = 35,    Nlong_in = 75  !28K
     ! Nrad = 29,    Nlong_in = 63  !20K
@@ -465,7 +427,8 @@ def recommended_spacecharge_mesh(n_particles):
     !
     ! Nrad ~ round(3.3*(n_particles/1000)^(2/3) + 5)
     ! Nlong_in ~ round(9.2*(n_particles/1000)^(0.603) + 6.5)
-    
+    !
+    ! 
     """
     if n_particles < 1000:
         # Set a minimum
@@ -539,11 +502,9 @@ def run_astra_with_generator(settings=None, astra_input_file=None, generator_inp
     A = Astra(astra_bin=astra_bin, input_file=astra_input_file, workdir=workdir)
     A.timeout=timeout
     A.verbose = verbose
-    G = AstraGenerator(generator_bin=generator_bin, input_file=generator_input_file, path=A.path)
+    G = AstraGenerator(generator_bin=generator_bin, input_file=generator_input_file, workdir=workdir)
     G.verbose = verbose
     
-    # Link particle files
-    A.input['newrun']['distribution'] = G.input['fname']
     A.input['newrun']['l_rm_back'] = True # Remove backwards particles
       
     # Set inputs
@@ -558,10 +519,10 @@ def run_astra_with_generator(settings=None, astra_input_file=None, generator_inp
         if verbose:
             print('set spacecharge mesh for n_particles:', n_particles, 'to', sc_settings)        
     
-    # Run
+    # Run Generator
     G.run()
+    A.initial_particles = G.output['particles']
     A.run()
-    
     if verbose:
         print('run_astra_with_generator finished')     
     

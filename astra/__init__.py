@@ -1,5 +1,6 @@
 from .astra import *
-from .evaluate import evaluate_astra_with_generator
+from .generator import AstraGenerator
+from .evaluate import evaluate_astra_with_generator, evaluate_astra_with_distgen
 
 import os
 # Used to access data directory

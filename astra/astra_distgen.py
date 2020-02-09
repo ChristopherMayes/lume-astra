@@ -9,6 +9,8 @@ from distgen import Generator
 from distgen.writers import write_astra
 from distgen.tools import update_nested_dict
 
+from pmd_beamphysics import ParticleGroup
+
 import json
 import os
 
@@ -67,44 +69,37 @@ def run_astra_with_distgen(settings=None,
     if verbose:
         print('run_astra_with_generator') 
 
-    # Make astra and generator objects
+    # Distgen generator
+    D = Generator(input = distgen_input_file, verbose=verbose)  
+        
+    # Make astra objects
     A = Astra(astra_bin=astra_bin, input_file=astra_input_file, workdir=workdir)
     A.timeout=timeout
     A.verbose = verbose
     
-    # Distgen generator
-    G = Generator(verbose=verbose)
-    f = full_path(distgen_input_file)
-    distgen_params = json.load(open(f))
-    
-    
-    # Link particle files
-    particle_file = 'distgen_astra_particles.dat'
-    A.input['newrun']['distribution'] = particle_file
+    # Special
     A.input['newrun']['l_rm_back'] = True # Remove backwards particles
     
-    print(particle_file )
+        
     
     # Set inputs
     if settings:
-        A.input, distgen_params = set_astra_and_distgen(A.input, distgen_params, settings, verbose=verbose)
+        A.input, D.input = set_astra_and_distgen(A.input, D.input, settings, verbose=verbose)
 
-    
-    # Configure distgen
-    G.parse_input(distgen_params)
+    # Get initial particles
+    beam = D.beam()
+    P = ParticleGroup(data=beam.data())
+
+    # Attach to Astra object
+    A.initial_particles = P
     
     if auto_set_spacecharge_mesh:
-        n_particles = distgen_params['beam']['particle_count']
+        n_particles = len(P)
         sc_settings = recommended_spacecharge_mesh(n_particles)
         A.input['charge'].update(sc_settings)
         if verbose:
             print('set spacecharge mesh for n_particles:', n_particles, 'to', sc_settings)        
-    
-    # Run
-    beam = G.beam()
-    particle_file = os.path.join(A.path, particle_file)
-    write_astra(beam, particle_file, verbose=verbose)
-    
+            
     A.run()
     
     return A

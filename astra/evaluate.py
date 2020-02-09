@@ -41,14 +41,17 @@ def default_astra_merit(A):
     # Gather output
     m.update(end_output_data(A.output['stats']))
     
-    screen = A.particles[-1]  
-    
-    # TODO: Use ParticleGroup's calc. z or t??
-    m['end_higher_order_energy_spread'] = calc_ho_energy_spread( {'t':screen['z'], 'Energy':(screen['pz'])*1e-3},verbose=False) # eV
-    
+    P = A.particles[-1]  
+
     # Lost particles have status < -6
-    nlost = len(np.where(screen['status'] < -6)[0])    
-    m['end_n_particle_loss'] = nlost
+    nlost = len(np.where(P['status'] < -6)[0])    
+    m['end_n_particle_loss'] = nlost 
+    
+    # Get live only for stat calcs
+    P = P.where(P.status==1)
+    #m['end_higher_order_energy_spread'] = P['higher_order_energy_spread']
+    # TODO: fix so that above works
+    m['end_higher_order_energy_spread'] = calc_ho_energy_spread( {'t':P['z'], 'Energy':(P['pz'])*1e-3},verbose=False) # eV
     
     # Remove annoying strings
     if 'why_error' in m:
@@ -104,7 +107,7 @@ def evaluate(settings, simulation='astra', archive_path=None, merit_f=None, **pa
         A = run_astra_with_distgen(settings, **params)
         
     else:
-        raise 
+        raise ValueError(f'simulation not recognized: {simulation}')
         
     if merit_f:
         output = merit_f(A)
@@ -112,7 +115,7 @@ def evaluate(settings, simulation='astra', archive_path=None, merit_f=None, **pa
         output = default_astra_merit(A)
     
     if output['error']:
-        raise
+        raise ValueError(f'Error returned from Astra evaluate')
     
     fingerprint = A.fingerprint()
     
