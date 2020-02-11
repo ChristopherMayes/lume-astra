@@ -166,33 +166,5 @@ def evaluate_astra_with_distgen(settings, archive_path=None, merit_f=None, **par
                     archive_path=archive_path, merit_f=merit_f, **params)
 
 
-#-------------
-# Return evaluate and its options. 
 
-def configure_astra_evaluate(simulation='astra', config={}):
-    """
-    Returns a dict:
-        'evaluate_f' : function that evaluates the simulation with one positional argument, and options. 
-                       settings, **options
-        'options'    : The optional arguments for that function, configured with config and templates. 
-    
-    
-    Example:
-        configure_astra_evaluate('astra', {'astra_input_file':'astra.in'})
-    
-    """
-
-    
-    # opts will become the new config
-    opts = {'simulation':simulation}
-    # Get defaults
-    opts.update(DEFAULTS['evaluate_'+simulation])
-    for k, v in config.items():
-        if k in opts:
-            opts[k] = v
-        else:
-            print(f'Uknown option for {simulation}:{k}:{v}')
-            raise
-    
-    return {'evaluate_f':evaluate, 'options': opts}
 

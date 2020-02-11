@@ -100,14 +100,20 @@ def full_path(path):
 
 
 
-class NumpyEncoder(json.JSONEncoder):
+class NpEncoder(json.JSONEncoder):
     """
-    See: https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable
+    See: https://stackoverflow.com/questions/50916422/python-typeerror-object-of-type-int64-is-not-json-serializable/50916741
     """
     def default(self, obj):
-        if isinstance(obj, np.ndarray):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
             return obj.tolist()
-        return json.JSONEncoder.default(self, obj)
+        else:
+            return super(NpEncoder, self).default(obj)
+
 def fingerprint(keyed_data, digest_size=16):
     """
     Creates a cryptographic fingerprint from keyed data. 
@@ -117,7 +123,7 @@ def fingerprint(keyed_data, digest_size=16):
     h = blake2b(digest_size=16)
     for key in keyed_data:
         val = keyed_data[key]
-        s = json.dumps(val, sort_keys=True, cls=NumpyEncoder).encode()
+        s = json.dumps(val, sort_keys=True, cls=NpEncoder).encode()
         h.update(s)
     return h.hexdigest()  
    
