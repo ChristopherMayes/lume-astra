@@ -171,7 +171,7 @@ class Astra:
         """
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
         outfiles = parsers.find_astra_output_files(self.input_file, run_number)
-        
+
         stats = self.output['stats'] = {}
         
         for f in outfiles:
@@ -230,9 +230,9 @@ class Astra:
         Assembles the run script. Optionally writes a file 'run' with this line to path.
         """
         
-        _, infile = os.path.split(self.input_file)
+        #_, infile = os.path.split(self.input_file)
         
-        runscript = [self.astra_bin, infile]
+        runscript = [self.astra_bin, self.input_file]
             
         if write_to_path:
             with open(os.path.join(self.path, 'run'), 'w') as f:
@@ -243,7 +243,11 @@ class Astra:
         
     
     def run_astra(self, verbose=False, parse_output=True, timeout=None):
-
+        """
+        Runs Astra
+        
+        Does not change directory - this has problems with multithreading.
+        """
         
         run_info = self.output['run_info'] = {}
         
@@ -251,18 +255,8 @@ class Astra:
         t1 = time()
         run_info['start_time'] = t1
         
-        # Move to local directory
-
-        # Save init dir
-        init_dir = os.getcwd()
-        self.vprint('init dir: ', init_dir)
-        
-        os.chdir(self.path)
-        # Debugging
-        self.vprint('running astra in '+os.getcwd())
-        
         if self.initial_particles:
-            fname = self.write_initial_particles('astra.particles')
+            fname = self.write_initial_particles()
             self.input['newrun']['distribution'] = fname        
 
         # Write input file from internal dict
@@ -300,8 +294,6 @@ class Astra:
         finally:
             run_info['run_time'] = time() - t1
             run_info['run_error'] = self.error
-            # Return to init_dir
-            os.chdir(init_dir)                        
         
         self.finished = True
     

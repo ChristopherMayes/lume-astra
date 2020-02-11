@@ -61,8 +61,7 @@ class AstraGenerator:
         f = tools.full_path(input_filePath)
         self.original_path, self.original_input_file = os.path.split(f) # Get original path, filename
         self.input = parsers.parse_astra_input_file(f)['input']            
-       
-        
+           
         
     def configure(self):
         
@@ -81,13 +80,14 @@ class AstraGenerator:
             self.path = self.original_path            
     
         self.input_file = os.path.join(self.path, self.original_input_file)    
+        
+        # make the ouput file an absolute path
+        self.input['fname'] = os.path.join(self.path, 'generator.part')
+        
         self.configured = True
 
         
-    def run(self):
-        # Save initil directory
-        init_dir = os.getcwd()
-        os.chdir(self.path)
+    def run(self):  
         
         self.write_input_file()
         
@@ -103,12 +103,9 @@ class AstraGenerator:
         else:
             print(self.input['fname'])
             print('The input file already exists! This is a problem!')
-            print('Here is what the current working dir looks like:')
-            os.listdir()
-        # Return to init_dir
-        os.chdir(init_dir)     
-
-        
+            print(f'Here is what the current working dir looks like: {os.listdir()}')
+            
+ 
         self.load_output()
         
     @property
@@ -125,6 +122,7 @@ class AstraGenerator:
         self.output['particles'] = P
         
     def write_input_file(self):
+        
         parsers.write_namelists({'input':self.input}, self.input_file)     
         
         
