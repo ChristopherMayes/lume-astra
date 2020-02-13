@@ -87,11 +87,27 @@ class AstraGenerator:
         self.configured = True
 
         
+    def get_run_script(self, write_to_path=True):
+        """
+        Assembles the run script. Optionally writes a file 'run' with this line to path.
+        """
+        
+        #_, infile = os.path.split(self.input_file)
+        
+        runscript = [self.generator_bin, self.input_file]
+            
+        if write_to_path:
+            with open(os.path.join(self.path, 'run'), 'w') as f:
+                f.write(' '.join(runscript))
+            
+        return runscript        
+        
+        
     def run(self):  
         
         self.write_input_file()
         
-        runscript = [self.generator_bin, self.input_file]
+        runscript = self.get_run_script()
         res = tools.execute2(runscript, timeout=None)
         self.log = res['log']
 
@@ -101,9 +117,9 @@ class AstraGenerator:
         if os.path.exists(self.input['fname']):
             self.finished = True
         else:
-            print(self.input['fname'])
-            print('The input file already exists! This is a problem!')
-            print(f'Here is what the current working dir looks like: {os.listdir()}')
+            print(self.input['fname'], 'does not exist.')
+            #print('The input file already exists! This is a problem!')
+            print(f'Here is what the current working dir looks like: {os.listdir(self.path)}')
             
  
         self.load_output()

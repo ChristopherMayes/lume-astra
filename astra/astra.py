@@ -138,7 +138,8 @@ class Astra:
         else:
             # Work in place
             self.path = self.original_path            
-
+        
+        
         self.input_file = os.path.join(self.path, self.original_input_file)                
         self.configured = True
     
@@ -171,7 +172,9 @@ class Astra:
         """
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
         outfiles = parsers.find_astra_output_files(self.input_file, run_number)
-
+        
+        #assert len(outfiles)>0, 'No output files found'
+        
         stats = self.output['stats'] = {}
         
         for f in outfiles:
@@ -186,7 +189,8 @@ class Astra:
         
         # Check that the lengths of all arrays are the same
         nlist = {len(stats[k]) for k in stats}
-        assert len(nlist)==1, 'Stat keys do not all have the same length'
+        
+        assert len(nlist)==1, f'Stat keys do not all have the same length: { [len(stats[k]) for k in stats]}'
             
             
         if include_particles:

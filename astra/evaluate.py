@@ -51,9 +51,9 @@ def default_astra_merit(A):
     P = P.where(P.status==1)
     m['end_total_charge'] = P['charge']
     
-    #m['end_higher_order_energy_spread'] = P['higher_order_energy_spread']
-    # TODO: fix so that above works
-    m['end_higher_order_energy_spread'] = calc_ho_energy_spread( {'t':P['z'], 'Energy':(P['pz'])*1e-3},verbose=False) # eV
+    m['end_higher_order_energy_spread'] = P['higher_order_energy_spread']
+    # Old method:
+    #m['end_higher_order_energy_spread'] = calc_ho_energy_spread( {'t':P['z'], 'Energy':(P['pz'])*1e-3},verbose=False) # eV
     
     # Remove annoying strings
     if 'why_error' in m:
