@@ -49,8 +49,14 @@ def default_astra_merit(A):
     
     # Get live only for stat calcs
     P = P.where(P.status==1)
-    m['end_total_charge'] = P['charge']
     
+    # No live particles
+    if len(P) == 0:
+        return {'error':True}
+
+
+
+    m['end_total_charge'] = P['charge']
     m['end_higher_order_energy_spread'] = P['higher_order_energy_spread']
     # Old method:
     #m['end_higher_order_energy_spread'] = calc_ho_energy_spread( {'t':P['z'], 'Energy':(P['pz'])*1e-3},verbose=False) # eV

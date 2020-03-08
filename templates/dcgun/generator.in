@@ -36,7 +36,7 @@ cor_py = 0
 
 dist_z = 'g'
 sig_clock = 0.00849257
-c_sig_clock = 5
+c_sig_clock = 3
 dist_pz = 'g'
 
 sig_ekin = 0.0005

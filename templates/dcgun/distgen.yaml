@@ -24,6 +24,7 @@ t_dist:
     sigma_t:
       units: ps
       value: 8.5
+    n_sigma_cutoff: 3
   type: gaussian
   
 output:
