@@ -133,6 +133,11 @@ def parse_astra_output_file(filePath, standardize_labels=True):
     If standardize labels, the covariance labels and data will be simplified. 
     
     """
+    
+    # Check for empty file
+    if os.stat(filePath).st_size == 0:
+        return ERROR
+    
     data = np.loadtxt(filePath)
     if data.shape == ():
         return ERROR
