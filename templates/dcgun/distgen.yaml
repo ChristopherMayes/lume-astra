@@ -1,32 +1,33 @@
-beam:
-  params:
-    MTE:
-      units: meV
-      value: 250
-    total_charge:
-      units: pC
-      value: 100
-  particle_count: 100000
-  rand_type: hammersley
-  start_type: cathode
+
+
+
+n_particle: 100000
+random_type: hammersley
+
+start:
+  type: cathode
+  MTE:
+    units: meV
+    value: 250
+  
+total_charge:
+  units: pC
+  value: 100
 
 r_dist:
-  params:
-    max_r:
-      units: mm
-      value: 0.5
   type: radial_uniform
-t_dist:
-  params:
-    avg_t:
-      units: ps
-      value: 0
-    sigma_t:
-      units: ps
-      value: 8.5
-    n_sigma_cutoff: 3
-  type: gaussian
+  max_r:
+    units: mm
+    value: 0.5
   
-output:
-  file: distgen.part
-  type: astra  
+t_dist:
+  type: gaussian
+  avg_t:
+    units: ps
+    value: 0
+  sigma_t:
+    units: ps
+    value: 8.5
+  n_sigma_cutoff: 3
+  
+  
