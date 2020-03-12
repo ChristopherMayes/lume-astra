@@ -110,7 +110,7 @@ def run_astra_with_distgen(settings=None,
 
     # Same as run_astra_with_distgen
          # Additional options                          
-def evaluate_astra_with_distgen(settings=None,
+def evaluate_astra_with_distgen(settings,
                                 astra_input_file=None,
                                 distgen_input_file=None,
                                 workdir=None, 

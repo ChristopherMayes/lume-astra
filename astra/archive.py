@@ -1,6 +1,6 @@
 import numpy as np
 
-from pmd_beamphysics import ParticleGroup
+from pmd_beamphysics import ParticleGroup, pmd_init
 from pmd_beamphysics.units import read_dataset_and_unit_h5, write_dataset_and_unit_h5
 
 from .parsers import OutputUnits
