@@ -339,7 +339,20 @@ class Astra:
         """
         if isinstance(h5, str):
             g = h5py.File(h5, 'r')
-            self.vprint(f'Reading archive file {h5}')
+            
+            glist = archive.find_astra_archives(g)
+            n = len(glist)
+            if n == 0:
+                # legacy: try top level
+                message = 'legacy'
+            elif n == 1:
+                gname = glist[0]
+                message = f'group {gname} from'
+                g = g[gname]
+            else:
+                raise ValueError(f'Multiple archives found in file {h5}: {glist}')
+            
+            self.vprint(f'Reading {message} archive file {h5}')
         else:
             g = h5
         
@@ -365,7 +378,11 @@ class Astra:
             g = h5py.File(h5, 'w')
             self.vprint(f'Archiving to file {h5}')
         else:
+            # store directly in the given h5 handle
             g = h5
+        
+        # Write basic attributes
+        archive.astra_init(g)
         
         # Initial particles
         if self.initial_particles:

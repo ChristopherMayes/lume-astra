@@ -4,6 +4,9 @@ from pmd_beamphysics import ParticleGroup
 from pmd_beamphysics.units import read_dataset_and_unit_h5, write_dataset_and_unit_h5
 
 from .parsers import OutputUnits
+from .tools import isotime
+from ._version import __version__
+
 
 
 
@@ -15,7 +18,24 @@ def fstr(s):
 
 
 
-def opmd_init(h5, basePath='/screen/%T/', particlesPath='/' ):
+
+def astra_init(h5, version=__version__):
+    """
+    Set basic information to an open h5 handle
+    
+    """
+    
+    d = {
+        'dataType':'lume-astra',
+        'software':'lume-astra',
+        'version':version,
+        'date':isotime()     
+    }
+    for k,v in d.items():
+        h5.attrs[k] = fstr(v)
+
+
+def opmd_init(h5, basePath='/screen/%T/', particlesPath='./' ):
     """
     Root attribute initialization.
     
@@ -30,8 +50,28 @@ def opmd_init(h5, basePath='/screen/%T/', particlesPath='/' ):
     }
     for k,v in d.items():
         h5.attrs[k] = fstr(v)
+        
+        
+        
+#----------------------------        
+# Searching archives
 
-
+def is_astra_archive(h5, key='dataType', value=np.string_('lume-astra')):
+    """
+    Checks if an h5 handle is a lume-astra archive
+    """
+    return key in h5.attrs and h5.attrs[key]==value
+            
+      
+def find_astra_archives(h5):
+    """
+    Searches one 
+    """
+    if is_astra_archive(h5):
+        return ['./']
+    else:
+        return [g for g in h5 if is_astra_archive(h5[g])]        
+        
 
 #----------------------------        
 # input

@@ -4,6 +4,7 @@ import numpy as np
 import json
 
 import subprocess
+import datetime
 import os, errno
 
 def execute(cmd):
@@ -130,6 +131,10 @@ def fingerprint(keyed_data, digest_size=16):
 
 
 
+"""UTC to ISO 8601 with Local TimeZone information without microsecond"""
+def isotime():
+    return datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).astimezone().replace(microsecond=0).isoformat()    
+    
     
 
     

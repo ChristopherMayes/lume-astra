@@ -166,13 +166,5 @@ def evaluate_astra_with_generator(settings, archive_path=None, merit_f=None, **p
     return evaluate(settings, simulation='astra_with_generator', 
                     archive_path=archive_path, merit_f=merit_f, **params)
 
-def evaluate_astra_with_distgen(settings, archive_path=None, merit_f=None, **params):
-    """
-    Convenience wrapper. See evaluate. 
-    """
-    return evaluate(settings, simulation='astra_with_distgen', 
-                    archive_path=archive_path, merit_f=merit_f, **params)
-
-
 
 

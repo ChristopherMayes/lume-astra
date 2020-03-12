@@ -4,12 +4,15 @@
 from astra import Astra
 from astra.tools import full_path
 from .astra import recommended_spacecharge_mesh
+from .evaluate import default_astra_merit
 
 from distgen import Generator   
 from distgen.writers import write_astra
 from distgen.tools import update_nested_dict
 
 from pmd_beamphysics import ParticleGroup
+
+from h5py import File
 
 import json
 import os
@@ -70,7 +73,7 @@ def run_astra_with_distgen(settings=None,
         print('run_astra_with_generator') 
 
     # Distgen generator
-    D = Generator(input = distgen_input_file, verbose=verbose)  
+    G = Generator(input = distgen_input_file, verbose=verbose)  
         
     # Make astra objects
     A = Astra(astra_bin=astra_bin, input_file=astra_input_file, workdir=workdir)
@@ -79,17 +82,18 @@ def run_astra_with_distgen(settings=None,
     
     # Special
     A.input['newrun']['l_rm_back'] = True # Remove backwards particles
-    
-        
-    
+
     # Set inputs
     if settings:
-        A.input, D.input = set_astra_and_distgen(A.input, D.input, settings, verbose=verbose)
+        A.input, G.input = set_astra_and_distgen(A.input, G.input, settings, verbose=verbose)
 
-    # Get initial particles
-    beam = D.beam()
-    P = ParticleGroup(data=beam.data())
-
+    # Attach distgen input. This is non-standard. 
+    A.disgten_input = G.input
+        
+    # Run distgen
+    G.run()
+    P = G.particles
+    
     # Attach to Astra object
     A.initial_particles = P
     
@@ -104,17 +108,34 @@ def run_astra_with_distgen(settings=None,
     
     return A
 
-
-def evaluate_astra_with_distgen(settings, archive_path=None, merit_f=None, **run_astra_with_distgen_params):
+    # Same as run_astra_with_distgen
+         # Additional options                          
+def evaluate_astra_with_distgen(settings=None,
+                                astra_input_file=None,
+                                distgen_input_file=None,
+                                workdir=None, 
+                                astra_bin='$ASTRA_BIN',
+                                timeout=2500,
+                                verbose=False,
+                                auto_set_spacecharge_mesh=True,
+                                archive_path=None, 
+                                merit_f=None):
     """
-    Simple evaluate astra.
+    Similar to run_astra_with_distgen, but returns a flat dict of outputs as processed by merit_f. 
     
-    Similar to run_astra_with_distgen, but returns a flat dict of outputs. 
+    If no merit_f is given, a default one will be used. See:
+        astra.evaluate.default_astra_merit
     
     Will raise an exception if there is an error. 
     
     """
-    A = run_astra_with_distgen(settings, **run_astra_with_distgen_params)
+    A = run_astra_with_distgen(settings=settings, 
+                         astra_input_file=astra_input_file, 
+                         distgen_input_file=distgen_input_file, 
+                         workdir=workdir,
+                         astra_bin=astra_bin, 
+                         timeout=timeout, 
+                         verbose=verbose)
         
     if merit_f:
         output = merit_f(A)
@@ -132,7 +153,22 @@ def evaluate_astra_with_distgen(settings, archive_path=None, merit_f=None, **run
         path = full_path(archive_path)
         assert os.path.exists(path), f'archive path does not exist: {path}'
         archive_file = os.path.join(path, fingerprint+'.h5')
-        A.archive(archive_file)
+        
+        h5 = File(archive_file, 'w')
+        
+        # Recreate Generator object for proper archiving
+        # TODO: make this cleaner. 
+        G = Generator()
+        G.input = A.disgten_input
+        
+        # Archive distgen input (but not particles)
+        g = h5.create_group('distgen')
+        G.archive(g)
+        
+        # Archive astra
+        g = h5.create_group('astra')
+        A.archive(g)
+        
         output['archive'] = archive_file
         
     return output
