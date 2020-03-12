@@ -4,7 +4,7 @@ from pmd_beamphysics import ParticleGroup
 from pmd_beamphysics.units import read_dataset_and_unit_h5, write_dataset_and_unit_h5
 
 from .parsers import OutputUnits
-from .tools import isotime
+from .tools import isotime, native_type
 from ._version import __version__
 
 
@@ -100,6 +100,11 @@ def read_input_h5(h5):
     d = {}
     for g in h5:
         d[g] = dict(h5[g].attrs)
+        
+        # Convert to native types
+        for k, v in d[g].items():
+            d[g][k] = native_type(v)
+        
     return d
 
 
