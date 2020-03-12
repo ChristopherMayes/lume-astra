@@ -2,7 +2,7 @@
 
 
 from astra import Astra
-from astra.tools import full_path
+from . import tools
 from .astra import recommended_spacecharge_mesh
 from .evaluate import default_astra_merit
 
@@ -88,7 +88,7 @@ def run_astra_with_distgen(settings=None,
         A.input, G.input = set_astra_and_distgen(A.input, G.input, settings, verbose=verbose)
 
     # Attach distgen input. This is non-standard. 
-    A.disgten_input = G.input
+    A.distgen_input = G.input
         
     # Run distgen
     G.run()
@@ -143,32 +143,62 @@ def evaluate_astra_with_distgen(settings=None,
         output = default_astra_merit(A)
     
     if output['error']:
-        raise
+        raise ValueError('run_astra_with_distgen returned error in output')
+
+    #Recreate Generator object for fingerprint, proper archiving
+    # TODO: make this cleaner
+    G = Generator()
+    G.input = A.distgen_input
     
-    fingerprint = A.fingerprint()
-    
+    fingerprint = fingerprint_astra_with_distgen(A, G)
     output['fingerprint'] = fingerprint
     
     if archive_path:
-        path = full_path(archive_path)
+        path = tools.full_path(archive_path)
         assert os.path.exists(path), f'archive path does not exist: {path}'
         archive_file = os.path.join(path, fingerprint+'.h5')
-        
-        h5 = File(archive_file, 'w')
-        
-        # Recreate Generator object for proper archiving
-        # TODO: make this cleaner. 
-        G = Generator()
-        G.input = A.disgten_input
-        
-        # Archive distgen input (but not particles)
-        g = h5.create_group('distgen')
-        G.archive(g)
-        
-        # Archive astra
-        g = h5.create_group('astra')
-        A.archive(g)
-        
         output['archive'] = archive_file
         
+        # Call the composite archive method
+        archive_astra_with_distgen(A, G, archive_file=archive_file)   
+        
     return output
+
+
+
+def fingerprint_astra_with_distgen(astra_object, distgen_object):
+    """
+    Calls fingerprint() of each of these objects
+    """
+    f1 = astra_object.fingerprint()
+    f2 = distgen_object.fingerprint()
+    d = {'f1':f1, 'f2':2}
+    return tools.fingerprint(d)
+
+
+
+def archive_astra_with_distgen(astra_object,
+                               distgen_object,
+                               archive_file=None,
+                               astra_group ='astra',
+                               distgen_group ='distgen'):
+    """
+    Creates a new archive_file (hdf5) with groups for 
+    astra and distgen. 
+    
+    Calls .archive method of Astra and Distgen objects, into these groups.
+    """
+    
+    h5 = File(archive_file, 'w')
+    
+    #fingerprint = tools.fingerprint(astra_object.input.update(distgen.input))
+    
+    g = h5.create_group(distgen_group)
+    distgen_object.archive(g)
+    
+    g = h5.create_group(astra_group)
+    astra_object.archive(g)
+    
+    h5.close()
+    
+
