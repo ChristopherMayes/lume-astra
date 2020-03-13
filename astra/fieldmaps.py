@@ -49,7 +49,7 @@ def load_fieldmaps(astra_input, sections=['cavity', 'solenoid'], verbose=False):
     """
     fmap = {}
     for sec in sections:
-        ixlist = find_fieldmap_ixlist(astra_input, 'solenoid' ) 
+        ixlist = find_fieldmap_ixlist(astra_input, sec) 
         for ix in ixlist:
             k = file_(section=sec, index=ix)
             file = astra_input[sec][k]
