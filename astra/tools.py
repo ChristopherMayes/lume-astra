@@ -122,7 +122,7 @@ def fingerprint(keyed_data, digest_size=16):
     
     """
     h = blake2b(digest_size=16)
-    for key in keyed_data:
+    for key in sorted(keyed_data.keys()):
         val = keyed_data[key]
         s = json.dumps(val, sort_keys=True, cls=NpEncoder).encode()
         h.update(s)
