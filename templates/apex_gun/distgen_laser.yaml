@@ -1,0 +1,22 @@
+n_particle: 10000
+random_type: hammersley
+start:
+  MTE:
+    units: meV
+    value: 250
+  type: cathode
+t_dist:
+  avg_t:
+    units: ps
+    value: 0
+  n_sigma_cutoff: 3
+  sigma_t:
+    units: ps
+    value: 8.5
+  type: gaussian
+total_charge:
+  units: pC
+  value: 10
+xy_dist:
+  file: /Users/chrisonian/Code/GitHub/lume-astra/templates/apex_gun/2019_11_04_135614reg_out.txt
+  type: file2d

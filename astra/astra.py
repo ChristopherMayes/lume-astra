@@ -7,12 +7,15 @@ from pmd_beamphysics import ParticleGroup
 
 import numpy as np
 
+import h5py
 
 import tempfile
 import shutil
 import os, platform
 from time import time
-import h5py
+
+from copy import deepcopy
+
 
 
 
@@ -397,6 +400,19 @@ class Astra:
         return h5
         
 
+    def copy(self):
+        """
+        Returns a deep copy of this object.
+        
+        If a tempdir is being used, will clear this and deconfigure. 
+        """
+        A2 = deepcopy(self)
+        # Clear this 
+        if A2.use_tempdir:
+            A2.path = None
+            A2.configured = False
+        
+        return A2        
 
         
           
