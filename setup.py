@@ -10,7 +10,7 @@ with open(path.join(cur_dir, 'requirements.txt'), 'r') as f:
 
 setup(
     name='lume-astra',
-    version = 'v0.2.0',
+    version = '0.4.0',
     packages=find_packages(),  
     package_dir={'xopt':'xopt'},
     url='https://github.com/ChristopherMayes/lume-astra',

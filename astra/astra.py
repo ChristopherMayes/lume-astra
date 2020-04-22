@@ -341,6 +341,7 @@ class Astra:
         See: Astra.archive
         """
         if isinstance(h5, str):
+            h5 = os.path.expandvars(h5)
             g = h5py.File(h5, 'r')
             
             glist = archive.find_astra_archives(g)
@@ -378,6 +379,7 @@ class Astra:
             h5 = 'astra_'+self.fingerprint()+'.h5'
          
         if isinstance(h5, str):
+            h5 = os.path.expandvars(h5)
             g = h5py.File(h5, 'w')
             self.vprint(f'Archiving to file {h5}')
         else:
