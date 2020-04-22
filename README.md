@@ -5,12 +5,33 @@ Python wrapper for Astra (A Space Charge Tracking Algorithm, DESY) for use in LU
 
 
 
-## Installation
-Clone this repository to `/path/to/lume-astra`, and add that to your path:
+Installing lume-astra
+=====================
 
-`export PYTHONPATH=/path/to/lume-astra:$PYTHONPATH`
+Installing `lume-astra` from the `conda-forge` channel can be achieved by adding `conda-forge` to your channels with:
 
-For convenience, you can set `$ASTRA_BIN` and `$GENERATOR_BIN` to point to the Astra and generator binaries for your system. See the [install_astraipynb](./examples/install_astra.ipynb) example for easy installation.
+```
+conda config --add channels conda-forge
+```
+
+Once the `conda-forge` channel has been enabled, `lume-astra` can be installed with:
+
+```
+conda install lume-astra
+```
+
+It is possible to list all of the versions of `lume-astra` available on your platform with:
+
+```
+conda search lume-astra --channel conda-forge
+
+```
+
+
+Installing Astra Executables
+=====================
+
+For convenience, you can set `$ASTRA_BIN` and `$GENERATOR_BIN` to point to the Astra and generator binaries for your system. See the [install_astra.ipynb](./examples/install_astra.ipynb) example for easy installation.
 
 
 ## Basic usage
