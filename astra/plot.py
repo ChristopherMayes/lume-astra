@@ -48,7 +48,7 @@ def plot_fieldmaps(astra_input, sections=['cavity', 'solenoid'], fieldmaps = {},
     ax0.set_xlabel('$z$ (m)')
     
     # TODO: is this the correct thing to return?
-    #return fig
+    return fig
 
 
 
@@ -107,3 +107,5 @@ def plot_stats(astra_object, keys=['norm_emit_x', 'sigma_z'], sections=['cavity'
         a.set_ylabel(ylabel[section])
     ax1.set_xlabel('$z$ (m)')
     ax1.set_xlim(xmin, xmax)
+    
+    return fig

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from astra import parsers, tools, archive
+from astra import parsers, writers, tools, archive
 
 from pmd_beamphysics import ParticleGroup
 
@@ -139,7 +139,7 @@ class AstraGenerator:
         
     def write_input_file(self):
         
-        parsers.write_namelists({'input':self.input}, self.input_file)     
+        writers.write_namelists({'input':self.input}, self.input_file)     
         
         
     def vprint(self, *args, **kwargs):

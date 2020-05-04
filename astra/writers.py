@@ -1,4 +1,113 @@
 import numpy as np
+from numbers import Number
+
+import os
+
+def namelist_lines(namelist_dict, name):
+    """
+    Converts namelist dict to output lines, for writing to file.
+    
+    Only allow scalars or lists. 
+    
+    Do not allow np arrays or any other types from simplicity.
+    """
+    lines = []
+    lines.append('&'+name)
+    # parse
+    
+    
+    for key, value in namelist_dict.items():
+        #if type(value) == type(1) or type(value) == type(1.): # numbers
+
+        if isinstance(value, Number): # numbers
+            line= key + ' = ' + str(value) 
+        elif type(value) == type([]) or isinstance(value, np.ndarray): # lists or np arrays
+            liststr = ''
+            for item in value:
+                liststr += str(item) + ' '
+            line = key + ' = ' + liststr 
+        elif type(value) == type('a'): # strings
+            line = key + ' = ' + "'" + value.strip("''") + "'"  # input may need apostrophes
+       
+        elif bool(value) == value:
+            line= key + ' = ' + str(value) 
+        else:
+            #print 'skipped: key, value = ', key, value
+            raise ValueError(f'Problem writing input key: {key}, value: {value}, type: {type(value)}')
+           
+        lines.append(line)
+    
+    lines.append('/')
+    return lines
+
+
+
+def make_namelist_symlinks(namelist, path, prefixes=['file_', 'distribution'], verbose=False):
+    """
+    Looks for keys that start with prefixes.
+    If the value is a path that exists, a symlink will be made.
+    Old symlinks will be replaced.
+    
+    A replacement dict is returned
+    """
+    
+    replacements = {}
+    for key in namelist:
+        if any([key.startswith(prefix) for prefix in prefixes]):
+            src = namelist[key]
+            
+            if not os.path.exists(src):
+                if verbose:
+                    print('Path does not exist for symlink:', src)
+                continue            
+            
+            _, file = os.path.split(src)
+            
+            dest = os.path.join(path, file)
+            
+            replacements[key] = file
+            
+            # Replace old symlinks. 
+            if os.path.islink(dest):
+                os.unlink(dest)
+            elif os.path.exists(dest):
+                if verbose:
+                    print(dest, 'exists, will not symlink')
+                continue
+                
+            # Note that the following will raise an error if the dest is an actual file that exists    
+            os.symlink(src, dest)
+            if verbose:
+                print('Linked', src, 'to', dest)
+           
+
+    return replacements
+            
+            
+
+
+def write_namelists(namelists, filePath, make_symlinks=False, prefixes=['file_', 'distribution'], verbose=False):
+    """
+    Simple function to write namelist lines to a file
+    
+    If make_symlinks, prefixes will be searched for paths and the appropriate links will be made.
+    
+    """
+    with open(filePath, 'w') as f:
+        for key in namelists:
+            namelist = namelists[key]
+            
+            if make_symlinks:
+                # Work on a copy
+                namelist = namelist.copy()
+                path, _ = os.path.split(filePath)
+                replacements = make_namelist_symlinks(namelist, path, prefixes=prefixes, verbose=verbose)
+                namelist.update(replacements)
+                
+                
+            lines = namelist_lines(namelist, key)
+            for l in lines:
+                f.write(l+'\n')
 
 
 

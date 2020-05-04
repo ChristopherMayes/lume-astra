@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from . import parsers, tools, archive
+from . import parsers, writers, tools, archive
 from .generator import AstraGenerator
 
 from pmd_beamphysics import ParticleGroup
@@ -15,6 +15,7 @@ import os, platform
 from time import time
 
 from copy import deepcopy
+
 
 
 
@@ -253,7 +254,7 @@ class Astra:
         """
         Runs Astra
         
-        Does not change directory - this has problems with multithreading.
+        Changes directory, so does not work with threads. 
         """
         
         run_info = self.output['run_info'] = {}
@@ -261,6 +262,10 @@ class Astra:
         
         t1 = time()
         run_info['start_time'] = t1
+        
+        # Save 
+        init_dir = os.getcwd()
+        os.chdir(self.path)        
         
         if self.initial_particles:
             fname = self.write_initial_particles()
@@ -301,6 +306,8 @@ class Astra:
         finally:
             run_info['run_time'] = time() - t1
             run_info['run_error'] = self.error
+            # Return to init_dir
+            os.chdir(init_dir)                
         
         self.finished = True
     
@@ -323,16 +330,8 @@ class Astra:
         else:
             return 'unknown unit'
     
-    def write_input_file(self):
-        parsers.write_namelists(self.input, self.input_file)
-
-    def write_initial_particles(self, fname=None):
-        if not fname:
-            fname = os.path.join(self.path, 'astra.particles')
-        self.initial_particles.write_astra(fname)
-        self.vprint(f'Initial particles written to {fname}')
-        return fname        
     
+
     
     def load_archive(self, h5=None):
         """
@@ -400,6 +399,24 @@ class Astra:
         archive.write_output_h5(g, self.output)       
         
         return h5
+    
+    
+    def write_input_file(self):
+        
+        if self.use_tempdir:
+            make_symlinks=True
+        else:
+            make_symlinks=False
+        
+        writers.write_namelists(self.input, self.input_file, make_symlinks=make_symlinks, verbose=self.verbose)
+
+    def write_initial_particles(self, fname=None):
+        if not fname:
+            fname = os.path.join(self.path, 'astra.particles')
+        self.initial_particles.write_astra(fname)
+        self.vprint(f'Initial particles written to {fname}')
+        return fname        
+        
         
 
     def copy(self):
@@ -416,8 +433,7 @@ class Astra:
         
         return A2        
 
-        
-          
+
         
 def set_astra(astra_input, generator_input, settings, verbose=False):
     """

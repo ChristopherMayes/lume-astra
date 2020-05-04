@@ -11,7 +11,7 @@ https://journals.aps.org/prab/pdf/10.1103/PhysRevSTAB.6.034202
 from pmd_beamphysics.units import unit
 
 import os
-from numbers import Number
+
 from math import isnan
 import numpy as np
 import re
@@ -356,54 +356,7 @@ def parse_astra_input_file(filePath, condense=False):
 
 
 
-def namelist_lines(namelist_dict, name):
-    """
-    Converts namelist dict to output lines, for writing to file.
-    
-    Only allow scalars or lists. 
-    
-    Do not allow np arrays or any other types from simplicity.
-    """
-    lines = []
-    lines.append('&'+name)
-    # parse
-    
-    
-    for key, value in namelist_dict.items():
-        #if type(value) == type(1) or type(value) == type(1.): # numbers
 
-        if isinstance(value, Number): # numbers
-            line= key + ' = ' + str(value) 
-        elif type(value) == type([]) or isinstance(value, np.ndarray): # lists or np arrays
-            liststr = ''
-            for item in value:
-                liststr += str(item) + ' '
-            line = key + ' = ' + liststr 
-        elif type(value) == type('a'): # strings
-            line = key + ' = ' + "'" + value.strip("''") + "'"  # input may need apostrophes
-       
-        elif bool(value) == value:
-            line= key + ' = ' + str(value) 
-        else:
-            #print 'skipped: key, value = ', key, value
-            raise ValueError(f'Problem writing input key: {key}, value: {value}, type: {type(value)}')
-           
-        lines.append(line)
-    
-    lines.append('/')
-    return lines
-
-
-def write_namelists(namelists, filePath):
-    """
-    Simple function to write namelist lines to a file
-    
-    """
-    with open(filePath, 'w') as f:
-        for key in namelists:
-            lines = namelist_lines(namelists[key], key)
-            for l in lines:
-                f.write(l+'\n')
 
 
 def fix_input_paths(input_dict, root='', prefixes=['file_', 'distribution']):
