@@ -22,7 +22,7 @@ h_max = 0.0075
 
 &output
 zstart = 0
-zstop = 15.0
+zstop = 0.5
 zemit = 1000
 zphase = 1
 

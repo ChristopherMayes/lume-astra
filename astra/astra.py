@@ -2,6 +2,8 @@
 
 from . import parsers, writers, tools, archive
 from .generator import AstraGenerator
+from .plot import plot_stats_with_layout
+
 
 from pmd_beamphysics import ParticleGroup
 
@@ -97,6 +99,7 @@ class Astra:
     
     def stat(self, key):
         return self.output['stats'][key]
+    
 
     def particle_stat(self, key, alive_only=True):
         """
@@ -417,7 +420,35 @@ class Astra:
         self.vprint(f'Initial particles written to {fname}')
         return fname        
         
+    def plot(self, y=['sigma_x', 'sigma_y'], x='mean_z', xlim=None, y2=[],
+            nice=True, 
+            include_layout=True,
+            include_labels=False, 
+            include_particles=True,
+            include_legend=True, 
+             **kwargs):
+        """
+        Plots stat output multiple keys.
+    
+        If a list of ykeys2 is given, these will be put on the right hand axis. This can also be given as a single key. 
+    
+        Logical switches, all default to True:
+            nice: a nice SI prefix and scaling will be used to make the numbers reasonably sized.
         
+            include_legend: The plot will include the legend
+        
+            include_layout: the layout plot (fieldmaps) will be displayed at the bottom
+        
+            include_labels: the layout will include element labels.         
+        
+        """
+        plot_stats_with_layout(self, ykeys=y, ykeys2=y2, 
+                           xkey=x, xlim=xlim, 
+                           nice=nice, 
+                           include_layout=include_layout,
+                           include_labels=include_labels, 
+                           include_particles=include_particles, 
+                           include_legend=include_legend, **kwargs)            
 
     def copy(self):
         """
