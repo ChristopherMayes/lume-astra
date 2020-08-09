@@ -402,7 +402,15 @@ class Astra:
         archive.write_output_h5(g, self.output)       
         
         return h5
-    
+
+    @classmethod
+    def from_archive(cls, archive_h5):
+        """
+        Class method to return an GPT object loaded from an archive file
+        """        
+        c = cls()
+        c.load_archive(archive_h5)
+        return c       
     
     def write_input_file(self):
         
