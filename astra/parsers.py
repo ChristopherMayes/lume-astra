@@ -447,6 +447,8 @@ def parse_astra_phase_file(filePath):
     # astra_index represents the species: 1:electrons, 2:positrons, 3:protons, 4:hydroger, ...
     # There is a large table of status. Status_flag = 5 is a standard particle. 
     
+    assert os.path.exists(filePath), f'particle file does not exist: {filePath}'
+    
     data = np.loadtxt(filePath)
     ref = data[0,:] # Reference particle. 
 

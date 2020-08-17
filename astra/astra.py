@@ -233,17 +233,18 @@ class Astra:
             return
         self.run_astra(verbose=self.verbose, timeout=self.timeout)
         
-        
-
+    
         
     def get_run_script(self, write_to_path=True):
         """
         Assembles the run script. Optionally writes a file 'run' with this line to path.
+        
+        This expect to run with .path as the cwd. 
         """
         
-        #_, infile = os.path.split(self.input_file)
-        
-        runscript = [self.astra_bin, self.input_file]
+        _, infile = os.path.split(self.input_file) # Expect to run locally. Astra has problems with long paths.
+    
+        runscript = [self.astra_bin, infile]
             
         if write_to_path:
             with open(os.path.join(self.path, 'run'), 'w') as f:
@@ -265,10 +266,7 @@ class Astra:
         
         t1 = time()
         run_info['start_time'] = t1
-        
-        # Save 
-        init_dir = os.getcwd()
-        os.chdir(self.path)        
+      
         
         if self.initial_particles:
             fname = self.write_initial_particles()
@@ -282,7 +280,7 @@ class Astra:
         
         try:
             if timeout:
-                res = tools.execute2(runscript, timeout=timeout)
+                res = tools.execute2(runscript, timeout=timeout, cwd=self.path)
                 log = res['log']
                 self.error = res['error']
                 run_info['why_error'] = res['why_error']
@@ -308,9 +306,7 @@ class Astra:
             run_info['why_error'] = str(ex)
         finally:
             run_info['run_time'] = time() - t1
-            run_info['run_error'] = self.error
-            # Return to init_dir
-            os.chdir(init_dir)                
+            run_info['run_error'] = self.error           
         
         self.finished = True
     
@@ -601,8 +597,7 @@ def run_astra_with_generator(settings=None,
     # Set inputs
     if settings:
         set_astra(A.input, G.input, settings, verbose=verbose)
-        
-        
+            
     if auto_set_spacecharge_mesh:
         n_particles = G.input['ipart']
         sc_settings = recommended_spacecharge_mesh(n_particles)
@@ -611,7 +606,7 @@ def run_astra_with_generator(settings=None,
             print('set spacecharge mesh for n_particles:', n_particles, 'to', sc_settings)        
     
     # Run Generator
-    G.run()
+    G.run()     
     A.initial_particles = G.output['particles']
     A.run()
     if verbose:

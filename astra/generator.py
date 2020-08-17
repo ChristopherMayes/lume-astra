@@ -10,6 +10,7 @@ import numpy as np
 import tempfile
 import shutil
 import os, platform
+import traceback
 from time import time
 
 
@@ -81,8 +82,8 @@ class AstraGenerator:
     
         self.input_file = os.path.join(self.path, self.original_input_file)    
         
-        # make the ouput file an absolute path
-        self.input['fname'] = os.path.join(self.path, 'generator.part')
+        # We will change directories to work in the local directory
+        self.input['fname'] = 'generator.part'
         
         self.configured = True
 
@@ -92,9 +93,9 @@ class AstraGenerator:
         Assembles the run script. Optionally writes a file 'run' with this line to path.
         """
         
-        #_, infile = os.path.split(self.input_file)
+        _, infile = os.path.split(self.input_file)
         
-        runscript = [self.generator_bin, self.input_file]
+        runscript = [self.generator_bin, infile]
             
         if write_to_path:
             with open(os.path.join(self.path, 'run'), 'w') as f:
@@ -104,25 +105,42 @@ class AstraGenerator:
         
         
     def run(self):  
+        """
+        Runs Generator
         
+        Note: do not use os.chdir
+        """
+        
+        # Save 
+        #init_dir = os.getcwd()
+        #print(f'changing to path {self.path}')
+        #os.chdir(self.path)           
+         
         self.write_input_file()
         
         runscript = self.get_run_script()
-        res = tools.execute2(runscript, timeout=None)
-        self.log = res['log']
-
-        self.vprint(self.log)
         
-        # This is the file that should be written
-        if os.path.exists(self.input['fname']):
-            self.finished = True
-        else:
-            print(self.input['fname'], 'does not exist.')
-            #print('The input file already exists! This is a problem!')
-            print(f'Here is what the current working dir looks like: {os.listdir(self.path)}')
+        try:
+            res = tools.execute2(runscript, timeout=None, cwd=self.path)
+            self.log = res['log']
+    
+            self.vprint(self.log)
             
- 
-        self.load_output()
+            # This is the file that should be written
+            if os.path.exists(self.output_file):
+                self.finished = True
+            else:
+                print('AstraGenerator.output_file {self.output_file} does not exist.')
+                #print('The input file already exists! This is a problem!')
+                print(f'Here is what the current working dir looks like: {os.listdir(self.path)}')
+            self.load_output()                
+                
+        except Exception as ex:
+            print('AstraGenerator.run exception:', traceback.format_exc())
+            self.error = True
+          
+        finally:
+            pass      
         
     @property
     def output_file(self):

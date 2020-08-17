@@ -135,6 +135,7 @@ def evaluate_astra_with_distgen(settings,
                          workdir=workdir,
                          astra_bin=astra_bin, 
                          timeout=timeout, 
+                         auto_set_spacecharge_mesh=auto_set_spacecharge_mesh,
                          verbose=verbose)
         
     if merit_f:

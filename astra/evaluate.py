@@ -159,12 +159,64 @@ def evaluate_astra(settings, archive_path=None, merit_f=None, **params):
                     archive_path=archive_path, merit_f=merit_f, **params)
 
 
-def evaluate_astra_with_generator(settings, archive_path=None, merit_f=None, **params):
+def old_evaluate_astra_with_generator(settings, archive_path=None, merit_f=None, **params):
     """
     Convenience wrapper. See evaluate. 
     """
     return evaluate(settings, simulation='astra_with_generator', 
                     archive_path=archive_path, merit_f=merit_f, **params)
+
+
+def evaluate_astra_with_generator(settings,
+                                  astra_input_file=None,
+                                  generator_input_file=None,
+                                  workdir=None, 
+                                  astra_bin='$ASTRA_BIN',
+                                  generator_bin='$GENERATOR_BIN',
+                                  timeout=2500,
+                                  verbose=False,
+                                  auto_set_spacecharge_mesh=True,
+                                  archive_path=None,
+                                  merit_f=None):
+    """
+    Similar to run_astra_with_generator, but returns a flat dict of outputs as processed by merit_f. 
+    
+    If no merit_f is given, a default one will be used. See:
+        astra.evaluate.default_astra_merit
+    
+    Will raise an exception if there is an error. 
+    """
+
+    A = run_astra_with_generator(settings=settings,
+                                    astra_input_file=astra_input_file,
+                                    generator_input_file=generator_input_file,
+                                    workdir=workdir, 
+                                    astra_bin=astra_bin,
+                                    generator_bin=generator_bin,
+                                    timeout=timeout,
+                                    auto_set_spacecharge_mesh=auto_set_spacecharge_mesh,
+                                    verbose=verbose)
+        
+    if merit_f:
+        output = merit_f(A)
+    else:
+        output = default_astra_merit(A)
+    
+    if output['error']:
+        raise ValueError(f'Error returned from Astra evaluate')
+    
+    fingerprint = A.fingerprint()
+    
+    output['fingerprint'] = fingerprint
+    
+    if archive_path:
+        path = full_path(archive_path)
+        assert os.path.exists(path), f'archive path does not exist: {path}'
+        archive_file = os.path.join(path, fingerprint+'.h5')
+        A.archive(archive_file)
+        output['archive'] = archive_file
+        
+    return output
 
 
 
