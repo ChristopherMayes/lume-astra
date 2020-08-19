@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 from . import parsers, writers, tools, archive
+from .control import ControlGroup
 from .generator import AstraGenerator
-from .plot import plot_stats_with_layout
+from .plot import plot_stats_with_layout, plot_fieldmaps
 
 
 from pmd_beamphysics import ParticleGroup
@@ -10,6 +11,7 @@ from pmd_beamphysics import ParticleGroup
 import numpy as np
 
 import h5py
+import yaml
 
 import tempfile
 import shutil
@@ -46,6 +48,7 @@ class Astra:
                  astra_bin='$ASTRA_BIN',      
                  use_tempdir=True,
                  workdir=None,
+                 group=None,
                  verbose=False):
         # Save init
         self.original_input_file = input_file
@@ -64,6 +67,8 @@ class Astra:
         self.output = {'stats':{}, 'particles':{}, 'run_info':{}}
         self.timeout=None
         self.error = False
+        self.group = {}  # Control Groups
+        
         
         # Run control
         self.finished = False
@@ -74,10 +79,34 @@ class Astra:
         if input_file:
             self.load_input(input_file)
             self.configure()
+            
+            # Add groups, if any. 
+            if group:
+                for k, v in group.items():
+                    self.add_group(k, **v)               
+            
         else:
             self.vprint('Warning: Input file does not exist. Not configured.')
             self.original_input_file = 'astra.in'
-            
+      
+    
+    def add_group(self, name, **kwargs):
+        """
+        Add a control group. See control.py
+        """
+        assert name not in self.input, f'{name} not allowed to be overwritten by group.'
+        if name in self.group:
+            self.vprint(f'Warning: group {name} already exists, overwriting.')
+     
+        g = ControlGroup(**kwargs)
+        g.link(self.input)
+        self.group[name] = g
+        
+        return self.group[name]
+    
+    
+    
+    
     def clean_output(self):
         run_number = parsers.astra_run_extension(self.input['newrun']['run'])
         outfiles = parsers.find_astra_output_files(self.input_file, run_number)
@@ -292,7 +321,7 @@ class Astra:
             else:
                 # Interactive output, for Jupyter
                 log = []
-                for path in tools.execute(runscript):
+                for path in tools.execute(runscript, cwd=self.path):
                     self.vprint(path, end="")
                     log.append(path)
     
@@ -329,7 +358,6 @@ class Astra:
         else:
             return 'unknown unit'
     
-    
 
     
     def load_archive(self, h5=None):
@@ -362,9 +390,20 @@ class Astra:
         self.output = archive.read_output_h5(g['output'])
         if 'initial_particles' in g:
             self.initial_particles = ParticleGroup(h5=g['initial_particles'])
+            
+        if 'control_groups' in g:
+            self.group = archive.read_control_groups_h5(g['control_groups'], verbose=self.verbose)             
         
         self.vprint('Loaded from archive. Note: Must reconfigure to run again.')
-        self.configured = False    
+        self.configured = False   
+        
+        
+        # Re-link groups
+        # TODO: cleaner logic
+        for _, cg  in self.group.items():
+            cg.link(self.input)            
+    
+        
 
     def archive(self, h5=None):
         """
@@ -395,7 +434,11 @@ class Astra:
         archive.write_input_h5(g, self.input)
 
         # All output
-        archive.write_output_h5(g, self.output)       
+        archive.write_output_h5(g, self.output)    
+        
+        # Control groups
+        if self.group:
+             archive.write_control_groups_h5(g, self.group, name='control_groups')        
         
         return h5
 
@@ -407,6 +450,42 @@ class Astra:
         c = cls()
         c.load_archive(archive_h5)
         return c       
+    
+    
+    @classmethod
+    def from_yaml(cls, yaml_file):
+        """
+        Returns an Astra object instantiated from a YAML config file
+        
+        Will load intial_particles from an h5 file. 
+        
+        """
+        # Try file
+        if os.path.exists(os.path.expandvars(yaml_file)):
+            config = yaml.safe_load(open(yaml_file))
+            
+            # The input file might be relative to the yaml file
+            if 'input_file' in config:
+                f = os.path.expandvars(config['input_file'])
+                if not os.path.isabs(f):
+                    # Get the yaml file root
+                    root, _ = os.path.split(tools.full_path(yaml_file))
+                    config['input_file'] = os.path.join(root, f)
+                
+        else:
+            #Try raw string
+            config  = yaml.safe_load(yaml_file)
+            
+        # Form ParticleGroup from file
+        if 'initial_particles' in config:
+            f = config['initial_particles']
+            if not os.path.isabs(f):
+                root, _ = os.path.split(tools.full_path(yaml_file))
+                f = os.path.join(root, f)
+            config['initial_particles'] = ParticleGroup(f)            
+        
+        return cls(**config)    
+    
     
     def write_input_file(self):
         
@@ -443,16 +522,28 @@ class Astra:
         
             include_layout: the layout plot (fieldmaps) will be displayed at the bottom
         
-            include_labels: the layout will include element labels.         
+            include_labels: the layout will include element labels.    
+            
+        If there is no output to plot, the fieldmaps will be plotted with .plot_fieldmaps
         
         """
+        
+        # Just plot fieldmaps if there are no 
+        if not self.output['stats']:
+            return plot_fieldmaps(self, xlim=xlim, **kwargs)
+            
+        
+        
         plot_stats_with_layout(self, ykeys=y, ykeys2=y2, 
                            xkey=x, xlim=xlim, 
                            nice=nice, 
                            include_layout=include_layout,
                            include_labels=include_labels, 
                            include_particles=include_particles, 
-                           include_legend=include_legend, **kwargs)            
+                           include_legend=include_legend, **kwargs)   
+        
+    def plot_fieldmaps(self, **kwargs):
+        return plot_fieldmaps(self, **kwargs)
 
     def copy(self):
         """
@@ -466,16 +557,115 @@ class Astra:
             A2.path = None
             A2.configured = False
         
-        return A2        
+        return A2       
+    
+    
+    def __getitem__(self, key):
+        """
+        Convenience syntax to get a header or element attribute. 
+
+        Special syntax:
+        
+        end_X
+            will return the final item in a stat array X
+            Example:
+            'end_norm_emit_x'
+            
+        particles:N
+            will return a ParticleGroup N from the .particles list
+            Example:
+                'particles:-1'
+                returns the readback of the final particles
+        particles:N:Y
+            ParticleGroup N's property Y
+            Example:
+                'particles:-1:sigma_x'
+            returns sigma_x from the end of the particles list.
+
+        
+        See: __setitem__
+        """        
+        
+        # Object attributes
+        if hasattr(self, key):
+            return getattr(self, key) 
+        
+        # Send back top level input (namelist) or group object. 
+        # Do not add these to __setitem__. The user shouldn't be allowed to change them as a whole, 
+        #   because it will break all the links.
+        if key in self.group:
+            return self.group[key]
+        if key in self.input:
+            return self.input[key]        
+        
+        if key.startswith('end_'):
+            key2 = key[len('end_'):]
+            assert key2 in self.output['stats'], f'{key} does not have valid output stat: {key2}'
+            return self.output['stats'][key2][-1]
+                
+        if key.startswith('particles:'):
+            key2 = key[len('particles:'):]
+            x = key2.split(':')
+            if len(x) == 1:
+                return self.particles[int(x[0])]
+            else:
+                return self.particles[int(x[0])][x[1]]
+        
+        # key isn't an ele or group, should have property s
+        
+        x = key.split(':')
+        assert len(x) == 2, f'{x} was not found in group or input dict, so should have : '    
+        name, attrib = x[0], x[1]        
+          
+        # Look in input and group    
+        if name in self.input:
+            return self.input[name][attrib] 
+        elif name in self.group:
+            return self.group[name][attrib]  
+        
+    def __setitem__(self, key, item):
+        """
+        Convenience syntax to set namelist or group attribute. 
+        attribute_string should be 'header:key' or 'ele_name:key'
+        
+        Examples of attribute_string: 'header:Np', 'SOL1:solenoid_field_scale'
+        
+        Settable attributes can also be given:
+        
+        ['stop'] = 1.2345 will set Impact.stop = 1.2345
+        
+        """
+
+        # Set attributes
+        if hasattr(self, key):
+            setattr(self, key, item)
+            return
+        
+        # Must be in input or group
+        name, attrib = key.split(':')
+        if name in self.input:
+            self.input[name][attrib] = item
+        elif name in self.group:
+            self.group[name][attrib]  = item
+        else:
+            raise ValueError(f'{name} does not exist in eles or groups of the Impact object.')            
+           
 
 
         
-def set_astra(astra_input, generator_input, settings, verbose=False):
+def set_astra(astra_object, generator_input, settings, verbose=False):
     """
     Searches astra and generator objects for keys in settings, and sets their values to the appropriate input
     """
+    astra_input = astra_object.input # legacy syntax
+    
     for k, v in settings.items():
-        found=False
+        
+        # Check for direct settable attribute
+        if ':' in k:
+            astra_object[k] = v
+            continue
+        
         for nl in astra_input:
             if k in astra_input[nl]:
                 found = True
@@ -548,7 +738,7 @@ def run_astra(settings=None,
       
     # Set inputs
     if settings:
-        set_astra(A.input, {}, settings, verbose=verbose)
+        set_astra(A, {}, settings, verbose=verbose)
             
     # Run
     A.run()

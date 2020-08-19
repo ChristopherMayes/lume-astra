@@ -50,7 +50,7 @@ def plot_fieldmaps(astra_input, sections=['cavity', 'solenoid'], fieldmaps = {},
     
 
     
-def add_fieldmaps_to_axes(astra_object, axes, bounds=None, factor=1,
+def add_fieldmaps_to_axes(astra_object, axes, bounds=None,
                            sections=['cavity', 'solenoid'],
                           include_labels=True):
     """
@@ -83,6 +83,18 @@ def add_fieldmaps_to_axes(astra_object, axes, bounds=None, factor=1,
     
     if bounds:
         ax1.set_xlim(bounds[0], bounds[1])        
+        
+        
+def plot_fieldmaps(astra_object, include_labels=True,  xlim=None, figsize=(12,4), **kwargs):
+    """
+    Simple fieldmap plot
+    """
+
+    fig, axes = plt.subplots(figsize=figsize, **kwargs)
+
+    add_fieldmaps_to_axes(astra_object, axes, bounds=xlim, include_labels=include_labels,
+                           sections=['cavity', 'solenoid'])
+    
 
 def plot_stats(astra_object, keys=['norm_emit_x', 'sigma_z'], sections=['cavity', 'solenoid'], fieldmaps = {}, verbose=False):
     """

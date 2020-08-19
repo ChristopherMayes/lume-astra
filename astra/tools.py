@@ -7,7 +7,7 @@ import subprocess
 import datetime
 import os, errno
 
-def execute(cmd):
+def execute(cmd, cwd=None):
     """
     
     Constantly print Subprocess output while process is running
@@ -20,7 +20,7 @@ def execute(cmd):
     Useful in Jupyter notebook
     
     """
-    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True, cwd=cwd)
     for stdout_line in iter(popen.stdout.readline, ""):
         yield stdout_line 
     popen.stdout.close()

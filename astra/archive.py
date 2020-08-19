@@ -3,6 +3,7 @@ import numpy as np
 from pmd_beamphysics import ParticleGroup, pmd_init
 from pmd_beamphysics.units import read_dataset_and_unit_h5, write_dataset_and_unit_h5
 
+from .control import ControlGroup
 from .parsers import OutputUnits
 from .tools import isotime, native_type
 from ._version import __version__
@@ -151,6 +152,45 @@ def read_output_h5(h5):
         o['particles'] = read_particles_h5(h5['particles'])        
         
     return o
+
+#------------------------------------------
+# control groups
+
+def write_control_groups_h5(h5, group_data, name='control_groups'):
+    """
+    Writes the ControlGroup object data to the attrs in
+    an h5 group for archiving. 
+    
+    See: read_control_groups_h5
+    """
+    if name:
+        g = h5.create_group(name)
+    else:
+        g = h5
+        
+    for name, G in group_data.items():
+        g.attrs[name] = fstr(G.dumps())
+
+
+
+def read_control_groups_h5(h5, verbose=False):
+    """
+    Reads ControlGroup object data
+    
+    See: write_control_groups_h5
+    """
+    group_data = {}
+    for name in h5.attrs:
+        dat = h5.attrs[name]
+        G = ControlGroup()
+        G.loads(dat)
+        group_data[name] = G
+        
+        if verbose:
+            print('h5 read control_groups:', name, '=', G)
+        
+    return group_data
+
 
 #----------------------------        
 # particles
