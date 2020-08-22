@@ -3,6 +3,7 @@ Tools for loading fieldmap data
 """
 import numpy as np
 import re
+import os
 
 
 # Prefix helpers
@@ -43,7 +44,7 @@ def find_fieldmap_ixlist(astra_input, section='cavity'):
             ixlist.append(ix)
     return ixlist
 
-def load_fieldmaps(astra_input, sections=['cavity', 'solenoid'], verbose=False):
+def load_fieldmaps(astra_input, search_paths=[], fieldmap_dict={}, sections=['cavity', 'solenoid'], verbose=False, strip_path=False):
     """
     Loads all found fieldmaps into a dict with the filenames as keys
     """
@@ -54,10 +55,66 @@ def load_fieldmaps(astra_input, sections=['cavity', 'solenoid'], verbose=False):
             k = file_(section=sec, index=ix)
             file = astra_input[sec][k]
             if file not in fmap:
+                # Look inside dict
+                if file in fieldmap_dict:
+                    if verbose:
+                        print(f'Fieldmap inside dict: {file}')
+                    fmap[file] = fieldmap_dict[file]
+                    continue
+                    
                 if verbose:
-                    print(f'Loading fieldmap file {file}')
+                    print(f'Loading fieldmap file {file}')                    
+                
+                # Look in search path
+                if not os.path.exists(file):
+                    for path in search_paths:
+                        tryfile = os.path.join(path, file)
+                        if os.path.exists:
+                            file = tryfile
+                    # Set input
+                    astra_input[sec][k] = file
+                    
                 fmap[file] = np.loadtxt(file)
-    return fmap
+           
+    # Loop again
+    if strip_path:
+        # Make a secondary dict with the shorter names. 
+        # Protect against /path1/dat1, /path2/dat1 overwriting
+        fmap2 = {}
+        translate = {}
+        for k in fmap:
+            _, k2 = os.path.split(k)
+            i=0 # Check for uniqueness
+            while k2 in fmap2:
+                i+=1
+                k2 = f'{k2}_{i}'
+            # Collect translation
+            translate[k] = k2
+            fmap2[k2] = fmap[k] 
+
+        for sec in sections:
+            ixlist = find_fieldmap_ixlist(astra_input, sec) 
+            for ix in ixlist:
+                k = file_(section=sec, index=ix)
+                file = astra_input[sec][k]
+                astra_input[sec][k] = translate[file]
+
+        return fmap2
+                
+    else:
+        return fmap
+    
+def write_fieldmaps(fieldmap_dict, path):
+    """
+    Writes fieldmap dict to path
+    
+    """
+    assert os.path.exists(path)
+    
+    for k, v in fieldmap_dict.items():
+        file = os.path.join(path, k)
+        np.savetxt(file, v)
+
 
 
 def fieldmap_data(astra_input, section='cavity', index=1, fieldmaps={}, verbose=False):

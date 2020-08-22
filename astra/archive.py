@@ -108,6 +108,22 @@ def read_input_h5(h5):
         
     return d
 
+#----------------------------        
+# fieldmaps
+def write_fieldmap_h5(h5, fieldmap_dict, name='fieldmap'):
+    """
+    Writes all fieldmaps as simple datasets
+    """
+    g = h5.create_group(name)
+    for k, v in fieldmap_dict.items():
+        g[k] = v
+
+def read_fieldmap_h5(h5):
+    d = {}
+    for fmap in h5:
+        d[fmap] = h5[fmap][:]
+    return d
+
 
 #----------------------------        
 # output

@@ -56,6 +56,11 @@ def make_namelist_symlinks(namelist, path, prefixes=['file_', 'distribution'], v
         if any([key.startswith(prefix) for prefix in prefixes]):
             src = namelist[key]
             
+            if os.path.exists(os.path.join(path, src)):
+                if verbose:
+                    f'File {src} already in path, skipping.'
+                continue
+            
             if not os.path.exists(src):
                 if verbose:
                     print('Path does not exist for symlink:', src)

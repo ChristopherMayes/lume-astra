@@ -2,6 +2,7 @@
 
 from . import parsers, writers, tools, archive
 from .control import ControlGroup
+from .fieldmaps import load_fieldmaps, write_fieldmaps
 from .generator import AstraGenerator
 from .plot import plot_stats_with_layout, plot_fieldmaps
 
@@ -68,7 +69,7 @@ class Astra:
         self.timeout=None
         self.error = False
         self.group = {}  # Control Groups
-        
+        self.fieldmap = {} # Fieldmaps
         
         # Run control
         self.finished = False
@@ -178,6 +179,21 @@ class Astra:
         
         self.input_file = os.path.join(self.path, self.original_input_file)                
         self.configured = True
+    
+    
+    def load_fieldmaps(self):
+        """
+        Loads fieldmaps into Astra.fieldmap as a dict
+        """
+        
+        # Do not consider files if fieldmaps have been loaded. 
+        if self.fieldmap:
+            strip_path=False
+        else:
+            strip_path=True
+        
+        self.fieldmap = load_fieldmaps(self, fieldmap_dict=self.fieldmap, search_paths=[self.path], verbose=self.verbose, strip_path=strip_path)
+        
     
     def load_initial_particles(self, h5):
         """Loads a openPMD-beamphysics particle h5 handle or file"""
@@ -301,8 +317,8 @@ class Astra:
             fname = self.write_initial_particles()
             self.input['newrun']['distribution'] = fname        
 
-        # Write input file from internal dict
-        self.write_input_file()
+        # Write all input 
+        self.write_input()
         
         runscript = self.get_run_script()
         run_info['run_script'] = ' '.join(runscript)
@@ -391,6 +407,9 @@ class Astra:
         if 'initial_particles' in g:
             self.initial_particles = ParticleGroup(h5=g['initial_particles'])
             
+        if 'fieldmap' in g:
+            self.fieldmap = archive.read_fieldmap_h5(g['fieldmap'])
+            
         if 'control_groups' in g:
             self.group = archive.read_control_groups_h5(g['control_groups'], verbose=self.verbose)             
         
@@ -429,10 +448,14 @@ class Astra:
         # Initial particles
         if self.initial_particles:
             self.initial_particles.write(g, name='initial_particles')
-        
+    
+        # Fieldmaps
+        if self.fieldmap:
+            archive.write_fieldmap_h5(g, self.fieldmap, name='fieldmap')
+    
         # All input
         archive.write_input_h5(g, self.input)
-
+    
         # All output
         archive.write_output_h5(g, self.output)    
         
@@ -487,6 +510,27 @@ class Astra:
         return cls(**config)    
     
     
+    def write_fieldmaps(self):
+        """
+        Writes any loaded fieldmaps to path
+        """
+        
+        if self.fieldmap:
+            write_fieldmaps(self.fieldmap, self.path)
+            self.vprint(f'{len(self.fieldmap)} fieldmaps written to {self.path}')        
+    
+    
+    def write_input(self):
+        """
+        Writes all input. If fieldmaps have been loaded, these will also be written. 
+        """
+    
+        self.write_fieldmaps()
+        
+        self.write_input_file()
+        
+    
+    
     def write_input_file(self):
         
         if self.use_tempdir:
@@ -530,7 +574,7 @@ class Astra:
         
         # Just plot fieldmaps if there are no 
         if not self.output['stats']:
-            return plot_fieldmaps(self, xlim=xlim, **kwargs)
+            return plot_fieldmaps(self, xlim=xlim, fieldmap_dict=self.fieldmap, **kwargs)
             
         
         
@@ -786,7 +830,7 @@ def run_astra_with_generator(settings=None,
       
     # Set inputs
     if settings:
-        set_astra(A.input, G.input, settings, verbose=verbose)
+        set_astra(A, G.input, settings, verbose=verbose)
             
     if auto_set_spacecharge_mesh:
         n_particles = G.input['ipart']

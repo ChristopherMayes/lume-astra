@@ -17,15 +17,19 @@ import matplotlib.pyplot as plt
 #%config InlineBackend.figure_format = 'retina'
 
 
-def plot_fieldmaps(astra_input, sections=['cavity', 'solenoid'], fieldmaps = {}, verbose=False):
+def old_plot_fieldmaps(astra_input, sections=['cavity', 'solenoid'], fieldmap_dict = {}, verbose=False):
     """
     Plots Cavity and Solenoid fielmaps.
     
     TODO: quadrupoles
     
     """
-    fmaps = load_fieldmaps(astra_input, sections=sections, verbose=verbose)
     
+    if fieldmap_dict:
+        fmaps = fieldmap_dict
+    else:
+        fmaps = load_fieldmaps(astra_input, sections=sections, verbose=verbose)
+
     assert len(sections) == 2, 'TODO: more general'
     
     fig, ax0 = plt.subplots()
@@ -61,7 +65,11 @@ def add_fieldmaps_to_axes(astra_object, axes, bounds=None,
     astra_input = astra_object.input
     
     verbose=astra_object.verbose
-    fmaps = load_fieldmaps(astra_input, sections=sections, verbose=verbose)
+    
+    if astra_object.fieldmap:
+        fmaps = astra_object.fieldmap
+    else:    
+        fmaps = load_fieldmaps(astra_input, sections=sections, verbose=verbose)
     ax1 = axes
     
     ax1rhs = ax1.twinx()  
@@ -131,7 +139,7 @@ def plot_stats(astra_object, keys=['norm_emit_x', 'sigma_z'], sections=['cavity'
         ax.set_xlim(xmin, xmax)
         ax.plot(xdat, ndat)
     
-    add_fieldmaps_to_axes(astra_object, axs[-1], bounds=(xmin, xmax), factor=1,
+    add_fieldmaps_to_axes(astra_object, axs[-1], bounds=(xmin, xmax),
                            sections=['cavity', 'solenoid'],
                           include_labels=True)
     
