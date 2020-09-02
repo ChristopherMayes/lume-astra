@@ -67,10 +67,19 @@ def load_fieldmaps(astra_input, search_paths=[], fieldmap_dict={}, sections=['ca
                 
                 # Look in search path
                 if not os.path.exists(file):
+                    if verbose:
+                        print(f'{file} not found, searching:')
                     for path in search_paths:
+                        _, file = os.path.split(file)
+                        if verbose:
+                            print(f'  {path} {file}')
+                        
                         tryfile = os.path.join(path, file)
                         if os.path.exists:
                             file = tryfile
+                        
+                            
+                            
                     # Set input
                     astra_input[sec][k] = file
                     
@@ -113,6 +122,11 @@ def write_fieldmaps(fieldmap_dict, path):
     
     for k, v in fieldmap_dict.items():
         file = os.path.join(path, k)
+        
+        # Remove any previous symlinks
+        if os.path.islink(file):
+            os.unlink(file)        
+        
         np.savetxt(file, v)
 
 

@@ -50,13 +50,12 @@ def make_namelist_symlinks(namelist, path, prefixes=['file_', 'distribution'], v
     
     A replacement dict is returned
     """
-    
+
     replacements = {}
     for key in namelist:
         if any([key.startswith(prefix) for prefix in prefixes]):
             src = namelist[key]
-            
-            if os.path.exists(os.path.join(path, src)):
+            if os.path.exists(os.path.join(path, src)) and not os.path.isabs(src):
                 if verbose:
                     f'File {src} already in path, skipping.'
                 continue

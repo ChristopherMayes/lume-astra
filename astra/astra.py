@@ -181,9 +181,11 @@ class Astra:
         self.configured = True
     
     
-    def load_fieldmaps(self):
+    def load_fieldmaps(self, search_paths=[]):
         """
-        Loads fieldmaps into Astra.fieldmap as a dict
+        Loads fieldmaps into Astra.fieldmap as a dict.
+        
+        Optionally, a list of paths can be included that will search for these. The default will search self.path.
         """
         
         # Do not consider files if fieldmaps have been loaded. 
@@ -192,7 +194,10 @@ class Astra:
         else:
             strip_path=True
         
-        self.fieldmap = load_fieldmaps(self, fieldmap_dict=self.fieldmap, search_paths=[self.path], verbose=self.verbose, strip_path=strip_path)
+        if not search_paths:
+            [self.path]
+        
+        self.fieldmap = load_fieldmaps(self, fieldmap_dict=self.fieldmap, search_paths=search_paths, verbose=self.verbose, strip_path=strip_path)
         
     
     def load_initial_particles(self, h5):
@@ -312,11 +317,6 @@ class Astra:
         t1 = time()
         run_info['start_time'] = t1
       
-        
-        if self.initial_particles:
-            fname = self.write_initial_particles()
-            self.input['newrun']['distribution'] = fname        
-
         # Write all input 
         self.write_input()
         
@@ -524,6 +524,10 @@ class Astra:
         """
         Writes all input. If fieldmaps have been loaded, these will also be written. 
         """
+        
+        if self.initial_particles:
+            fname = self.write_initial_particles()
+            self.input['newrun']['distribution'] = fname           
     
         self.write_fieldmaps()
         
