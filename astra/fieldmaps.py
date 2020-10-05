@@ -71,13 +71,13 @@ def load_fieldmaps(astra_input, search_paths=[], fieldmap_dict={}, sections=['ca
                         print(f'{file} not found, searching:')
                     for path in search_paths:
                         _, file = os.path.split(file)
-                        if verbose:
-                            print(f'  {path} {file}')
-                        
                         tryfile = os.path.join(path, file)
-                        if os.path.exists:
+                                         
+                        if os.path.exists(tryfile):
+                            if verbose:
+                                print('Found:', tryfile)
                             file = tryfile
-                        
+                            break
                             
                             
                     # Set input
