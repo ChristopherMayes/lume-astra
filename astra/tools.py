@@ -20,9 +20,15 @@ def execute(cmd, cwd=None):
     Useful in Jupyter notebook
     
     """
-    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True, cwd=cwd)
+    popen = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, universal_newlines=True, cwd=cwd)
+    if os.name == 'nt':
+        # When running Astra with Windows it requires us to Press return at the end of execution
+        popen.stdin.write("\n")
+        popen.stdin.flush()
+        popen.stdin.close()
     for stdout_line in iter(popen.stdout.readline, ""):
         yield stdout_line 
+    popen.stdin.close()
     popen.stdout.close()
     return_code = popen.wait()
     if return_code:
@@ -39,7 +45,7 @@ def execute2(cmd, timeout=None, cwd=None):
         p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, timeout = timeout, cwd=cwd)
         output['log'] = p.stdout
         output['error'] = False
-        output['why_error'] =''
+        output['why_error'] = ''
     except subprocess.TimeoutExpired as ex:
         output['log'] = ex.stdout+'\n'+str(ex)
         output['why_error'] = 'timeout'
