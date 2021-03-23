@@ -95,8 +95,14 @@ def write_namelists(namelists, filePath, make_symlinks=False, prefixes=['file_',
     Simple function to write namelist lines to a file
     
     If make_symlinks, prefixes will be searched for paths and the appropriate links will be made.
-    
+    For Windows, make_symlinks is ignored and it is always False.See note at https://docs.python.org/3/library/os.html#os.symlink .
     """
+    # With Windows 10, users need Administator Privileges or run on Developer mode
+    # in order to be able to create symlinks.
+    # More info: https://docs.python.org/3/library/os.html#os.symlink
+    if os.name == 'nt':
+        make_symlinks = False
+
     with open(filePath, 'w') as f:
         for key in namelists:
             namelist = namelists[key]
@@ -247,10 +253,3 @@ def write_screens_h5(h5, astra_screens, name='screen'):
     for i in range(len(astra_screens)):
         name = str(i)        
         write_astra_particles_h5(g, name, astra_screens[i])   
-        
-         
-        
-        
-        
-        
-        
