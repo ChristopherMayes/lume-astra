@@ -708,6 +708,7 @@ def set_astra(astra_object, generator_input, settings, verbose=False):
     astra_input = astra_object.input # legacy syntax
     
     for k, v in settings.items():
+        found = False
         
         # Check for direct settable attribute
         if ':' in k:

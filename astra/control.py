@@ -119,13 +119,10 @@ class ControlGroup:
         """
         Sets a change (delta) in the underlying attributes. 
         """
-        delta = item - self.value 
-        if delta == 0:
-            return
         
         self.value = item     
         for name, attrib, f, ref in zip(self.ele_names, self.attributes, self.factors, self.reference_values):
-            self.ele_dict[name][attrib] += f * delta  
+            self.ele_dict[name][attrib] = ref + f * self.value
         
     def __setitem__(self, key, item):
         """
