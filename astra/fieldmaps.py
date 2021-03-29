@@ -83,7 +83,7 @@ def load_fieldmaps(astra_input, search_paths=[], fieldmap_dict={}, sections=['ca
                     # Set input
                     astra_input[sec][k] = file
                     
-                fmap[file] = np.loadtxt(file)
+                fmap[file] = parse_fieldmap(file)
            
     # Loop again
     if strip_path:
@@ -112,7 +112,8 @@ def load_fieldmaps(astra_input, search_paths=[], fieldmap_dict={}, sections=['ca
                 
     else:
         return fmap
-    
+   
+
 def write_fieldmaps(fieldmap_dict, path):
     """
     Writes fieldmap dict to path
@@ -120,14 +121,59 @@ def write_fieldmaps(fieldmap_dict, path):
     """
     assert os.path.exists(path)
     
-    for k, v in fieldmap_dict.items():
+    for k, fmap in fieldmap_dict.items():
         file = os.path.join(path, k)
         
         # Remove any previous symlinks
         if os.path.islink(file):
             os.unlink(file)        
         
-        np.savetxt(file, v)
+        write_fieldmap(file, fmap)
+
+def write_fieldmap(fname, fmap):
+    
+    attrs = fmap['attrs']
+    ftype = attrs['type']
+    if ftype == 'astra_tws':
+        header = f"{attrs['z1']} {attrs['z2']} {attrs['m']} {attrs['n']}"
+        np.savetxt(fname, fmap['data'], header=header, comments='')
+    elif ftype == 'astra_1d':
+        np.savetxt(fname, fmap['data'])
+    else:
+        raise ValueError(f'Unknown fieldmap type: {ftype}')        
+        
+    
+def parse_fieldmap(filePath):
+    """
+    Parses 1D fieldmaps, including TWS fieldmaps. 
+    
+    See p. 70 in the Astra manual for TWS
+    
+    Returns a dict of:
+        attrs
+        data
+        
+    See: write_fieldmap
+    
+    """
+
+    header = list(map(float, open(filePath).readline().split()))
+    
+    attrs = {}
+    
+    if len(header) == 4:
+        attrs['type'] = 'astra_tws'
+        attrs['z1'] = header[0]
+        attrs['z2'] = header[1]
+        attrs['n']  = int(header[2])
+        attrs['m']  = int(header[3])
+        data = np.loadtxt(filePath, skiprows=1)
+    else:
+        attrs['type'] = 'astra_1d'
+        data = np.loadtxt(filePath)
+        
+    return dict(attrs=attrs, data=data)
+
 
 
 
@@ -136,6 +182,9 @@ def fieldmap_data(astra_input, section='cavity', index=1, fieldmaps={}, verbose=
     Loads the fieldmap in absolute coordinates.
     
     If a fieldmaps dict is given, thes will be used instead of loading the file.
+    
+    Returns tuple:
+        attrs, data
     
     """
     
@@ -159,10 +208,13 @@ def fieldmap_data(astra_input, section='cavity', index=1, fieldmaps={}, verbose=
     
     
     if file in fieldmaps:
-        dat = fieldmaps[file].copy()
+        fmap = fieldmaps[file].copy()
     else:
         print(f'loading from file {file}')
-        dat = np.loadtxt(file)
+        fmap = parse_fieldmap(file)
+        
+    dat = fmap['data']    
+    
     dat[:,0] += offset
     dat[:,1] *= scale/max(abs(dat[:,1]))
     

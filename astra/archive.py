@@ -116,12 +116,22 @@ def write_fieldmap_h5(h5, fieldmap_dict, name='fieldmap'):
     """
     g = h5.create_group(name)
     for k, v in fieldmap_dict.items():
-        g[k] = v
-
+        g[k] = v['data']
+        for k2, a in v['attrs'].items():
+            g[k].attrs[k2] = a
+        
 def read_fieldmap_h5(h5):
     d = {}
     for fmap in h5:
-        d[fmap] = h5[fmap][:]
+        d[fmap] = {}
+        d[fmap]['data'] = h5[fmap][:]
+        
+        # Handle legacy fieldmaps without attrs
+        attrs = dict(h5[fmap].attrs)
+        if not attrs:
+            attrs = {'type': 'astra_1d'}
+        d[fmap]['attrs'] = attrs            
+            
     return d
 
 
