@@ -223,11 +223,11 @@ def fieldmap_data(astra_input, section='cavity', index=1, fieldmaps={}, verbose=
         k2 = f'c_numb({index})'
         if k2 in astra_input[section]:
             n_cell = astra_input[section][k2]
+            
             if n_cell > 1:
                 zfull, Ezfull = expand_tws_fmap(fmap, n_cell)
                 dat = np.array([zfull, Ezfull]).T
 
-        
     
     dat[:,0] += offset
     dat[:,1] *= scale/max(abs(dat[:,1]))
@@ -241,10 +241,15 @@ def fieldmap_data(astra_input, section='cavity', index=1, fieldmaps={}, verbose=
 
 def expand_tws_fmap(fmap, n_cell):
     """
-    Expands periodic TWS fieldmap data over a number of cells:
-    |Entrance | Cell | Exit | -> |Entrance | Cell| ...|Cell| Exit | 
-              z0     z1                     --- n_cell ----
+    Expands periodic TWS fieldmap data over a number of repeating cells:
+    |Entrance | Cells | Exit | -> |Entrance | Cells| ...|Cells| Exit | 
+              z0     z1                     --- n_repeat ----
     Takes care not to overlap points.
+    
+    The the body of the fieldmap has: 
+        m_cells_in_body  = fmap['attrs']['m']
+    So:
+        n_repeat = int(n_cell / m_cells_in_body)
     
     Returns
     -------
@@ -258,11 +263,15 @@ def expand_tws_fmap(fmap, n_cell):
     # Beg and end of cell
     z1 = fmap['attrs']['z1']
     z2 = fmap['attrs']['z2']
+    m_cells_in_body = fmap['attrs']['m']
     # Approximate spacing
     dz = np.mean(np.diff(z0))
     Lentrance = z1-zmin
     Lexit = zmax-z2
     Lcell = z2-z1
+    
+    #
+    n_repeat = int(n_cell / m_cells_in_body)
     
     # Z arrays to be used to construct the full map
     zentrance = np.linspace(zmin, z1, int(round(Lentrance/dz+1)))
@@ -276,10 +285,10 @@ def expand_tws_fmap(fmap, n_cell):
     # Collect data, not overlapping points
     ztot =  [zentrance[:-1]]
     Eztot = [Ezentrance[:-1]]
-    for i in range(n_cell):
+    for i in range(n_repeat):
         ztot.append(zcell[:-1] + i*Lcell)
         Eztot.append(Ezcell[:-1])
-    ztot.append(zexit + (n_cell-1)*Lcell)
+    ztot.append(zexit + (n_repeat-1)*Lcell)
     Eztot.append(Ezexit)
     
     return np.concatenate(ztot), np.concatenate(Eztot)
