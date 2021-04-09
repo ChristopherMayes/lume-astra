@@ -135,7 +135,7 @@ def write_fieldmap(fname, fmap):
     attrs = fmap['attrs']
     ftype = attrs['type']
     if ftype == 'astra_tws':
-        header = f"{attrs['z1']} {attrs['z2']} {attrs['m']} {attrs['n']}"
+        header = f"{attrs['z1']} {attrs['z2']} {attrs['n']} {attrs['m']}"
         np.savetxt(fname, fmap['data'], header=header, comments='')
     elif ftype == 'astra_1d':
         np.savetxt(fname, fmap['data'])
