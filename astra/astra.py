@@ -578,7 +578,7 @@ class Astra:
         
         # Just plot fieldmaps if there are no 
         if not self.output['stats']:
-            return plot_fieldmaps(self, xlim=xlim, fieldmap_dict=self.fieldmap, **kwargs)
+            return plot_fieldmaps(self, xlim=xlim, **kwargs)
             
         
         
