@@ -146,24 +146,31 @@ def plot_stats(astra_object, keys=['norm_emit_x', 'sigma_z'], sections=['cavity'
     
 def plot_stats_with_layout(astra_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'], 
                            xkey='mean_z', xlim=None, 
+                           ylim=None, ylim2=None,
                            nice=True, 
                            include_layout=False,
                            include_labels=True, 
                            include_particles=True, 
-                           include_legend=True, **kwargs):
+                           include_legend=True,
+                           return_figure=False,
+                           **kwargs):
     """
     Plots stat output multiple keys.
     
     If a list of ykeys2 is given, these will be put on the right hand axis. This can also be given as a single key. 
     
-    Logical switches, all default to True:
-        nice: a nice SI prefix and scaling will be used to make the numbers reasonably sized.
+    Logical switches:
+        nice: a nice SI prefix and scaling will be used to make the numbers reasonably sized. Default: True
         
-        include_legend: The plot will include the legend
+        include_legend: The plot will include the legend.  Default: True
         
-        include_layout: the layout plot will be displayed at the bottom
+        include_particles: Plot the particle statistics as dots. Default: True
         
-        include_labels: the layout will include element labels. 
+        include_layout: the layout plot will be displayed at the bottom.  Default: True
+        
+        include_labels: the layout will include element labels.  Default: False
+        
+        return_figure: return the figure object for further manipulation. Default: False
         
     Copied almost verbatim from lume-impact's Impact.plot.plot_stats_with_layout
 
@@ -185,7 +192,8 @@ def plot_stats_with_layout(astra_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
     if ykeys2:
         if isinstance(ykeys2, str):
             ykeys2 = [ykeys2]
-        ax_plot.append(ax_plot[0].twinx())
+        ax_twinx = ax_plot[0].twinx()
+        ax_plot.append(ax_twinx)
 
     # No need for a legend if there is only one plot
     if len(ykeys)==1 and not ykeys2:
@@ -278,8 +286,21 @@ def plot_stats_with_layout(astra_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
                     ax.scatter(X_particles/factor_x, Y_particles/factor, color=color) 
                 except:
                     pass     
-        ax.set_ylabel(', '.join(keys)+f' ({unit})')            
-        #if len(keys) > 1:
+        ax.set_ylabel(', '.join(keys)+f' ({unit})')   
+        
+        # Set limits, considering the scaling. 
+        if ix==0 and ylim:
+            new_ylim = np.array(ylim)/factor
+            ax.set_ylim(new_ylim)
+        # Set limits, considering the scaling. 
+        if ix==1 and ylim2:
+            pass
+        # TODO
+            if ylim2:
+                new_ylim2 = np.array(ylim2)/factor
+                ax_twinx.set_ylim(new_ylim2)            
+            else:
+                pass
         
     # Collect legend
     if include_legend:
@@ -303,4 +324,7 @@ def plot_stats_with_layout(astra_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
         else:
             ax_layout.set_xlabel('mean_z')
             xlim = (0, I.stop)
-        add_fieldmaps_to_axes(I,  ax_layout, bounds=xlim, include_labels=include_labels)      
+        add_fieldmaps_to_axes(I,  ax_layout, bounds=xlim, include_labels=include_labels)    
+        
+    if return_figure:
+        return fig          

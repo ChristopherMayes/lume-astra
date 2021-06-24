@@ -18,6 +18,7 @@ import tempfile
 import shutil
 import os, platform
 from time import time
+import traceback
 
 from copy import deepcopy
 
@@ -346,9 +347,12 @@ class Astra:
             if parse_output:
                 self.load_output()
         except Exception as ex:
-            print('Run Aborted', ex)
+            
+            err = str(traceback.format_exc())
+            
+            print('Run Aborted', err)
             self.error = True
-            run_info['why_error'] = str(ex)
+            run_info['why_error'] = err
         finally:
             run_info['run_time'] = time() - t1
             run_info['run_error'] = self.error           
@@ -551,27 +555,32 @@ class Astra:
         self.vprint(f'Initial particles written to {fname}')
         return fname        
         
-    def plot(self, y=['sigma_x', 'sigma_y'], x='mean_z', xlim=None, y2=[],
+    def plot(self, y=['sigma_x', 'sigma_y'], x='mean_z', xlim=None, ylim=None, ylim2=None, y2=[],
             nice=True, 
             include_layout=True,
             include_labels=False, 
             include_particles=True,
-            include_legend=True, 
+            include_legend=True,
+            return_figure=False, 
              **kwargs):
         """
         Plots stat output multiple keys.
     
         If a list of ykeys2 is given, these will be put on the right hand axis. This can also be given as a single key. 
     
-        Logical switches, all default to True:
-            nice: a nice SI prefix and scaling will be used to make the numbers reasonably sized.
-        
-            include_legend: The plot will include the legend
-        
-            include_layout: the layout plot (fieldmaps) will be displayed at the bottom
-        
-            include_labels: the layout will include element labels.    
+        Logical switches:
+            nice: a nice SI prefix and scaling will be used to make the numbers reasonably sized. Default: True
             
+            include_legend: The plot will include the legend.  Default: True
+            
+            include_particles: Plot the particle statistics as dots. Default: True
+            
+            include_layout: the layout plot will be displayed at the bottom.  Default: True
+            
+            include_labels: the layout will include element labels.  Default: False
+            
+            return_figure: return the figure object for further manipulation. Default: False
+                
         If there is no output to plot, the fieldmaps will be plotted with .plot_fieldmaps
         
         """
@@ -582,13 +591,15 @@ class Astra:
             
         
         
-        plot_stats_with_layout(self, ykeys=y, ykeys2=y2, 
-                           xkey=x, xlim=xlim, 
+        return plot_stats_with_layout(self, ykeys=y, ykeys2=y2, 
+                           xkey=x, xlim=xlim, ylim=ylim, ylim2=ylim2,
                            nice=nice, 
                            include_layout=include_layout,
                            include_labels=include_labels, 
                            include_particles=include_particles, 
-                           include_legend=include_legend, **kwargs)   
+                           include_legend=include_legend,
+                           return_figure=return_figure, 
+                           **kwargs)   
         
     def plot_fieldmaps(self, **kwargs):
         return plot_fieldmaps(self, **kwargs)
