@@ -24,7 +24,7 @@ def astra_init(h5, version=None):
     """
     
     if not version:
-        from impact import __version__ 
+        from astra import __version__ 
         version = __version__
         
     
