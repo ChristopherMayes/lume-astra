@@ -6,9 +6,10 @@ from pmd_beamphysics.units import read_dataset_and_unit_h5, write_dataset_and_un
 from .control import ControlGroup
 from .parsers import OutputUnits
 from .tools import isotime, native_type
-from ._version import __version__
 
-
+# TODO: Cleaner version import
+from . import _version
+__version__ = _version.get_versions()['version']
 
 
 def fstr(s):
