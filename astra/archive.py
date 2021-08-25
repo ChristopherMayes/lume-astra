@@ -7,10 +7,6 @@ from .control import ControlGroup
 from .parsers import OutputUnits
 from .tools import isotime, native_type
 
-# TODO: Cleaner version import
-from . import _version
-__version__ = _version.get_versions()['version']
-
 
 def fstr(s):
     """
@@ -21,11 +17,16 @@ def fstr(s):
 
 
 
-def astra_init(h5, version=__version__):
+def astra_init(h5, version=None):
     """
     Set basic information to an open h5 handle
     
     """
+    
+    if not version:
+        from impact import __version__ 
+        version = __version__
+        
     
     d = {
         'dataType':'lume-astra',
