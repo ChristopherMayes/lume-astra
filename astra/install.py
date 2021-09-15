@@ -15,6 +15,7 @@ GENERATOR_URL = {
     'Windows': 'http://www.desy.de/~mpyflo/Astra_for_WindowsPC/generator.exe'
 }
 
+EXAMPLES_URL = "https://ChristopherMayes.github.io/lume-astra/assets/lume-astra-examples.zip"
 
 
 
@@ -69,5 +70,24 @@ def install_generator(dest_dir=None, name='generator', verbose=False):
         print(f'Installed Astra\'s generator in {dest}, and set $GENERATOR_BIN equal to this.')    
     
     return dest
-    
-    
+
+
+def install_examples(location):
+    """
+    Install lume-astra examples on the informed location.
+
+    Parameters
+    ----------
+    location : str
+        The path in which to install the examples
+    """
+    import requests
+    import zipfile
+    import io
+
+    response = requests.get(EXAMPLES_URL, stream=True)
+    if response.status_code == 200:
+        zip = zipfile.ZipFile(io.BytesIO(response.content))
+        zip.extractall(location)
+    else:
+        raise RuntimeError(f"Could not download examples archive. Status code was: {response.status_code}")
