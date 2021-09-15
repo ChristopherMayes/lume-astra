@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    if: ${{ github.repository == 'hhslepicka/lume-astra' }}
+    if: ${{ github.repository == 'ChristopherMayes/lume-astra' }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
