@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    if: ${{ github.repository == 'ChristopherMayes/lume-astra' }}
+    if: ${{ github.repository == 'hhslepicka/lume-astra' }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -18,15 +18,19 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+      - uses: conda-incubator/setup-miniconda@v2
         with:
+          auto-activate-base: true
+          activate-environment: true
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+          channels: conda-forge
+          channel-priority: strict
+      - name: Install Dependencies
+        shell: bash -l {0}
         run: |
-          pip install -U setuptools wheel
-          pip install -U -r docs-requirements.txt
-          pip install -U -r requirements.txt
+          conda config --set always_yes yes --set changeps1 no
+          conda install --file requirements.txt
+          pip install -r docs-requirements.txt
       - name: Build Docs
         run: |
           mkdocs build
