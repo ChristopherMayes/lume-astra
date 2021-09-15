@@ -29,8 +29,9 @@ jobs:
         shell: bash -l {0}
         run: |
           conda config --set always_yes yes --set changeps1 no
-          conda install --file requirements.txt
+          conda install requests distgen numpy h5py pmd_beamphysics
           pip install -r docs-requirements.txt
+          pip install .
       - name: Build Docs
         run: |
           mkdocs build
