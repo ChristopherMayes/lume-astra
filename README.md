@@ -36,7 +36,7 @@ For convenience, you can set `$ASTRA_BIN` and `$GENERATOR_BIN` to point to the A
 
 ## Basic usage
 
-See [simple_astra_run.ipynb](./examples/basic_astra_run.ipynb). In short:
+See [simple_astra_run.ipynb](./examples/basic_astra_examples.ipynb). In short:
 
 ```python
 from astra import Astra
