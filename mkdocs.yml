@@ -1,1 +1,57 @@
-site_name: My Docs
+site_name: lume-astra
+repo_url: https://github.com/ChristopherMayes/lume-astra
+repo_name: "ChristopherMayes/lume-astra"
+
+nav:
+    - Home: index.md
+    - API:
+      - Astra: api/astra.md
+      - Generator: api/generator.md
+      - Install: api/install.md
+
+theme:
+  icon:
+    repo: fontawesome/brands/github
+  name: material
+  features:
+    - navigation.top
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ChristopherMayes/lume-astra
+      name: lume-astra
+
+plugins:
+    - search
+    - mkdocstrings:
+        default_handler: python
+        handlers:
+          python:
+            selection:
+              docstring_style: "numpy"
+              inherited_members: false
+              filters:
+                - "!^_"  # exclude all members starting with _
+                - "^__init__$"  # but always include __init__ modules and methods
+            rendering:
+              show_source: true
+              show_root_heading: true

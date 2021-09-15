@@ -95,6 +95,11 @@ class Astra:
     def add_group(self, name, **kwargs):
         """
         Add a control group. See control.py
+
+        Parameters
+        ----------
+        name : str
+            The group name
         """
         assert name not in self.input, f'{name} not allowed to be overwritten by group.'
         if name in self.group:
