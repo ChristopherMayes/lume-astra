@@ -33,6 +33,7 @@ jobs:
           pip install -r docs-requirements.txt
           pip install .
       - name: Build Docs
+        shell: bash -l {0}
         run: |
           mkdocs build
           zip -r lume-astra-examples.zip examples/
