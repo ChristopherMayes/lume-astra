@@ -1,0 +1,1972 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+    
+    
+      
+        <title>Astra - lume-astra</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.802231af.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+      <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#astra.astra" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="lume-astra" class="md-header__button md-logo" aria-label="lume-astra" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            lume-astra
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Astra
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2m10-3a5 5 0 0 1 5 5 5 5 0 0 1-5 5H7a5 5 0 0 1-5-5 5 5 0 0 1 5-5h10M7 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3h10a3 3 0 0 0 3-3 3 3 0 0 0-3-3H7z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/ChristopherMayes/lume-astra/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ChristopherMayes/lume-astra
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="lume-astra" class="md-nav__button md-logo" aria-label="lume-astra" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    lume-astra
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/ChristopherMayes/lume-astra/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ChristopherMayes/lume-astra
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      <label class="md-nav__link" for="__nav_2">
+        API
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Astra
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Astra
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#astra.astra" class="md-nav__link">
+    astra
+  </a>
+  
+    <nav class="md-nav" aria-label="astra">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra" class="md-nav__link">
+    Astra
+  </a>
+  
+    <nav class="md-nav" aria-label="Astra">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.add_group" class="md-nav__link">
+    add_group()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.archive" class="md-nav__link">
+    archive()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.copy" class="md-nav__link">
+    copy()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.fingerprint" class="md-nav__link">
+    fingerprint()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.from_archive" class="md-nav__link">
+    from_archive()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.from_yaml" class="md-nav__link">
+    from_yaml()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.get_run_script" class="md-nav__link">
+    get_run_script()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.load_archive" class="md-nav__link">
+    load_archive()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.load_fieldmaps" class="md-nav__link">
+    load_fieldmaps()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.load_initial_particles" class="md-nav__link">
+    load_initial_particles()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.load_output" class="md-nav__link">
+    load_output()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.particle_stat" class="md-nav__link">
+    particle_stat()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.plot" class="md-nav__link">
+    plot()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.run_astra" class="md-nav__link">
+    run_astra()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.write_fieldmaps" class="md-nav__link">
+    write_fieldmaps()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.write_input" class="md-nav__link">
+    write_input()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.recommended_spacecharge_mesh" class="md-nav__link">
+    recommended_spacecharge_mesh()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.run_astra" class="md-nav__link">
+    run_astra()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.run_astra_with_generator" class="md-nav__link">
+    run_astra_with_generator()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.set_astra" class="md-nav__link">
+    set_astra()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generator/" class="md-nav__link">
+        Generator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        Install
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#astra.astra" class="md-nav__link">
+    astra
+  </a>
+  
+    <nav class="md-nav" aria-label="astra">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra" class="md-nav__link">
+    Astra
+  </a>
+  
+    <nav class="md-nav" aria-label="Astra">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.add_group" class="md-nav__link">
+    add_group()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.archive" class="md-nav__link">
+    archive()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.copy" class="md-nav__link">
+    copy()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.fingerprint" class="md-nav__link">
+    fingerprint()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.from_archive" class="md-nav__link">
+    from_archive()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.from_yaml" class="md-nav__link">
+    from_yaml()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.get_run_script" class="md-nav__link">
+    get_run_script()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.load_archive" class="md-nav__link">
+    load_archive()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.load_fieldmaps" class="md-nav__link">
+    load_fieldmaps()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.load_initial_particles" class="md-nav__link">
+    load_initial_particles()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.load_output" class="md-nav__link">
+    load_output()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.particle_stat" class="md-nav__link">
+    particle_stat()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.plot" class="md-nav__link">
+    plot()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.run_astra" class="md-nav__link">
+    run_astra()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.write_fieldmaps" class="md-nav__link">
+    write_fieldmaps()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.Astra.write_input" class="md-nav__link">
+    write_input()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.recommended_spacecharge_mesh" class="md-nav__link">
+    recommended_spacecharge_mesh()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.run_astra" class="md-nav__link">
+    run_astra()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.run_astra_with_generator" class="md-nav__link">
+    run_astra_with_generator()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#astra.astra.set_astra" class="md-nav__link">
+    set_astra()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/ChristopherMayes/lume-astra/edit/master/docs/api/astra.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  <h1>Astra</h1>
+                
+                <div class="doc doc-object doc-module">
+
+
+
+<h2 class="doc doc-heading" id="astra.astra">
+        <code>astra.astra</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 class="doc doc-heading" id="astra.astra.Astra">
+        <code>Astra</code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Astra simulation object. Essential methods:</p>
+<p>.<strong>init</strong>(...)
+.configure()
+.run()</p>
+<p>Input deck is held in .input
+Output data is parsed into .output
+.load_particles() will load particle data into .output['particles'][...]</p>
+<p>The Astra binary file can be set on init. If it doesn't exist, configure will check the
+    $ASTRA_BIN
+environmental variable.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.add_group">
+<code class="highlight language-python"><span class="n">add_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Add a control group. See control.py</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>name</code></td>
+        <td><code>str</code></td>
+        <td><p>The group name</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">add_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add a control group. See control.py</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        The group name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> not allowed to be overwritten by group.&#39;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vprint</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Warning: group </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> already exists, overwriting.&#39;</span><span class="p">)</span>
+
+    <span class="n">g</span> <span class="o">=</span> <span class="n">ControlGroup</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span>
+
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.archive">
+<code class="highlight language-python"><span class="n">archive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h5</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Archive all data to an h5 handle or filename.</p>
+<p>If no file is given, a file based on the fingerprint will be created.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">archive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h5</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Archive all data to an h5 handle or filename.</span>
+
+<span class="sd">    If no file is given, a file based on the fingerprint will be created.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">h5</span><span class="p">:</span>
+        <span class="n">h5</span> <span class="o">=</span> <span class="s1">&#39;astra_&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">fingerprint</span><span class="p">()</span><span class="o">+</span><span class="s1">&#39;.h5&#39;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h5</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">h5</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">h5</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vprint</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Archiving to file </span><span class="si">{</span><span class="n">h5</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># store directly in the given h5 handle</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">h5</span>
+
+    <span class="c1"># Write basic attributes</span>
+    <span class="n">archive</span><span class="o">.</span><span class="n">astra_init</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+
+    <span class="c1"># Initial particles</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_particles</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_particles</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;initial_particles&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Fieldmaps</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldmap</span><span class="p">:</span>
+        <span class="n">archive</span><span class="o">.</span><span class="n">write_fieldmap_h5</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldmap</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fieldmap&#39;</span><span class="p">)</span>
+
+    <span class="c1"># All input</span>
+    <span class="n">archive</span><span class="o">.</span><span class="n">write_input_h5</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+
+    <span class="c1"># All output</span>
+    <span class="n">archive</span><span class="o">.</span><span class="n">write_output_h5</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>    
+
+    <span class="c1"># Control groups</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">:</span>
+         <span class="n">archive</span><span class="o">.</span><span class="n">write_control_groups_h5</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;control_groups&#39;</span><span class="p">)</span>        
+
+    <span class="k">return</span> <span class="n">h5</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.copy">
+<code class="highlight language-python"><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Returns a deep copy of this object.</p>
+<p>If a tempdir is being used, will clear this and deconfigure.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a deep copy of this object.</span>
+
+<span class="sd">    If a tempdir is being used, will clear this and deconfigure. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">A2</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="c1"># Clear this </span>
+    <span class="k">if</span> <span class="n">A2</span><span class="o">.</span><span class="n">use_tempdir</span><span class="p">:</span>
+        <span class="n">A2</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">A2</span><span class="o">.</span><span class="n">configured</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="n">A2</span>       
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.fingerprint">
+<code class="highlight language-python"><span class="n">fingerprint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Data fingerprint using the input.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">fingerprint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data fingerprint using the input. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">tools</span><span class="o">.</span><span class="n">fingerprint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.from_archive">
+<code class="highlight language-python"><span class="n">from_archive</span><span class="p">(</span><span class="n">archive_h5</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Class method to return an GPT object loaded from an archive file</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">from_archive</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">archive_h5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class method to return an GPT object loaded from an archive file</span>
+<span class="sd">    &quot;&quot;&quot;</span>        
+    <span class="n">c</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">load_archive</span><span class="p">(</span><span class="n">archive_h5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">c</span>       
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.from_yaml">
+<code class="highlight language-python"><span class="n">from_yaml</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Returns an Astra object instantiated from a YAML config file</p>
+<p>Will load intial_particles from an h5 file.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">yaml_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an Astra object instantiated from a YAML config file</span>
+
+<span class="sd">    Will load intial_particles from an h5 file. </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Try file</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">)):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">))</span>
+
+        <span class="c1"># The input file might be relative to the yaml file</span>
+        <span class="k">if</span> <span class="s1">&#39;input_file&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;input_file&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+                <span class="c1"># Get the yaml file root</span>
+                <span class="n">root</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">tools</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">))</span>
+                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;input_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1">#Try raw string</span>
+        <span class="n">config</span>  <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">)</span>
+
+    <span class="c1"># Form ParticleGroup from file</span>
+    <span class="k">if</span> <span class="s1">&#39;initial_particles&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;initial_particles&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+            <span class="n">root</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">tools</span><span class="o">.</span><span class="n">full_path</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">))</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;initial_particles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ParticleGroup</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>            
+
+    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span>    
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.get_run_script">
+<code class="highlight language-python"><span class="n">get_run_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">write_to_path</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Assembles the run script. Optionally writes a file 'run' with this line to path.</p>
+<p>This expect to run with .path as the cwd.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_run_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">write_to_path</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Assembles the run script. Optionally writes a file &#39;run&#39; with this line to path.</span>
+
+<span class="sd">    This expect to run with .path as the cwd. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">infile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)</span> <span class="c1"># Expect to run locally. Astra has problems with long paths.</span>
+
+    <span class="n">runscript</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">astra_bin</span><span class="p">,</span> <span class="n">infile</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">write_to_path</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;run&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">runscript</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">runscript</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.load_archive">
+<code class="highlight language-python"><span class="n">load_archive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h5</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Loads input and output from archived h5 file.</p>
+<p>See: Astra.archive</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">load_archive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h5</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads input and output from archived h5 file.</span>
+
+<span class="sd">    See: Astra.archive</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h5</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">h5</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">h5</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+        <span class="n">glist</span> <span class="o">=</span> <span class="n">archive</span><span class="o">.</span><span class="n">find_astra_archives</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">glist</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># legacy: try top level</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;legacy&#39;</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">gname</span> <span class="o">=</span> <span class="n">glist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;group </span><span class="si">{</span><span class="n">gname</span><span class="si">}</span><span class="s1"> from&#39;</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="n">gname</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Multiple archives found in file </span><span class="si">{</span><span class="n">h5</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">glist</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vprint</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Reading </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1"> archive file </span><span class="si">{</span><span class="n">h5</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">h5</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="n">archive</span><span class="o">.</span><span class="n">read_input_h5</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">archive</span><span class="o">.</span><span class="n">read_output_h5</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s1">&#39;initial_particles&#39;</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_particles</span> <span class="o">=</span> <span class="n">ParticleGroup</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="n">g</span><span class="p">[</span><span class="s1">&#39;initial_particles&#39;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="s1">&#39;fieldmap&#39;</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fieldmap</span> <span class="o">=</span> <span class="n">archive</span><span class="o">.</span><span class="n">read_fieldmap_h5</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s1">&#39;fieldmap&#39;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="s1">&#39;control_groups&#39;</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="o">=</span> <span class="n">archive</span><span class="o">.</span><span class="n">read_control_groups_h5</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s1">&#39;control_groups&#39;</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>             
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">vprint</span><span class="p">(</span><span class="s1">&#39;Loaded from archive. Note: Must reconfigure to run again.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">configured</span> <span class="o">=</span> <span class="kc">False</span>   
+
+
+    <span class="c1"># Re-link groups</span>
+    <span class="c1"># TODO: cleaner logic</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">cg</span>  <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">cg</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>            
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.load_fieldmaps">
+<code class="highlight language-python"><span class="n">load_fieldmaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_paths</span><span class="o">=</span><span class="p">[])</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Loads fieldmaps into Astra.fieldmap as a dict.</p>
+<p>Optionally, a list of paths can be included that will search for these. The default will search self.path.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">load_fieldmaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_paths</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads fieldmaps into Astra.fieldmap as a dict.</span>
+
+<span class="sd">    Optionally, a list of paths can be included that will search for these. The default will search self.path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Do not consider files if fieldmaps have been loaded. </span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldmap</span><span class="p">:</span>
+        <span class="n">strip_path</span><span class="o">=</span><span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">strip_path</span><span class="o">=</span><span class="kc">True</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">search_paths</span><span class="p">:</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">]</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">fieldmap</span> <span class="o">=</span> <span class="n">load_fieldmaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldmap_dict</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldmap</span><span class="p">,</span> <span class="n">search_paths</span><span class="o">=</span><span class="n">search_paths</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span> <span class="n">strip_path</span><span class="o">=</span><span class="n">strip_path</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.load_initial_particles">
+<code class="highlight language-python"><span class="n">load_initial_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h5</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Loads a openPMD-beamphysics particle h5 handle or file</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">load_initial_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Loads a openPMD-beamphysics particle h5 handle or file&quot;&quot;&quot;</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">ParticleGroup</span><span class="p">(</span><span class="n">h5</span><span class="o">=</span><span class="n">h5</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">initial_particles</span> <span class="o">=</span> <span class="n">P</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.load_output">
+<code class="highlight language-python"><span class="n">load_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_particles</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Loads Astra output files into .output</p>
+<p>.output is a dict with dicts:
+    .stats
+    .run_info
+    .other</p>
+<p>and if include_particles,
+    .particles = list of ParticleGroup objects</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">load_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_particles</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads Astra output files into .output</span>
+
+<span class="sd">    .output is a dict with dicts:</span>
+<span class="sd">        .stats</span>
+<span class="sd">        .run_info</span>
+<span class="sd">        .other</span>
+
+<span class="sd">    and if include_particles,</span>
+<span class="sd">        .particles = list of ParticleGroup objects</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">run_number</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">astra_run_extension</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s1">&#39;newrun&#39;</span><span class="p">][</span><span class="s1">&#39;run&#39;</span><span class="p">])</span>
+    <span class="n">outfiles</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">find_astra_output_files</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="n">run_number</span><span class="p">)</span>
+
+    <span class="c1">#assert len(outfiles)&gt;0, &#39;No output files found&#39;</span>
+
+    <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s1">&#39;stats&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">outfiles</span><span class="p">:</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">astra_output_type</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">parse_astra_output_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Cemit&#39;</span><span class="p">,</span> <span class="s1">&#39;Xemit&#39;</span><span class="p">,</span> <span class="s1">&#39;Yemit&#39;</span><span class="p">,</span> <span class="s1">&#39;Zemit&#39;</span><span class="p">]:</span>
+            <span class="n">stats</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;LandF&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s1">&#39;other&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown output type: </span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Check that the lengths of all arrays are the same</span>
+    <span class="n">nlist</span> <span class="o">=</span> <span class="p">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">}</span>
+
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">nlist</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Stat keys do not all have the same length: </span><span class="si">{</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+
+
+    <span class="k">if</span> <span class="n">include_particles</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_particles</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.particle_stat">
+<code class="highlight language-python"><span class="n">particle_stat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">alive_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Compute a statistic from the particles.</p>
+<p>Alive particles have status == 1. By default, statistics will only be computed on these.</p>
+<p>n_dead will override the alive_only flag, 
+and return the number of particles with status &lt; -6 (Astra convention)</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">particle_stat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">alive_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute a statistic from the particles.</span>
+
+<span class="sd">    Alive particles have status == 1. By default, statistics will only be computed on these.</span>
+
+<span class="sd">    n_dead will override the alive_only flag, </span>
+<span class="sd">    and return the number of particles with status &lt; -6 (Astra convention)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;n_dead&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">status</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">6</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;n_alive&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">status</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">6</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">])</span>
+
+    <span class="n">pstats</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">alive_only</span> <span class="ow">and</span> <span class="n">P</span><span class="o">.</span><span class="n">n_dead</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">status</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pstats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pstats</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.plot">
+<code class="highlight language-python"><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sigma_x&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma_y&#39;</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;mean_z&#39;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylim2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="p">[],</span> <span class="n">nice</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_particles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_figure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Plots stat output multiple keys.</p>
+<p>If a list of ykeys2 is given, these will be put on the right hand axis. This can also be given as a single key. </p>
+<p>Logical switches:
+    nice: a nice SI prefix and scaling will be used to make the numbers reasonably sized. Default: True</p>
+<div class="highlight"><pre><span></span><code>include_legend: The plot will include the legend.  Default: True
+
+include_particles: Plot the particle statistics as dots. Default: True
+
+include_layout: the layout plot will be displayed at the bottom.  Default: True
+
+include_labels: the layout will include element labels.  Default: False
+
+return_figure: return the figure object for further manipulation. Default: False
+</code></pre></div>
+<p>If there is no output to plot, the fieldmaps will be plotted with .plot_fieldmaps</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sigma_x&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma_y&#39;</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;mean_z&#39;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylim2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">nice</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+        <span class="n">include_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">include_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+        <span class="n">include_particles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">include_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">return_figure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+         <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots stat output multiple keys.</span>
+
+<span class="sd">    If a list of ykeys2 is given, these will be put on the right hand axis. This can also be given as a single key. </span>
+
+<span class="sd">    Logical switches:</span>
+<span class="sd">        nice: a nice SI prefix and scaling will be used to make the numbers reasonably sized. Default: True</span>
+
+<span class="sd">        include_legend: The plot will include the legend.  Default: True</span>
+
+<span class="sd">        include_particles: Plot the particle statistics as dots. Default: True</span>
+
+<span class="sd">        include_layout: the layout plot will be displayed at the bottom.  Default: True</span>
+
+<span class="sd">        include_labels: the layout will include element labels.  Default: False</span>
+
+<span class="sd">        return_figure: return the figure object for further manipulation. Default: False</span>
+
+<span class="sd">    If there is no output to plot, the fieldmaps will be plotted with .plot_fieldmaps</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Just plot fieldmaps if there are no </span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s1">&#39;stats&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">plot_fieldmaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="n">xlim</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+
+    <span class="k">return</span> <span class="n">plot_stats_with_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ykeys</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">ykeys2</span><span class="o">=</span><span class="n">y2</span><span class="p">,</span> 
+                       <span class="n">xkey</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="n">ylim</span><span class="p">,</span> <span class="n">ylim2</span><span class="o">=</span><span class="n">ylim2</span><span class="p">,</span>
+                       <span class="n">nice</span><span class="o">=</span><span class="n">nice</span><span class="p">,</span> 
+                       <span class="n">include_layout</span><span class="o">=</span><span class="n">include_layout</span><span class="p">,</span>
+                       <span class="n">include_labels</span><span class="o">=</span><span class="n">include_labels</span><span class="p">,</span> 
+                       <span class="n">include_particles</span><span class="o">=</span><span class="n">include_particles</span><span class="p">,</span> 
+                       <span class="n">include_legend</span><span class="o">=</span><span class="n">include_legend</span><span class="p">,</span>
+                       <span class="n">return_figure</span><span class="o">=</span><span class="n">return_figure</span><span class="p">,</span> 
+                       <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>   
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.run_astra">
+<code class="highlight language-python"><span class="n">run_astra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">parse_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Runs Astra</p>
+<p>Changes directory, so does not work with threads.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">run_astra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">parse_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Runs Astra</span>
+
+<span class="sd">    Changes directory, so does not work with threads. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">run_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s1">&#39;run_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">run_info</span><span class="p">[</span><span class="s1">&#39;start_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t1</span>
+
+    <span class="c1"># Write all input </span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">write_input</span><span class="p">()</span>
+
+    <span class="n">runscript</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_run_script</span><span class="p">()</span>
+    <span class="n">run_info</span><span class="p">[</span><span class="s1">&#39;run_script&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">runscript</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">tools</span><span class="o">.</span><span class="n">execute2</span><span class="p">(</span><span class="n">runscript</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;log&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span>
+            <span class="n">run_info</span><span class="p">[</span><span class="s1">&#39;why_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;why_error&#39;</span><span class="p">]</span>
+            <span class="c1"># Log file must have this to have finished properly</span>
+            <span class="k">if</span> <span class="n">log</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;finished simulation&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">run_info</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">run_info</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;why_error&#39;</span><span class="p">:</span> <span class="s2">&quot;Couldn&#39;t find finished simulation&quot;</span><span class="p">})</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Interactive output, for Jupyter</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">tools</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">runscript</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">vprint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">log</span>
+
+        <span class="k">if</span> <span class="n">parse_output</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_output</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+
+        <span class="n">err</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Run Aborted&#39;</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">run_info</span><span class="p">[</span><span class="s1">&#39;why_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">err</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">run_info</span><span class="p">[</span><span class="s1">&#39;run_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t1</span>
+        <span class="n">run_info</span><span class="p">[</span><span class="s1">&#39;run_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span>           
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">finished</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">vprint</span><span class="p">(</span><span class="n">run_info</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.write_fieldmaps">
+<code class="highlight language-python"><span class="n">write_fieldmaps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Writes any loaded fieldmaps to path</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_fieldmaps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes any loaded fieldmaps to path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldmap</span><span class="p">:</span>
+        <span class="n">write_fieldmaps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldmap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vprint</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldmap</span><span class="p">)</span><span class="si">}</span><span class="s1"> fieldmaps written to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>        
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 class="doc doc-heading" id="astra.astra.Astra.write_input">
+<code class="highlight language-python"><span class="n">write_input</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Writes all input. If fieldmaps have been loaded, these will also be written.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes all input. If fieldmaps have been loaded, these will also be written. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_particles</span><span class="p">:</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_initial_particles</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s1">&#39;newrun&#39;</span><span class="p">][</span><span class="s1">&#39;distribution&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fname</span>           
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">write_fieldmaps</span><span class="p">()</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">write_input_file</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 class="doc doc-heading" id="astra.astra.recommended_spacecharge_mesh">
+<code class="highlight language-python"><span class="n">recommended_spacecharge_mesh</span><span class="p">(</span><span class="n">n_particles</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>! --------------------------------------------------------</p>
+<p>! Suggested Nrad, Nlong_in settings from:
+!    A. Bartnik and C. Gulliford (Cornell University)
+!
+! Nrad = 35,    Nlong_in = 75  !28K
+! Nrad = 29,    Nlong_in = 63  !20K
+! Nrad = 20,    Nlong_in = 43  !10K
+! Nrad = 13,    Nlong_in = 28  !4K
+! Nrad = 10,    Nlong_in = 20  !2K
+! Nrad = 8,     Nlong_in = 16  !1K
+!
+! Nrad ~ round(3.3<em>(n_particles/1000)^(2/3) + 5)
+! Nlong_in ~ round(9.2</em>(n_particles/1000)^(0.603) + 6.5)
+!
+!</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">recommended_spacecharge_mesh</span><span class="p">(</span><span class="n">n_particles</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ! --------------------------------------------------------</span>
+<span class="sd">    ! Suggested Nrad, Nlong_in settings from:</span>
+<span class="sd">    !    A. Bartnik and C. Gulliford (Cornell University)</span>
+<span class="sd">    !</span>
+<span class="sd">    ! Nrad = 35,    Nlong_in = 75  !28K</span>
+<span class="sd">    ! Nrad = 29,    Nlong_in = 63  !20K</span>
+<span class="sd">    ! Nrad = 20,    Nlong_in = 43  !10K</span>
+<span class="sd">    ! Nrad = 13,    Nlong_in = 28  !4K</span>
+<span class="sd">    ! Nrad = 10,    Nlong_in = 20  !2K</span>
+<span class="sd">    ! Nrad = 8,     Nlong_in = 16  !1K</span>
+<span class="sd">    !</span>
+<span class="sd">    ! Nrad ~ round(3.3*(n_particles/1000)^(2/3) + 5)</span>
+<span class="sd">    ! Nlong_in ~ round(9.2*(n_particles/1000)^(0.603) + 6.5)</span>
+<span class="sd">    !</span>
+<span class="sd">    ! </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">n_particles</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
+        <span class="c1"># Set a minimum</span>
+        <span class="n">nrad</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">nlong_in</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Prefactors were recalculated from above note. </span>
+        <span class="n">nrad</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mf">3.3e-2</span><span class="o">*</span><span class="n">n_particles</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">nlong_in</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mf">0.143</span><span class="o">*</span><span class="n">n_particles</span><span class="o">**</span><span class="p">(</span><span class="mf">0.603</span><span class="p">)</span> <span class="o">+</span> <span class="mf">6.5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;nrad&#39;</span><span class="p">:</span><span class="n">nrad</span><span class="p">,</span> <span class="s1">&#39;nlong_in&#39;</span><span class="p">:</span><span class="n">nlong_in</span><span class="p">}</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 class="doc doc-heading" id="astra.astra.run_astra">
+<code class="highlight language-python"><span class="n">run_astra</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">astra_input_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">workdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">astra_bin</span><span class="o">=</span><span class="s1">&#39;$ASTRA_BIN&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">2500</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Run Astra. </p>
+<p>settings: dict with keys that can appear in an Astra input file.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">run_astra</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+              <span class="n">astra_input_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+              <span class="n">workdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+              <span class="n">astra_bin</span><span class="o">=</span><span class="s1">&#39;$ASTRA_BIN&#39;</span><span class="p">,</span> 
+              <span class="n">timeout</span><span class="o">=</span><span class="mi">2500</span><span class="p">,</span> 
+              <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run Astra. </span>
+
+<span class="sd">        settings: dict with keys that can appear in an Astra input file. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;run_astra&#39;</span><span class="p">)</span> 
+
+    <span class="c1"># Make astra object</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">Astra</span><span class="p">(</span><span class="n">astra_bin</span><span class="o">=</span><span class="n">astra_bin</span><span class="p">,</span> <span class="n">input_file</span><span class="o">=</span><span class="n">astra_input_file</span><span class="p">,</span> <span class="n">workdir</span><span class="o">=</span><span class="n">workdir</span><span class="p">)</span>
+
+    <span class="n">A</span><span class="o">.</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span>
+    <span class="n">A</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+    <span class="n">A</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s1">&#39;newrun&#39;</span><span class="p">][</span><span class="s1">&#39;l_rm_back&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># Remove backwards particles</span>
+
+    <span class="c1"># Set inputs</span>
+    <span class="k">if</span> <span class="n">settings</span><span class="p">:</span>
+        <span class="n">set_astra</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="p">{},</span> <span class="n">settings</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+    <span class="c1"># Run</span>
+    <span class="n">A</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">A</span>  
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 class="doc doc-heading" id="astra.astra.run_astra_with_generator">
+<code class="highlight language-python"><span class="n">run_astra_with_generator</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">astra_input_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">generator_input_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">workdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">astra_bin</span><span class="o">=</span><span class="s1">&#39;$ASTRA_BIN&#39;</span><span class="p">,</span> <span class="n">generator_bin</span><span class="o">=</span><span class="s1">&#39;$GENERATOR_BIN&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">2500</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">auto_set_spacecharge_mesh</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Run Astra with particles generated by Astra's generator. </p>
+<p>settings: dict with keys that can appear in an Astra or Generator input file.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">run_astra_with_generator</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">astra_input_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">generator_input_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">workdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                             <span class="n">astra_bin</span><span class="o">=</span><span class="s1">&#39;$ASTRA_BIN&#39;</span><span class="p">,</span>
+                             <span class="n">generator_bin</span><span class="o">=</span><span class="s1">&#39;$GENERATOR_BIN&#39;</span><span class="p">,</span>
+                             <span class="n">timeout</span><span class="o">=</span><span class="mi">2500</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                             <span class="n">auto_set_spacecharge_mesh</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run Astra with particles generated by Astra&#39;s generator. </span>
+
+<span class="sd">        settings: dict with keys that can appear in an Astra or Generator input file. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="n">astra_input_file</span><span class="p">,</span> <span class="s1">&#39;No astra input file&#39;</span>
+
+    <span class="c1"># Call simpler evaluation if there is no generator:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">generator_input_file</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">run_astra</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="p">,</span> 
+                         <span class="n">astra_input_file</span><span class="o">=</span><span class="n">astra_input_file</span><span class="p">,</span> 
+                         <span class="n">workdir</span><span class="o">=</span><span class="n">workdir</span><span class="p">,</span>
+                         <span class="n">astra_bin</span><span class="o">=</span><span class="n">astra_bin</span><span class="p">,</span> 
+                         <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span> 
+                         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;run_astra_with_generator&#39;</span><span class="p">)</span> 
+
+    <span class="c1"># Make astra and generator objects</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">Astra</span><span class="p">(</span><span class="n">astra_bin</span><span class="o">=</span><span class="n">astra_bin</span><span class="p">,</span> <span class="n">input_file</span><span class="o">=</span><span class="n">astra_input_file</span><span class="p">,</span> <span class="n">workdir</span><span class="o">=</span><span class="n">workdir</span><span class="p">)</span>
+    <span class="n">A</span><span class="o">.</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span>
+    <span class="n">A</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">AstraGenerator</span><span class="p">(</span><span class="n">generator_bin</span><span class="o">=</span><span class="n">generator_bin</span><span class="p">,</span> <span class="n">input_file</span><span class="o">=</span><span class="n">generator_input_file</span><span class="p">,</span> <span class="n">workdir</span><span class="o">=</span><span class="n">workdir</span><span class="p">)</span>
+    <span class="n">G</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+    <span class="n">A</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s1">&#39;newrun&#39;</span><span class="p">][</span><span class="s1">&#39;l_rm_back&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># Remove backwards particles</span>
+
+    <span class="c1"># Set inputs</span>
+    <span class="k">if</span> <span class="n">settings</span><span class="p">:</span>
+        <span class="n">set_astra</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">G</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">auto_set_spacecharge_mesh</span><span class="p">:</span>
+        <span class="n">n_particles</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s1">&#39;ipart&#39;</span><span class="p">]</span>
+        <span class="n">sc_settings</span> <span class="o">=</span> <span class="n">recommended_spacecharge_mesh</span><span class="p">(</span><span class="n">n_particles</span><span class="p">)</span>
+        <span class="n">A</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s1">&#39;charge&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sc_settings</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;set spacecharge mesh for n_particles:&#39;</span><span class="p">,</span> <span class="n">n_particles</span><span class="p">,</span> <span class="s1">&#39;to&#39;</span><span class="p">,</span> <span class="n">sc_settings</span><span class="p">)</span>        
+
+    <span class="c1"># Run Generator</span>
+    <span class="n">G</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>     
+    <span class="n">A</span><span class="o">.</span><span class="n">initial_particles</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s1">&#39;particles&#39;</span><span class="p">]</span>
+    <span class="n">A</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;run_astra_with_generator finished&#39;</span><span class="p">)</span>     
+
+    <span class="k">return</span> <span class="n">A</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 class="doc doc-heading" id="astra.astra.set_astra">
+<code class="highlight language-python"><span class="n">set_astra</span><span class="p">(</span><span class="n">astra_object</span><span class="p">,</span> <span class="n">generator_input</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Searches astra and generator objects for keys in settings, and sets their values to the appropriate input</p>
+
+        <details class="quote">
+          <summary>Source code in <code>astra/astra.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_astra</span><span class="p">(</span><span class="n">astra_object</span><span class="p">,</span> <span class="n">generator_input</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Searches astra and generator objects for keys in settings, and sets their values to the appropriate input</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">astra_input</span> <span class="o">=</span> <span class="n">astra_object</span><span class="o">.</span><span class="n">input</span> <span class="c1"># legacy syntax</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Check for direct settable attribute</span>
+        <span class="k">if</span> <span class="s1">&#39;:&#39;</span> <span class="ow">in</span> <span class="n">k</span><span class="p">:</span>
+            <span class="n">astra_object</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">nl</span> <span class="ow">in</span> <span class="n">astra_input</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">astra_input</span><span class="p">[</span><span class="n">nl</span><span class="p">]:</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="s1">&#39;is in astra&#39;</span><span class="p">,</span> <span class="n">nl</span><span class="p">)</span>
+                <span class="n">astra_input</span><span class="p">[</span><span class="n">nl</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">generator_input</span><span class="p">:</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">generator_input</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="s1">&#39;is in generator&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span> <span class="ow">and</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="s1">&#39;not found&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">found</span>    
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Home
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../generator/" class="md-footer__link md-footer__link--next" aria-label="Next: Generator" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Generator
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+      <a href="https://github.com/ChristopherMayes/lume-astra" target="_blank" rel="noopener" title="lume-astra" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.756773cc.min.js"></script>
+      
+    
+  </body>
+</html>
