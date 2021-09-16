@@ -79,15 +79,19 @@ def install_examples(location):
     Parameters
     ----------
     location : str
-        The path in which to install the examples
+        The folder in which to install the examples
     """
     import requests
     import zipfile
     import io
+    import os
+
+    loc = os.path.expanduser(os.path.expandvars(location))
+    os.makedirs(loc, exist_ok=True)
 
     response = requests.get(EXAMPLES_URL, stream=True)
     if response.status_code == 200:
-        zip = zipfile.ZipFile(io.BytesIO(response.content))
-        zip.extractall(location)
+        zip_file = zipfile.ZipFile(io.BytesIO(response.content))
+        zip_file.extractall(loc)
     else:
         raise RuntimeError(f"Could not download examples archive. Status code was: {response.status_code}")
