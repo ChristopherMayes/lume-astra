@@ -238,39 +238,9 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Home
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="." class="md-nav__link md-nav__link--active">
         Home
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    Installation
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -361,21 +331,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    Installation
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -392,8 +347,31 @@
                 
                 
                 <h1 id="lume-astra">lume-astra</h1>
-<p>For full documentation visit <a href="https://mkdocs.org">mkdocs.org</a>.</p>
-<h2 id="installation">Installation</h2>
+<p>Python wrapper for Astra (A Space Charge Tracking Algorithm, DESY) for use in LUME</p>
+<p><a href="http://www.desy.de/~mpyflo/">Astra website</a></p>
+<h1 id="installing-lume-astra">Installing lume-astra</h1>
+<p>Installing <code>lume-astra</code> from the <code>conda-forge</code> channel can be achieved by adding <code>conda-forge</code> to your channels with:</p>
+<div class="highlight"><pre><span></span><code>conda config --add channels conda-forge
+</code></pre></div>
+<p>Once the <code>conda-forge</code> channel has been enabled, <code>lume-astra</code> can be installed with:</p>
+<div class="highlight"><pre><span></span><code>conda install lume-astra
+</code></pre></div>
+<p>It is possible to list all of the versions of <code>lume-astra</code> available on your platform with:</p>
+<div class="highlight"><pre><span></span><code>conda search lume-astra --channel conda-forge
+</code></pre></div>
+<h1 id="installing-astra-executables">Installing Astra Executables</h1>
+<p>For convenience, you can set <code>$ASTRA_BIN</code> and <code>$GENERATOR_BIN</code> to point to the Astra and generator binaries for your system. See the <a href="./examples/install_astra.ipynb">install_astra.ipynb</a> example for easy installation.</p>
+<h2 id="basic-usage">Basic usage</h2>
+<p>See <a href="./examples/basic_astra_examples.ipynb">simple_astra_run.ipynb</a>. In short:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">astra</span> <span class="kn">import</span> <span class="n">Astra</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">Astra</span><span class="p">(</span><span class="s1">&#39;../templates/Astra.in&#39;</span><span class="p">)</span>
+
+<span class="n">A</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">A</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="o">...</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">output</span>
+</code></pre></div>
                 
               
               
