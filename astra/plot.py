@@ -5,7 +5,7 @@ import os
 
 
 from pmd_beamphysics.units import nice_array
-
+from pmd_beamphysics.labels import mathlabel
 
 
 import matplotlib.pyplot as plt
@@ -104,7 +104,7 @@ def plot_fieldmaps(astra_object, include_labels=True,  xlim=None, figsize=(12,4)
                            sections=['cavity', 'solenoid'])
     
 
-def plot_stats(astra_object, keys=['norm_emit_x', 'sigma_z'], sections=['cavity', 'solenoid'], fieldmaps = {}, verbose=False):
+def plot_stats(astra_object, keys=['norm_emit_x', 'sigma_z'], sections=['cavity', 'solenoid'], fieldmaps = {}, verbose=False, tex=True):
     """
     Plots stats, with fieldmaps plotted from seections. 
     
@@ -130,12 +130,16 @@ def plot_stats(astra_object, keys=['norm_emit_x', 'sigma_z'], sections=['cavity'
     xmax = max(xdat)
     for i, key in enumerate(keys):
         ax = axs[i]
-        unit = astra_object.units(key)
+        
+          
         ydat = astra_object.stat(key)
         
         ndat, factor, prefix = nice_array(ydat)
-        label = f'{key} ({prefix}{unit})'
-        ax.set_ylabel(label)
+        unit = astra_object.units(key)
+        units=f'{prefix}{unit}'              
+        # Hangle label
+        ylabel =  mathlabel (key, units=units, tex=tex)
+        ax.set_ylabel(ylabel)
         ax.set_xlim(xmin, xmax)
         ax.plot(xdat, ndat)
     
@@ -148,6 +152,7 @@ def plot_stats_with_layout(astra_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
                            xkey='mean_z', xlim=None, 
                            ylim=None, ylim2=None,
                            nice=True, 
+                           tex=True,
                            include_layout=False,
                            include_labels=True, 
                            include_particles=True, 
@@ -161,6 +166,8 @@ def plot_stats_with_layout(astra_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
     
     Logical switches:
         nice: a nice SI prefix and scaling will be used to make the numbers reasonably sized. Default: True
+        
+        tex: use mathtext (TeX) for plot labels. Default: True
         
         include_legend: The plot will include the legend.  Default: True
         
@@ -238,8 +245,11 @@ def plot_stats_with_layout(astra_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
     
     # set all but the layout
     for ax in ax_plot:
-        ax.set_xlim(xlim[0]/factor_x, xlim[1]/factor_x)          
-        ax.set_xlabel(f'{xkey} ({units_x})')    
+        ax.set_xlim(xlim[0]/factor_x, xlim[1]/factor_x)     
+        
+        xlabel = mathlabel(xkey, units=units_x, tex=tex)
+        
+        ax.set_xlabel(xlabel)    
     
 
     # Draw for Y1 and Y2 
@@ -259,7 +269,7 @@ def plot_stats_with_layout(astra_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
             for u2 in ulist[1:]:
                 assert ulist[0] == u2, f'Incompatible units: {ulist[0]} and {u2}'
         # String representation
-        unit = str(ulist[0])
+        units = str(ulist[0])
         
         # Data
         data = [I.stat(key)[good] for key in keys]        
@@ -268,7 +278,7 @@ def plot_stats_with_layout(astra_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
         
         if nice:
             factor, prefix = nice_scale_prefix(np.ptp(data))
-            unit = prefix+unit
+            units = prefix+units
         else:
             factor = 1
 
@@ -277,7 +287,8 @@ def plot_stats_with_layout(astra_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
             #
             ii += 1
             color = 'C'+str(ii)
-            ax.plot(X, dat/factor, label=f'{key} ({unit})', color=color, linestyle=linestyle)
+            label = mathlabel(key, units=units, tex=tex)
+            ax.plot(X, dat/factor, label=label, color=color, linestyle=linestyle)
             
             # Particles
             if Pnames:
@@ -285,8 +296,9 @@ def plot_stats_with_layout(astra_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
                     Y_particles = np.array([I.particles[name][key] for name in Pnames])
                     ax.scatter(X_particles/factor_x, Y_particles/factor, color=color) 
                 except:
-                    pass     
-        ax.set_ylabel(', '.join(keys)+f' ({unit})')   
+                    pass    
+        ylabel = mathlabel(*keys, units=units, tex=tex)       
+        ax.set_ylabel(ylabel)   
         
         # Set limits, considering the scaling. 
         if ix==0 and ylim:
@@ -322,7 +334,7 @@ def plot_stats_with_layout(astra_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
             #ax_layout.set_axis_off()
             ax_layout.set_xlim(xlim[0], xlim[1])
         else:
-            ax_layout.set_xlabel('mean_z')
+            ax_layout.set_xlabel(mathlabel('mean_z', units='m'))
             xlim = (0, I.stop)
         add_fieldmaps_to_axes(I,  ax_layout, bounds=xlim, include_labels=include_labels)    
         
