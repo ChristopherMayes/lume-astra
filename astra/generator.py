@@ -35,10 +35,13 @@ class AstraGenerator(CommandWrapper):
             self.load_input(self.input_file)
             self.configure()
 
-    def load_input(self, input_filepath, absolute_paths=True):
-        f = lumetools.full_path(input_filepath)
-        self.original_path, self.original_input_file = os.path.split(f)  # Get original path, filename
-        self.input = parsers.parse_astra_input_file(f)['input']
+    def load_input(self, input_filepath, absolute_paths=True, **kwargs):
+        super().load_input(input_filepath, **kwargs)
+        if absolute_paths:
+            parsers.fix_input_paths(self.input, root=self.original_path)
+
+    def input_parser(self, path):
+        return parsers.parse_astra_input_file(path)['input']
 
     def configure(self):
         # Check that binary exists
@@ -97,3 +100,16 @@ class AstraGenerator(CommandWrapper):
 
     def write_input_file(self):
         writers.write_namelists({'input': self.input}, self.input_file)
+
+    # Methods from CommandWrapper not implemented here
+    def archive(self, h5=None):
+        return super().archive(h5=h5)
+    
+    def load_archive(self, h5, configure=True):
+        return super().load_archive(h5, configure=configure)
+
+    def plot(self, y=..., x=None, xlim=None, ylim=None, ylim2=None, y2=..., nice=True, include_layout=True, include_labels=False, include_particles=True, include_legend=True, return_figure=False):
+        return super().plot(y=y, x=x, xlim=xlim, ylim=ylim, ylim2=ylim2, y2=y2, nice=nice, include_layout=include_layout, include_labels=include_labels, include_particles=include_particles, include_legend=include_legend, return_figure=return_figure)
+
+    def write_input(self, input_filename):
+        return super().write_input(input_filename)

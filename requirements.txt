@@ -3,3 +3,4 @@ distgen
 numpy
 h5py
 pmd_beamphysics
+lume-base

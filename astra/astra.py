@@ -46,7 +46,6 @@ class Astra(CommandWrapper):
         super().__init__(**kwargs)
         # Save init
         self.original_input_file = self._input_file
-        self.initial_particles = self._initial_particles
 
         # These will be set
         self.log = []
@@ -172,8 +171,8 @@ class Astra(CommandWrapper):
     def input_parser(self, path):
         return parsers.parse_astra_input_file(path)
 
-    def load_input(self, input_filepath, absolute_paths=True):
-        super().load_input(input_filepath, absolute_paths)
+    def load_input(self, input_filepath, absolute_paths=True, **kwargs):
+        super().load_input(input_filepath, **kwargs)
         if absolute_paths:
             parsers.fix_input_paths(self.input, root=self.original_path)
 
@@ -302,7 +301,7 @@ class Astra(CommandWrapper):
         else:
             return 'unknown unit'
 
-    def load_archive(self, h5=None):
+    def load_archive(self, h5=None, configure=False):
         """
         Loads input and output from archived h5 file.
 
@@ -347,6 +346,9 @@ class Astra(CommandWrapper):
         for _, cg in self.group.items():
             cg.link(self.input)
 
+        if configure:
+            self.configure()
+
     def archive(self, h5=None):
         """
         Archive all data to an h5 handle or filename.
@@ -388,49 +390,6 @@ class Astra(CommandWrapper):
 
         return h5
 
-    @classmethod
-    def from_archive(cls, archive_h5):
-        """
-        Class method to return an GPT object loaded from an archive file
-        """
-        c = cls()
-        c.load_archive(archive_h5)
-        return c
-
-    @classmethod
-    def from_yaml(cls, yaml_file):
-        """
-        Returns an Astra object instantiated from a YAML config file
-
-        Will load intial_particles from an h5 file.
-
-        """
-        # Try file
-        if os.path.exists(os.path.expandvars(yaml_file)):
-            config = yaml.safe_load(open(yaml_file))
-
-            # The input file might be relative to the yaml file
-            if 'input_file' in config:
-                f = os.path.expandvars(config['input_file'])
-                if not os.path.isabs(f):
-                    # Get the yaml file root
-                    root, _ = os.path.split(tools.full_path(yaml_file))
-                    config['input_file'] = os.path.join(root, f)
-
-        else:
-            # Try raw string
-            config = yaml.safe_load(yaml_file)
-
-        # Form ParticleGroup from file
-        if 'initial_particles' in config:
-            f = config['initial_particles']
-            if not os.path.isabs(f):
-                root, _ = os.path.split(tools.full_path(yaml_file))
-                f = os.path.join(root, f)
-            config['initial_particles'] = ParticleGroup(f)
-
-        return cls(**config)
-
     def write_fieldmaps(self):
         """
         Writes any loaded fieldmaps to path
@@ -440,7 +399,7 @@ class Astra(CommandWrapper):
             write_fieldmaps(self.fieldmap, self.path)
             self.vprint(f'{len(self.fieldmap)} fieldmaps written to {self.path}')
 
-    def write_input(self):
+    def write_input(self, input_filename=None):
         """
         Writes all input. If fieldmaps have been loaded, these will also be written.
         """
