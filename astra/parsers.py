@@ -359,7 +359,7 @@ def parse_astra_input_file(filePath, condense=False):
 
 
 
-def fix_input_paths(input_dict, root='', prefixes=['file_', 'distribution']):
+def fix_input_paths(input_dict, root='', prefixes=['file_', 'distribution', 'q_type']):
     """
     Looks for keys in the input dict of dicts, that start with any strings as in the prefixes list.
     This should indicate a file. Then, fill in the absoulute path. 

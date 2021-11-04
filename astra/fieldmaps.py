@@ -4,7 +4,7 @@ Tools for loading fieldmap data
 import numpy as np
 import re
 import os
-
+import glob
 
 # Prefix helpers
 
@@ -50,10 +50,19 @@ def load_fieldmaps(astra_input, search_paths=[], fieldmap_dict={}, sections=['ca
     """
     fmap = {}
     for sec in sections:
+        
+        if sec not in astra_input:  
+            continue
+        
         ixlist = find_fieldmap_ixlist(astra_input, sec) 
         for ix in ixlist:
             k = file_(section=sec, index=ix)
             file = astra_input[sec][k]
+
+            # Skip 3D fieldmaps. These are symlinked
+            if os.path.split(file)[1].lower().startswith('3d_'):
+                continue
+            
             if file not in fmap:
                 # Look inside dict
                 if file in fieldmap_dict:
@@ -156,7 +165,7 @@ def parse_fieldmap(filePath):
     See: write_fieldmap
     
     """
-
+    
     header = list(map(float, open(filePath).readline().split()))
     
     attrs = {}
@@ -198,6 +207,10 @@ def fieldmap_data(astra_input, section='cavity', index=1, fieldmaps={}, verbose=
         offset = 0
         
     file = adat[file_(section, index)]
+    
+    # TODO: 3D fieldmaps
+    if os.path.split(file)[1].lower().startswith('3d_'):
+        return None
     
     # Scaling
     k = max_(section, index)
@@ -292,3 +305,26 @@ def expand_tws_fmap(fmap, n_cell):
     Eztot.append(Ezexit)
     
     return np.concatenate(ztot), np.concatenate(Eztot)
+
+
+def fieldmap3d_filenames(base_filename):
+    """
+    Returns a list of existing 3D fieldmap filenames corresponding to a base filename.
+    
+    Example: 
+        fieldmap3d_filenames('3D_7500Vchopmap') returns:
+        ['/abs/path/to/3D_7500Vchopmap.ey', ...]
+
+    """
+
+    _, name = os.path.split(base_filename)
+    assert name.lower().startswith('3d_')
+
+    flist = glob.glob(base_filename+'.*')
+    
+    files = []
+    for file in flist:
+        for ext in ['.ex', '.ey', '.ez', '.bx', '.by', 'bz']:
+            if file.lower().endswith(ext):
+                files.append(os.path.abspath(file))
+    return files

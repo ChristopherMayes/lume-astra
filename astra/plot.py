@@ -79,10 +79,15 @@ def add_fieldmaps_to_axes(astra_object, axes, bounds=None,
     color = {'cavity': 'green', 'solenoid':'blue'}
     
     for i, section in enumerate(sections):
+        if section not in astra_input:
+            continue
+        
         a = ax[i]
         ixlist = find_fieldmap_ixlist(astra_input, section)
         for ix in ixlist:
             dat = fieldmap_data(astra_input, section=section, index=ix, fieldmaps=fmaps, verbose=verbose)
+            if dat is None:
+                continue
             label = f'{section}_{ix}'
             c = color[section]
             a.plot(*dat.T, label=label, color=c)
