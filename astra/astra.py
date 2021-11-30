@@ -8,6 +8,8 @@ from .plot import plot_stats_with_layout, plot_fieldmaps
 
 
 from pmd_beamphysics import ParticleGroup
+from pmd_beamphysics.interfaces.astra import parse_astra_phase_file
+
 
 import numpy as np
 
@@ -276,7 +278,7 @@ class Astra:
             print('loading '+str(len(files))+ ' particle files')
             print(zapprox)
         for f in files:
-            pdat = parsers.parse_astra_phase_file(f)
+            pdat = parse_astra_phase_file(f)
             P = ParticleGroup(data=pdat)
             self.output['particles'].append(P)
         
