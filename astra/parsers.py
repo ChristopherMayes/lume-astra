@@ -228,10 +228,16 @@ def clean_namelist_key_value(line):
     """
     Cleans up a namelist "key = value line"
     
+    Removes all spaces, and makes the key lower case.
+    
     """
     z = line.split('=')
     # Make key lower case, strip
-    return z[0].strip().lower()+' = '+''.join(z[1:])
+    
+    key = z[0].strip().lower().replace(' ', '')
+    value = ''.join(z[1:])
+    
+    return f'{key} = {value}'
 
 def unroll_namelist_line(line, commentchar='!', condense=False ):
     """
