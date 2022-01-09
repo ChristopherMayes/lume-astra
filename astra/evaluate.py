@@ -1,6 +1,6 @@
 from .astra import run_astra, run_astra_with_generator, run_astra_with_generator
 from .astra_calc import calc_ho_energy_spread
-from .tools import full_path
+from lume.tools import full_path
 import numpy as np
 import json
 from inspect import getfullargspec

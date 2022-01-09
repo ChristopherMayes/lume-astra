@@ -1,11 +1,8 @@
-
-from hashlib import blake2b
-import numpy as np
-import json
-
-import subprocess
 import datetime
-import os, errno
+import errno
+import os
+import subprocess
+
 
 def execute(cmd, cwd=None):
     """
@@ -27,34 +24,36 @@ def execute(cmd, cwd=None):
         popen.stdin.flush()
         popen.stdin.close()
     for stdout_line in iter(popen.stdout.readline, ""):
-        yield stdout_line 
+        yield stdout_line
     popen.stdin.close()
     popen.stdout.close()
     return_code = popen.wait()
     if return_code:
         raise subprocess.CalledProcessError(return_code, cmd)
-        
+
+
 # Alternative execute
 def execute2(cmd, timeout=None, cwd=None):
     """
     Execute with time limit (timeout) in seconds, catching run errors. 
     """
-    
-    output = {'error':True, 'log':''}
+
+    output = {'error': True, 'log': ''}
     try:
-        p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, timeout = timeout, cwd=cwd)
+        p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True,
+                           timeout=timeout, cwd=cwd)
         output['log'] = p.stdout
         output['error'] = False
         output['why_error'] = ''
     except subprocess.TimeoutExpired as ex:
-        output['log'] = ex.stdout+'\n'+str(ex)
+        output['log'] = ex.stdout + '\n' + str(ex)
         output['why_error'] = 'timeout'
     except:
         output['log'] = 'unknown run error'
         output['why_error'] = 'unknown'
     return output
-        
-        
+
+
 def runs_script(runscript=[], dir=None, log_file=None, verbose=True):
     """
     Basic driver for running a script in a directory. Will     
@@ -62,12 +61,12 @@ def runs_script(runscript=[], dir=None, log_file=None, verbose=True):
 
     # Save init dir
     init_dir = os.getcwd()
-    
+
     if dir:
         os.chdir(dir)
- 
+
     log = []
-    
+
     for path in execute(runscript):
         if verbose:
             print(path, end="")
@@ -75,11 +74,11 @@ def runs_script(runscript=[], dir=None, log_file=None, verbose=True):
     if log_file:
         with open(log_file, 'w') as f:
             for line in log:
-                f.write(line)    
-    
-    # Return to init dir
-    os.chdir(init_dir)                
-    return log                    
+                f.write(line)
+
+                # Return to init dir
+    os.chdir(init_dir)
+    return log
 
 
 def mkdir_p(path):
@@ -90,52 +89,15 @@ def mkdir_p(path):
             pass
         else:
             raise
-    
+
+
 def make_executable(path):
     """
     https://stackoverflow.com/questions/12791997/how-do-you-do-a-simple-chmod-x-from-within-python
     """
     mode = os.stat(path).st_mode
-    mode |= (mode & 0o444) >> 2    # copy R bits to X
-    os.chmod(path, mode)    
-    
-def full_path(path):
-    """
-    Helper function to expand enviromental variables and return the absolute path
-    """
-    return os.path.abspath(os.path.expandvars(path))
-
-
-
-class NpEncoder(json.JSONEncoder):
-    """
-    See: https://stackoverflow.com/questions/50916422/python-typeerror-object-of-type-int64-is-not-json-serializable/50916741
-    """
-    def default(self, obj):
-        if isinstance(obj, np.integer):
-            return int(obj)
-        elif isinstance(obj, np.floating):
-            return float(obj)
-        elif isinstance(obj, np.ndarray):
-            return obj.tolist()
-        else:
-            return super(NpEncoder, self).default(obj)
-
-def fingerprint(keyed_data, digest_size=16):
-    """
-    Creates a cryptographic fingerprint from keyed data. 
-    Used JSON dumps to form strings, and the blake2b algorithm to hash.
-    
-    """
-    h = blake2b(digest_size=16)
-    for key in sorted(keyed_data.keys()):
-        val = keyed_data[key]
-        s = json.dumps(val, sort_keys=True, cls=NpEncoder).encode()
-        h.update(s)
-    return h.hexdigest()  
-   
-
-    
+    mode |= (mode & 0o444) >> 2  # copy R bits to X
+    os.chmod(path, mode)
 
 
 def native_type(value):
@@ -144,14 +106,13 @@ def native_type(value):
     See:
     https://stackoverflow.com/questions/9452775/converting-numpy-dtypes-to-native-python-types/11389998
     """
-    return getattr(value, 'tolist', lambda: value)()    
+    return getattr(value, 'tolist', lambda: value)()
 
 
-"""UTC to ISO 8601 with Local TimeZone information without microsecond"""
 def isotime():
-    return datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).astimezone().replace(microsecond=0).isoformat()    
-    
-    
+    """UTC to ISO 8601 with Local TimeZone information without microsecond"""
+    return datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).astimezone().replace(
+        microsecond=0).isoformat()
 
     
 
@@ -187,3 +148,4 @@ def make_symlink(src, path):
     os.symlink(src, dest)
     
     return True
+
