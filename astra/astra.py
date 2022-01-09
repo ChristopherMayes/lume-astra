@@ -178,7 +178,7 @@ class Astra(CommandWrapper):
         if not search_paths:
             search_paths = [self.path]
 
-        self.fieldmap = load_fieldmaps(self, fieldmap_dict=self.fieldmap, search_paths=search_paths,
+        self.fieldmap = load_fieldmaps(self.input, fieldmap_dict=self.fieldmap, search_paths=search_paths,
                                        verbose=self.verbose, strip_path=strip_path)
         
     def load_initial_particles(self, h5):
