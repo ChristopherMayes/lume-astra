@@ -18,7 +18,25 @@ from .generator import AstraGenerator
 from .plot import plot_stats_with_layout, plot_fieldmaps
 
 
+from pmd_beamphysics import ParticleGroup
+from pmd_beamphysics.interfaces.astra import parse_astra_phase_file
+
+
+import numpy as np
+
+import h5py
+import yaml
+
+import tempfile
+import shutil
+import os, platform
+from time import time
+import traceback
+
+from copy import deepcopy
+
 class Astra(CommandWrapper):
+
     """ 
     Astra simulation object. Essential methods:
     .__init__(...)
@@ -162,7 +180,7 @@ class Astra(CommandWrapper):
 
         self.fieldmap = load_fieldmaps(self, fieldmap_dict=self.fieldmap, search_paths=search_paths,
                                        verbose=self.verbose, strip_path=strip_path)
-
+        
     def load_initial_particles(self, h5):
         """Loads a openPMD-beamphysics particle h5 handle or file"""
         P = ParticleGroup(h5=h5)
@@ -230,7 +248,7 @@ class Astra(CommandWrapper):
             print('loading ' + str(len(files)) + ' particle files')
             print(zapprox)
         for f in files:
-            pdat = parsers.parse_astra_phase_file(f)
+            pdat = parse_astra_phase_file(f)
             P = ParticleGroup(data=pdat)
             self.output['particles'].append(P)
 

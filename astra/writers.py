@@ -1,6 +1,10 @@
 import numpy as np
 from numbers import Number
 
+from astra.tools import make_symlink
+from astra.fieldmaps import fieldmap3d_filenames
+import glob
+
 import os
 
 def namelist_lines(namelist_dict, name):
@@ -42,7 +46,7 @@ def namelist_lines(namelist_dict, name):
 
 
 
-def make_namelist_symlinks(namelist, path, prefixes=['file_', 'distribution'], verbose=False):
+def make_namelist_symlinks(namelist, path, prefixes=('file_', 'distribution', 'q_type'), verbose=False):
     """
     Looks for keys that start with prefixes.
     If the value is a path that exists, a symlink will be made.
@@ -55,35 +59,21 @@ def make_namelist_symlinks(namelist, path, prefixes=['file_', 'distribution'], v
     for key in namelist:
         if any([key.startswith(prefix) for prefix in prefixes]):
             src = namelist[key]
-            if os.path.exists(os.path.join(path, src)) and not os.path.isabs(src):
-                if verbose:
-                    f'File {src} already in path, skipping.'
-                continue
-            
-            if not os.path.exists(src):
-                if verbose:
-                    print('Path does not exist for symlink:', src)
-                continue            
             
             _, file = os.path.split(src)
             
-            dest = os.path.join(path, file)
-            
+            # Special for 3D fieldmaps
+            if file.lower().startswith('3d_'):
+                flist = fieldmap3d_filenames(src)
+                for f in flist:
+                    make_symlink(f, path)   
+            elif not os.path.exists(src):
+                continue
+            else:
+                make_symlink(src, path)
+                
             replacements[key] = file
             
-            # Replace old symlinks. 
-            if os.path.islink(dest):
-                os.unlink(dest)
-            elif os.path.exists(dest):
-                if verbose:
-                    print(dest, 'exists, will not symlink')
-                continue
-                
-            # Note that the following will raise an error if the dest is an actual file that exists    
-            os.symlink(src, dest)
-            if verbose:
-                print('Linked', src, 'to', dest)
-           
 
     return replacements
             

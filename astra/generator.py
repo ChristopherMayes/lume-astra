@@ -6,6 +6,8 @@ import traceback
 from lume import tools as lumetools
 from lume.base import CommandWrapper
 from pmd_beamphysics import ParticleGroup
+from pmd_beamphysics.interfaces.astra import parse_astra_phase_file
+
 
 from astra import parsers, writers, tools
 
@@ -91,7 +93,7 @@ class AstraGenerator(CommandWrapper):
 
     def load_output(self):
         pfile = self.output_file
-        data = parsers.parse_astra_phase_file(pfile)
+        data = parse_astra_phase_file(pfile)
         # Clock time is used when at cathode
         data['t'] = data['t_clock']
         P = ParticleGroup(data=data)
