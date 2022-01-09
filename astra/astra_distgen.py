@@ -134,7 +134,7 @@ def run_astra_with_distgen(settings=None,
     P = G.particles
     # Special flag for cathode start
     if G['start:type'] == 'cathode':
-        P.status[:] -1
+        P.status[:] = -1
     
     # Attach to Astra object
     A.initial_particles = P
