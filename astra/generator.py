@@ -23,8 +23,8 @@ class AstraGenerator(CommandWrapper):
     """
     COMMAND = "$GENERATOR_BIN"
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, input_file, **kwargs):
+        super().__init__(input_file=input_file, **kwargs)
         # Save init
         self.original_input_file = self.input_file
 
@@ -41,9 +41,11 @@ class AstraGenerator(CommandWrapper):
         super().load_input(input_filepath, **kwargs)
         if absolute_paths:
             parsers.fix_input_paths(self.input, root=self.original_path)
-
+        self.input = self.input['input']
+            
+            
     def input_parser(self, path):
-        return parsers.parse_astra_input_file(path)['input']
+        return parsers.parse_astra_input_file(path)
 
     def configure(self):
         # Check that binary exists

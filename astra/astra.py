@@ -57,11 +57,13 @@ class Astra(CommandWrapper):
     COMMAND = "$ASTRA_BIN"
     INPUT_PARSER = parsers.parse_astra_input_file
 
-    def __init__(self, *,
+    def __init__(self, 
+                 input_file=None,
+                 *,                 
                  group=None,
                  **kwargs
                  ):
-        super().__init__(**kwargs)
+        super().__init__(input_file=input_file, **kwargs)
         # Save init
         self.original_input_file = self._input_file
 

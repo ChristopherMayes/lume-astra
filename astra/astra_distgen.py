@@ -10,6 +10,8 @@ from distgen import Generator
 from distgen.writers import write_astra
 from distgen.tools import update_nested_dict
 
+from lume import tools as lumetools
+
 from pmd_beamphysics import ParticleGroup
 
 from h5py import File
@@ -65,7 +67,7 @@ def run_astra_with_distgen(settings=None,
         return run_astra(settings=settings, 
                          astra_input_file=astra_input_file, 
                          workdir=workdir,
-                         astra_bin=astra_bin, 
+                         command=astra_bin, 
                          timeout=timeout, 
                          verbose=verbose)
         
@@ -74,7 +76,7 @@ def run_astra_with_distgen(settings=None,
         print('run_astra_with_generator') 
 
     # Distgen generator
-    G = Generator(input = distgen_input_file, verbose=verbose)  
+    G = Generator(distgen_input_file, verbose=verbose)  
         
     # Make astra objects
     if astra_input_file.endswith('.yaml'):
@@ -86,7 +88,7 @@ def run_astra_with_distgen(settings=None,
             A.configure() # again to make sure things are set properly  
         
     else:
-        A = Astra(astra_bin=astra_bin, input_file=astra_input_file, workdir=workdir)
+        A = Astra(command=astra_bin, input_file=astra_input_file, workdir=workdir)
     
     
     
@@ -130,6 +132,9 @@ def run_astra_with_distgen(settings=None,
     # Run distgen
     G.run()
     P = G.particles
+    # Special flag for cathode start
+    if G['start:type'] == 'cathode':
+        P.status[:] -1
     
     # Attach to Astra object
     A.initial_particles = P
@@ -192,7 +197,7 @@ def evaluate_astra_with_distgen(settings,
     output['fingerprint'] = fingerprint
     
     if archive_path:
-        path = tools.full_path(archive_path)
+        path = lumetools.full_path(archive_path)
         assert os.path.exists(path), f'archive path does not exist: {path}'
         archive_file = os.path.join(path, fingerprint+'.h5')
         output['archive'] = archive_file
@@ -211,7 +216,7 @@ def fingerprint_astra_with_distgen(astra_object, distgen_object):
     f1 = astra_object.fingerprint()
     f2 = distgen_object.fingerprint()
     d = {'f1':f1, 'f2':2}
-    return tools.fingerprint(d)
+    return lumetools.fingerprint(d)
 
 
 

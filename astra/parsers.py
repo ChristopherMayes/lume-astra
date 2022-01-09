@@ -375,7 +375,6 @@ def fix_input_paths(input_dict, root='', prefixes=['file_', 'distribution', 'q_t
     
     """
     for nl in input_dict:
-        #print(nl)
         for key in input_dict[nl]:
             if any([key.startswith(prefix) for prefix in prefixes]):
                 val = input_dict[nl][key]
