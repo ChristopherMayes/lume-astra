@@ -4,7 +4,6 @@ Python wrapper for Astra (A Space Charge Tracking Algorithm, DESY) for use in LU
 [Astra website](http://www.desy.de/~mpyflo/)
 
 
-
 Installing lume-astra
 =====================
 
