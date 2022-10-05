@@ -4,6 +4,25 @@ repo_name: "ChristopherMayes/lume-astra"
 
 nav:
     - Home: index.md
+    - Examples:
+      - Basic:
+        - examples/basic_astra_examples.ipynb
+        - examples/install_astra.ipynb
+        - examples/functional_astra_run.ipynb
+        - examples/simple_distgen_example.ipynb        
+        - examples/simple_generator_example.ipynb
+      - Low Level:
+          - examples/scan_example.ipynb
+          - examples/plot_examples.ipynb            
+      - Elements:
+        - examples/elements/apex_gun.ipynb
+        - examples/elements/drift.ipynb
+        - examples/elements/tws.ipynb
+        - examples/elements/tesla_9cell_cavity.ipynb
+
+     
+      
+
     - API:
       - Astra: api/astra.md
       - Generator: api/generator.md
@@ -13,12 +32,16 @@ theme:
   icon:
     repo: fontawesome/brands/github
   name: material
+
+  custom_dir: overrides
   features:
     - navigation.top
+    - navigation.tabs
+    - navigation.indexes
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: white
+      primary: black
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
@@ -32,16 +55,27 @@ theme:
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
+  - pymdownx.arithmatex: # Enable MathJAX https://squidfunk.github.io/mkdocs-material/reference/mathjax/
+      generic: true  
+      
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js      
 
 extra:
   generator: false
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/ChristopherMayes/lume-astra
-      name: lume-astra
-
+      name: LUME-Astra
+      
 plugins:
     - search
+      
+    - mkdocs-jupyter:
+        include_source: True
+          
     - mkdocstrings:
         default_handler: python
         handlers:

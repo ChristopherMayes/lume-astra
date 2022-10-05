@@ -1,7 +1,21 @@
-# lume-astra
-Python wrapper for Astra (A Space Charge Tracking Algorithm, DESY) for use in LUME
 
-[Astra website](http://www.desy.de/~mpyflo/)
+
+
+# LUME-Astra
+Python wrapper for [ASTRA](http://www.desy.de/~mpyflo/) (A Space Charge Tracking Algorithm, DESY) for use in LUME.
+
+**`Documentation`** |
+------------------- |
+[![Documentation](https://img.shields.io/badge/astra-documentation-blue.svg)](https://christophermayes.github.io/lume-astra/)  |
+
+```python
+from astra import Astra
+
+A = Astra('Astra.in')
+A.run()
+A.plot(y=['norm_emit_x', 'norm_emit_y'], y2=['sigma_x', 'sigma_y'])
+```
+![](assets/apex-gun-lume-astra.png)
 
 
 Installing lume-astra
