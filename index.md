@@ -33,7 +33,6 @@ conda search lume-astra --channel conda-forge
 
 ```
 
-
 Installing Astra Executables
 =====================
 
