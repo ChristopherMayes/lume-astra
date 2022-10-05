@@ -1,0 +1,15 @@
+
+
+input_file: astra.in
+
+verbose: False
+
+group:
+
+
+  # This will control the overall offset of the cryomodule, relative to where it was w
+  cryomodule:
+    var_name: offset
+    ele_names: [ cavity, cavity, cavity, cavity, cavity, cavity, cavity, cavity  ]  
+    attributes: [ c_pos(3), c_pos(4), c_pos(5), c_pos(6), c_pos(7), c_pos(8), c_pos(9), c_pos(10) ]
+    value: 0

@@ -1,0 +1,135 @@
+&NEWRUN
+    Head='astra input file for L0 injector (20070501_1)'
+    Distribution='generator.part'
+
+
+    RUN = 1
+    Loop = F
+    Lmagnetized = T
+    EmitS = T
+    PhaseS = F
+
+    T_PhaseS = F
+
+    LarmorS = F
+    
+    LandFS = T
+
+    CathodeS = F
+
+    TrackS = F
+    RefS = F
+    TcheckS = F
+    PHASE_SCAN = F
+    AUTO_PHASE = T
+    TRACK_ALL = T
+
+    ZSTART=0.0
+!----------------------------
+! IA5DQD01   z = 15.754 (m)
+! End of A2: z = 6.267
+! EMS loc: z = 9.515
+!----------------------------
+
+    ZSTOP = 1
+
+    !Set in distribution file instead: qbunch = 0.100 !varied [units?]
+
+    Zemit = 3
+    Zphase = 1
+    screen = 1.1, 2.2
+
+    H_max = 2.0E-3
+    H_min = 0.2E-3
+
+    Lproject_emit = F
+
+   !! Particle file should set these
+   !! Trms = 8.7E-03 !keep fixed 
+   !! XYrms = 1.1 !vary between 0 and 2mm rms
+
+/
+
+
+&SCAN
+    LSCAN=F
+    !Scan_para=''
+    S_min=0.00
+    S_max=0.03
+    S_numb=15
+    FOM(1)='hor spot'
+    FOM(2)='ver spot'
+    FOM(3)='mean energy'
+    FOM(4)='rms beam energy'
+    FOM(5)='rms bunch length'
+    FOM(6)='hor emittance'
+    FOM(7)='ver emittance'
+    FOM(6)='phi end'
+/
+
+
+
+&CHARGE
+    LSPCH = F
+    Lmirror = T
+    !Nrad = 35, Nlong_in = 75 !28K simulation took 45min
+    !Nrad=13, Nlong_in=28 !4K
+    !Nrad = 10, Nlong_in = 20 !2K or 1K
+    Nrad = 8, Nlong_in = 16 !1K
+    Cell_var = 2.0
+    min_grid = 0.4E-06
+    Max_Scale = 0.01
+    Max_count = 100
+/
+
+
+&Aperture
+/
+
+&FEM
+/
+
+
+
+ &CAVITY
+  LEFieLD = T
+
+! GA1GHV01 - DC GUN
+    FILE_EFieLD(1)='dcgun_GHV.dat'
+    C_pos(1) = 0.000000
+    MaxE(1) = -11.6
+    Nue(1) = 0.0
+    Phi(1) = 0.0 !90.0
+    C_smooth(1) = 0
+    C_higher_order(1) = T
+
+
+
+/
+
+ &SOLENOID
+  LBfield = T
+! MA1SLA01
+! 8.351321e-003 T corresponds to 1A excitation current
+    FILE_BFieLD(1)='solenoid_SLA_L60.dat'
+    S_pos(1) = 0.303000
+    MaxB(1) = 0.024218831 !2.9A , vary from 0 to 0.07G
+    S_xoff(1) = 0.0
+    S_yoff(1) = 0.0
+    S_smooth(1) = 0
+    S_higher_order(1) = T
+
+
+
+/
+
+ &QUADRUPOLE
+  LQuad = F
+
+
+/
+
+&output
+high_res = T
+binary = F
+/
