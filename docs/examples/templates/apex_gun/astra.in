@@ -1,0 +1,102 @@
+&newrun
+head = 'APEX Gun'
+run = 1
+
+distribution = 'astra.particles'
+
+xoff = 0
+yoff = 0
+q_schottky = 0
+toff = 0
+track_all = True
+phase_scan = True
+
+check_ref_part = False
+
+auto_phase = True
+
+h_min = 0
+h_max = 0.0075
+
+/
+
+&output
+zstart = 0
+zstop = 0.5
+zemit = 1000
+zphase = 1
+
+!name: YAG01B
+screen(1) = 1.490314
+
+lmagnetized = True
+lsub_rot = False
+lproject_emit = False
+larmors = False
+emits = True
+c_emits = True
+landfs  = True
+phases = True
+tracks = True
+refs = True
+tchecks = False
+cathodes = True
+high_res = True
+
+/
+
+&charge
+lspch = True
+lspch3d = False
+l2d_3d = False
+z_trans = 0.02
+nxf = 32
+nyf = 32
+nzf = 32
+nx0 = 4
+ny0 = 4
+nz0 = 4
+nrad = 20
+nlong_in = 43
+cell_var = 2
+min_grid = 4e-07
+max_scale = 0.01
+max_count = 10
+lmirror = True
+/
+
+&cavity
+lefield = True
+
+!name: RFGUNB
+file_efield(1) = '187MHz_HighDef_March2010.dat'
+c_smooth(1) = 10
+nue(1) = 0.187
+maxe(1) = 20.0
+phi(1) = 0
+c_pos(1) = 0
+c_higher_order(1) = True
+/
+
+
+&solenoid
+lbfield = True
+
+file_bfield(1) = 'realbucking.dat'
+maxb(1) = 0
+s_smooth(1) = 10
+s_pos(1) = -0.062
+s_xoff(1) = 0
+s_yoff(1) = 0
+s_higher_order(1) = True
+
+!name: SOL1B
+file_bfield(2) = 'newSOL.dat'
+maxb(2) = 0.057
+s_smooth(2) = 10
+s_pos(2) = 0.24653
+s_xoff(2) = 0
+s_yoff(2) = 0
+s_higher_order(2) = True
+/
+

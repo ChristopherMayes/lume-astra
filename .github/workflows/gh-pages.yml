@@ -36,7 +36,7 @@ jobs:
         shell: bash -l {0}
         run: |
           mkdocs build
-          zip -r lume-astra-examples.zip examples/
+          zip -r lume-astra-examples.zip docs/examples/
           mv lume-astra-examples.zip ./site/assets/.
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
