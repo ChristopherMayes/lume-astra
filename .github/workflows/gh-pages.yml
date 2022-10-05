@@ -2,8 +2,9 @@ name: Publish Documentation
 
 on:
   push:
+  pull_request:
     branches:
-      - master
+      - '**'
 
 jobs:
   deploy:
