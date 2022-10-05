@@ -6,13 +6,9 @@ Python wrapper for [ASTRA](http://www.desy.de/~mpyflo/) (A Space Charge Tracking
 from astra import Astra
 
 A = Astra('Astra.in')
-
-A.verbose = True
 A.run()
-...
-output = A.output
+A.plot(y=['norm_emit_x', 'norm_emit_y'], y2=['sigma_x', 'sigma_y'])
 ```
-
 ![](assets/apex-gun-lume-astra.png)
 
 Installing lume-astra
