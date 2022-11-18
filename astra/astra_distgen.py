@@ -215,7 +215,7 @@ def fingerprint_astra_with_distgen(astra_object, distgen_object):
     """
     f1 = astra_object.fingerprint()
     f2 = distgen_object.fingerprint()
-    d = {'f1':f1, 'f2':2}
+    d = {'f1':f1, 'f2':f2}
     return lumetools.fingerprint(d)
 
 
