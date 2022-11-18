@@ -1,10 +1,13 @@
-from .astra import run_astra, run_astra_with_generator, run_astra_with_generator
-from .astra_calc import calc_ho_energy_spread
+from astra.astra import run_astra, run_astra_with_generator, run_astra_with_generator
+from astra.generator import AstraGenerator
+from astra.astra_calc import calc_ho_energy_spread
 from lume.tools import full_path
+from lume import tools as lumetools
 import numpy as np
 import json
 from inspect import getfullargspec
 import os
+from h5py import File
 
 
 
@@ -204,8 +207,12 @@ def evaluate_astra_with_generator(settings,
     
     if output['error']:
         raise ValueError(f'Error returned from Astra evaluate')
+        
+    #Recreate Generator object for fingerprint, proper archiving
+    # TODO: make this cleaner
+    G = AstraGenerator(A.generator_input)   
     
-    fingerprint = A.fingerprint()
+    fingerprint = fingerprint_astra_with_generator(A, G)
     
     output['fingerprint'] = fingerprint
     
@@ -213,10 +220,43 @@ def evaluate_astra_with_generator(settings,
         path = full_path(archive_path)
         assert os.path.exists(path), f'archive path does not exist: {path}'
         archive_file = os.path.join(path, fingerprint+'.h5')
-        A.archive(archive_file)
         output['archive'] = archive_file
         
+        # Call the composite archive method
+        archive_astra_with_generator(A, G, archive_file=archive_file)   
+        
+        
+        
     return output
+
+
+def fingerprint_astra_with_generator(astra_object,generator_object):
+    """
+    Calls fingerprint() of each of these objects
+    """
+    f1 = astra_object.fingerprint()
+    f2 = generator_object.fingerprint()
+    d = {'f1':f1, 'f2':f2}
+    return lumetools.fingerprint(d)
+
+
+def archive_astra_with_generator(astra_object,
+                               generator_object,
+                               archive_file=None,
+                               generator_group ='generator'):
+    """
+    Creates a new archive_file (hdf5) with groups for 
+    astra and generator. 
+    
+    Calls .archive method of Astra and Generator objects, into these groups.
+    """
+    
+    with File(archive_file, 'w') as h5:
+        astra_object.archive(h5)
+        generator_object.archive(h5)
+    
+
+    
 
 
 

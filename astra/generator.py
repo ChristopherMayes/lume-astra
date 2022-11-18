@@ -5,9 +5,10 @@ import traceback
 
 from lume import tools as lumetools
 from lume.base import CommandWrapper
+from astra import archive
 from pmd_beamphysics import ParticleGroup
 from pmd_beamphysics.interfaces.astra import parse_astra_phase_file
-
+import h5py
 
 from astra import parsers, writers, tools
 
@@ -23,11 +24,15 @@ class AstraGenerator(CommandWrapper):
     """
     COMMAND = "$GENERATOR_BIN"
 
-    def __init__(self, input_file, **kwargs):
+    def __init__(self, input_file=None, **kwargs):
         super().__init__(input_file=input_file, **kwargs)
         # Save init
-        self.original_input_file = self.input_file
-
+        
+        if isinstance(input_file, str):
+            self.original_input_file = self.input_file
+        else:
+            self.original_input_file = 'generator.in'
+            
         # These will be filled
         self.input = {}
         self.output = {}
@@ -38,6 +43,11 @@ class AstraGenerator(CommandWrapper):
             self.configure()
 
     def load_input(self, input_filepath, absolute_paths=True, **kwargs):
+        # Allow dict
+        if isinstance(input_filepath, dict):
+            self.input = input_filepath
+            return
+    
         super().load_input(input_filepath, **kwargs)
         if absolute_paths:
             parsers.fix_input_paths(self.input, root=self.original_path)
@@ -107,10 +117,51 @@ class AstraGenerator(CommandWrapper):
 
     # Methods from CommandWrapper not implemented here
     def archive(self, h5=None):
-        return super().archive(h5=h5)
+        """
+        Archive all data to an h5 handle or filename.
+
+        If no file is given, a file based on the fingerprint will be created.
+
+        """
+        if not h5:
+            h5 = 'astra_generator_' + self.fingerprint() + '.h5'
+
+        if isinstance(h5, str):
+            h5 = os.path.expandvars(h5)
+            g = h5py.File(h5, 'w')
+            self.vprint(f'Archiving to file {h5}')
+        else:
+            # store directly in the given h5 handle
+            g = h5
+
+        # Write basic attributes
+        archive.astra_init(g)
+
+        # All input
+        g2 = g.create_group('generator_input')
+        for k, v in self.input.items():
+            g2.attrs[k] = v
+            
+        return h5
     
     def load_archive(self, h5, configure=True):
-        return super().load_archive(h5, configure=configure)
+        """
+        Loads input and output from archived h5 file.
+        """
+        if isinstance(h5, str):
+            h5 = os.path.expandvars(h5)
+            g = h5py.File(h5, 'r')  
+        else:
+            g = h5
+            
+        attrs = dict(g['generator_input'].attrs)
+        self.input = {}
+        for k, v, in attrs.items():
+            self.input[k] = tools.native_type(v)
+        
+        if configure:
+            self.configure()        
+        
 
     def plot(self, y=..., x=None, xlim=None, ylim=None, ylim2=None, y2=..., nice=True, include_layout=True, include_labels=False, include_particles=True, include_legend=True, return_figure=False):
         return super().plot(y=y, x=x, xlim=xlim, ylim=ylim, ylim2=ylim2, y2=y2, nice=nice, include_layout=include_layout, include_labels=include_labels, include_particles=include_particles, include_legend=include_legend, return_figure=return_figure)
