@@ -89,7 +89,7 @@ class AstraGenerator(CommandWrapper):
             if os.path.exists(self.output_file):
                 self.finished = True
             else:
-                print('AstraGenerator.output_file {self.output_file} does not exist.')
+                print(f'AstraGenerator.output_file {self.output_file} does not exist.')
                 print(f'Here is what the current working dir looks like: {os.listdir(self.path)}')
             self.load_output()
 
