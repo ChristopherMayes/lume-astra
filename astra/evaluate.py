@@ -44,6 +44,10 @@ def default_astra_merit(A):
     # Gather output
     m.update(end_output_data(A.output['stats']))
     
+    # Return early if no particles found
+    if not A.particles:
+        return m
+    
     P = A.particles[-1]  
 
     # Lost particles have status < -6
