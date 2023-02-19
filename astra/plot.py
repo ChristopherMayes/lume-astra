@@ -52,7 +52,6 @@ def old_plot_fieldmaps(astra_input, sections=['cavity', 'solenoid'], fieldmap_di
         a.set_ylabel(ylabel[section])
     ax0.set_xlabel('$z$ (m)')
     
-
     
 def add_fieldmaps_to_axes(astra_object, axes, bounds=None,
                            sections=['cavity', 'solenoid'],

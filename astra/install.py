@@ -4,16 +4,33 @@ import os, sys, platform
 import urllib.request
 
 
+
+
 ASTRA_URL = {
     'Linux': 'http://www.desy.de/~mpyflo/Astra_for_64_Bit_Linux/Astra',
-    'Darwin': 'http://www.desy.de/~mpyflo/Astra_for_Mac_OSX/Astra',
+    'Darwin_x86_64': 'http://www.desy.de/~mpyflo/Astra_for_Mac_OSX/Astra',
+    'Darwin_arm': 'http://www.desy.de/~mpyflo/Astra_for_Mac_M1/Astra',
     'Windows': 'http://www.desy.de/~mpyflo/Astra_for_WindowsPC/Astra.exe'
 }
 GENERATOR_URL = {
     'Linux':   'http://www.desy.de/~mpyflo/Astra_for_64_Bit_Linux/generator',
-    'Darwin':  'http://www.desy.de/~mpyflo/Astra_for_Mac_OSX/generator',
+    'Darwin_x86_64':  'http://www.desy.de/~mpyflo/Astra_for_Mac_OSX/generator',
+    'Darwin_arm': 'http://www.desy.de/~mpyflo/Astra_for_Mac_M1/generator',
     'Windows': 'http://www.desy.de/~mpyflo/Astra_for_WindowsPC/generator.exe'
 }
+
+
+
+def url_key():
+    system = platform.system()
+    processor= platform.processor()
+    if system == 'Darwin':
+        key = f'{system}_{processor}'
+    else:
+        key = system
+    return key
+    
+    
 
 EXAMPLES_URL = "https://ChristopherMayes.github.io/lume-astra/assets/lume-astra-examples.zip"
 
@@ -40,8 +57,8 @@ def install_astra(dest_dir=None, name='Astra', verbose=False):
     
     Sets environmental variable ASTRA_BIN
     """
-    system = platform.system()
-    url=ASTRA_URL[system]
+    key=url_key()
+    url=ASTRA_URL[key]
     dest = os.path.abspath(os.path.join(dest_dir, name))
 
     install_executable(url,  dest, verbose=verbose)
@@ -49,7 +66,7 @@ def install_astra(dest_dir=None, name='Astra', verbose=False):
     os.environ['ASTRA_BIN'] = dest
     
     if verbose:
-        print(f'Installed Astra in {dest}, and set $ASTRA_BIN equal to this.')
+        print(f'Installed Astra in for {key} in {dest}, and set $ASTRA_BIN equal to this.')
     
     return dest
 
@@ -59,15 +76,15 @@ def install_generator(dest_dir=None, name='generator', verbose=False):
     
     Sets environmental variable GENERATOR_BIN
     """
-    system = platform.system()
-    url=GENERATOR_URL[system]
+    key = url_key()
+    url=GENERATOR_URL[key]
     dest = os.path.abspath(os.path.join(dest_dir, name))
     install_executable(url,  dest, verbose=verbose)
     
     os.environ['GENERATOR_BIN'] = dest
     
     if verbose:
-        print(f'Installed Astra\'s generator in {dest}, and set $GENERATOR_BIN equal to this.')    
+        print(f'Installed Astra\'s generator for {key} in {dest}, and set $GENERATOR_BIN equal to this.')    
     
     return dest
 

@@ -16,6 +16,8 @@ from math import isnan
 import numpy as np
 import re
 
+from lume.parsers.namelist import parse_simple_namelist, parse_unrolled_namelist
+
 # ------------
 
 
@@ -120,13 +122,13 @@ def find_astra_output_files(input_filePath, run_number,
 
 
 def astra_output_type(filename):
-  return filename.split('.')[-2]
+    return filename.split('.')[-2]
   
 
     
     
     
-def parse_astra_output_file(filePath, standardize_labels=True):   
+def parse_astra_output_file(filePath, standardize_labels=True,):   
     """
     Simple parsing of tabular output files, according to names in this file. 
     
@@ -136,14 +138,14 @@ def parse_astra_output_file(filePath, standardize_labels=True):
     
     # Check for empty file
     if os.stat(filePath).st_size == 0:
-        return ERROR
+        raise ValueError(f'ERROR: Empty output file: {filePath}')
     
-    data = np.loadtxt(filePath)
+    data = np.loadtxt(filePath, ndmin=2)
     if data.shape == ():
-        return ERROR
+        raise ValueError(f'No data in file: {filePath}')
     
     if len(data) == 0:
-        return ERROR
+        raise ValueError(f'No data in file (zero length): {filePath}')
     
     d = {}
     type = astra_output_type(filePath) 
@@ -153,6 +155,8 @@ def parse_astra_output_file(filePath, standardize_labels=True):
     factors = OutputColumnFactors[type]
      
     for i in range(len(keys)):
+        print(filePath, keys[i])
+        
         d[keys[i]] = data[:,i]*factors[i]
 
     
@@ -174,189 +178,25 @@ def parse_astra_output_file(filePath, standardize_labels=True):
 
 
 
-
-
-
-
-# ------ Number parsing ------
-def isfloat(value):
-      try:
-            float(value)
-            return True
-      except ValueError:
-            return False
-
-def isbool(x):        
-    z = x.strip().strip('.').upper()
-    if  z in ['T', 'TRUE', 'F', 'FALSE']:
-        return True
-    else:
-        return False
-    
-def try_int(x):
-    if x == int(x):
-        return int(x)
-    else:
-        return x
-
-def try_bool(x):
-    z = x.strip().strip('.').upper()
-    if  z in ['T', 'TRUE']:
-        return True
-    elif z in ['F', 'FALSE']:
-        return False
-    else:
-        return x
-    
-    
-# Simple function to try casting to a float, bool, or int
-def number(x):
-    z = x.replace('D', 'E') # Some floating numbers use D
-    if isfloat(z):
-        val =  try_int(float(z))
-    elif isbool(x):
-        val = try_bool(x)
-    else:
-        # must be a string. Strip quotes.
-        val = x.strip().strip('\'').strip('\"')
-    return val    
-
-
-# ------ Astra input file (namelist format) parsing
-
-def clean_namelist_key_value(line):
-    """
-    Cleans up a namelist "key = value line"
-    
-    Removes all spaces, and makes the key lower case.
-    
-    """
-    z = line.split('=')
-    # Make key lower case, strip
-    
-    key = z[0].strip().lower().replace(' ', '')
-    value = ''.join(z[1:])
-    
-    return f'{key} = {value}'
-
-def unroll_namelist_line(line, commentchar='!', condense=False ):
-    """
-    Unrolls namelist lines. Looks for vectors, or multiple keys per line. 
-    """
-    lines = [] 
-    # Look for comments
-    x = line.strip().strip(',').split(commentchar)
-    if len(x) ==1:
-        # No comments
-        x = x[0].strip()
-    else:
-        # Unroll comment first
-        comment = ''.join(x[1:])
-        if not condense:
-            lines.append('!'+comment)
-        x = x[0].strip()
-    if x == '':
-        pass    
-    elif x[0] == '&' or x[0]=='/':
-        # This is namelist control. Write.
-        lines.append(x.lower())
-    else:
-        # Content line. Should contain = 
-        # unroll.
-        # Check for multiple keys per line, or vectors.
-        # TODO: handle both
-        n_keys = len(x.split('='))
-        if n_keys ==2:
-            # Single key
-            lines.append(clean_namelist_key_value(x))
-        elif n_keys >2:
-            for y in x.strip(',').split(','):
-                lines.append(clean_namelist_key_value(y))
-
-    return lines
-    
-def parse_simple_namelist(filePath, commentchar='!', condense=False ):
-    """
-    Unrolls namelist style file. Returns lines.
-    makes keys lower case
-    
-    Example:
-    
-    &my_namelist
-    
-        x=1, YY  = 4 ! this is a comment:
-    /
-    
-    unrolls to:
-    &my_namelist
-    ! this is a comment
-        x = 1
-        yy = 4
-    /
-    
-    """
-    
-    lines = []
-    with open(filePath, 'r') as f:
-        if condense:
-            pad = ''
-        else:
-            pad = '    '
-        
-        for line in f:
-            ulines = unroll_namelist_line(line, commentchar=commentchar, condense=condense)
-            lines = lines + ulines
-
-            
-    return lines
-
-
-
-
-
-def parse_unrolled_namelist(unrolled_lines):
-    """
-    Parses an unrolled namelist into a dict
-    
-    """
-    namelists={}
-    for line in unrolled_lines:
-        if line[0]=='1' or line[0]=='/' or line[0]=='!':
-            # Ignore
-            continue
-        if line[0]=='&':
-            name = line[1:].lower()
-            namelists[name]={}
-            # point to current namelist
-            n = namelists[name]
-            continue
-        # content line
-        key, val = line.split('=')
-        
-        # look for vector
-        vals = val.split()
-        if len(vals) == 1:
-            val = number(vals[0])
-        else:
-            if isfloat(vals[0].replace(',',' ')):
-                # Vector. Remove commas
-                val = [number(z) for z in val.replace(',',' ').split()] 
-            else:
-                # This is just a string. Just strip
-                val = val.strip()
-        n[key.strip()] = val
-        
-        
-    return namelists
-
-
 def parse_astra_input_file(filePath, condense=False):
     """
     Parses an Astra input file into separate dicts for each namelist. 
     Returns a dict of namelists. 
     """
     lines = parse_simple_namelist(filePath, condense=condense)
-    namelists = parse_unrolled_namelist(lines)
+    names, dicts = parse_unrolled_namelist(lines)
+    
+    # Form into dict, lowering all keys
+    namelists = {}
+    for name, data in zip(names, dicts):
+        name = name.lower()
+        d = {}
+        for k, v in data.items():
+            d[k.lower()] = v
+        
+        assert name not in namelists
+        namelists[name] = d
+    
     return namelists
 
 

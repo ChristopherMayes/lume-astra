@@ -188,7 +188,8 @@ class Astra(CommandWrapper):
         P = ParticleGroup(h5=h5)
         self.initial_particles = P
 
-    def input_parser(self, path):
+    @staticmethod
+    def input_parser(path):
         return parsers.parse_astra_input_file(path)
 
     def load_input(self, input_filepath, absolute_paths=True, **kwargs):
