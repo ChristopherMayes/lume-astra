@@ -2,7 +2,8 @@ import datetime
 import errno
 import os
 import subprocess
-
+import sys
+import traceback
 
 def execute(cmd, cwd=None):
     """
@@ -49,8 +50,10 @@ def execute2(cmd, timeout=None, cwd=None):
         output['log'] = ex.stdout + '\n' + str(ex)
         output['why_error'] = 'timeout'
     except:
+        #exc_tuple = sys.exc_info()
+        error_str = traceback.format_exc()         
         output['log'] = 'unknown run error'
-        output['why_error'] = 'unknown'
+        output['why_error'] = error_str
     return output
 
 
