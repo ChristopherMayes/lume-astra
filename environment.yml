@@ -1,0 +1,22 @@
+# conda env create -f environment.yml
+name: lume-astra-dev
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - openpmd-beamphysics
+  - lume-base
+  - distgen
+  - matplotlib
+# Developer
+  - pytest
+  - jupyterlab>=3
+  - ipywidgets
+  - pygments
+  - mkdocs
+  - mkdocstrings
+  - mkdocs-material
+  - mkdocs-jupyter
+  - pip
+  - pip:
+    - mkdocstrings-python

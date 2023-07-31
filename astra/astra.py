@@ -713,6 +713,9 @@ def run_astra_with_generator(settings=None,
     # Set inputs
     if settings:
         set_astra(A, G.input, settings, verbose=verbose)
+        
+    # Attach generator input. This is non-standard. 
+    A.generator_input = G.input        
 
     if auto_set_spacecharge_mesh:
         n_particles = G.input['ipart']

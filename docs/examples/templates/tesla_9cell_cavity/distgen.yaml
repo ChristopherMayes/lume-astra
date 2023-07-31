@@ -1,0 +1,35 @@
+n_particle: 10000
+
+random_type: hammersley
+
+start:
+  tstart:
+    units: sec
+    value: 0
+  type: time
+  
+total_charge:
+  units: nC
+  value: 1
+  
+r_dist:
+  sigma_xy:
+    units: mm
+    value: .01
+  type: radial_gaussian
+z_dist:
+  avg_z:
+    units: mm
+    value: 0
+  sigma_z:
+    units: mm
+    value: 0.1
+  type: gaussian
+  
+
+transforms:
+  setPz:
+    type: set_avg pz
+    avg_pz: 
+      value: 99.99869439159244
+      units: MeV/c

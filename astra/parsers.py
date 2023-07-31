@@ -126,7 +126,7 @@ def astra_output_type(filename):
     
     
     
-def parse_astra_output_file(filePath, standardize_labels=True):   
+def parse_astra_output_file(filePath, standardize_labels=True,):   
     """
     Simple parsing of tabular output files, according to names in this file. 
     
@@ -136,14 +136,14 @@ def parse_astra_output_file(filePath, standardize_labels=True):
     
     # Check for empty file
     if os.stat(filePath).st_size == 0:
-        return ERROR
+        raise ValueError(f'ERROR: Empty output file: {filePath}')
     
-    data = np.loadtxt(filePath)
+    data = np.loadtxt(filePath, ndmin=2)
     if data.shape == ():
-        return ERROR
+        raise ValueError(f'No data in file: {filePath}')
     
     if len(data) == 0:
-        return ERROR
+        raise ValueError(f'No data in file (zero length): {filePath}')
     
     d = {}
     type = astra_output_type(filePath) 
@@ -153,6 +153,8 @@ def parse_astra_output_file(filePath, standardize_labels=True):
     factors = OutputColumnFactors[type]
      
     for i in range(len(keys)):
+        print(filePath, keys[i])
+        
         d[keys[i]] = data[:,i]*factors[i]
 
     
