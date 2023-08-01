@@ -153,7 +153,7 @@ def parse_astra_output_file(filePath, standardize_labels=True,):
     factors = OutputColumnFactors[type]
      
     for i in range(len(keys)):
-        print(filePath, keys[i])
+        #print(filePath, keys[i])
         
         d[keys[i]] = data[:,i]*factors[i]
 
