@@ -244,8 +244,6 @@ def fieldmap_data(astra_input, section='cavity', index=1, fieldmaps={}, verbose=
     
     dat[:,0] += offset
     dat[:,1] *= scale/max(abs(dat[:,1]))
-
-    #print(dat[:,0].min())
     
     return dat
 
