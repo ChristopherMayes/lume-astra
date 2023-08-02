@@ -12,8 +12,8 @@ nav:
         - examples/simple_distgen_example.ipynb        
         - examples/simple_generator_example.ipynb
       - Interfaces:
-          - examples/inerfaces/astra_to_bmad.ipynb 
-          - examples/inerfaces/bmad_to_astra.ipynb 
+          - examples/interfaces/astra_to_bmad.ipynb 
+          - examples/interfaces/bmad_to_astra.ipynb 
       - Low Level:
           - examples/scan_example.ipynb
           - examples/plot_examples.ipynb            
