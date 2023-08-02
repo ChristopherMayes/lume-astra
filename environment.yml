@@ -9,6 +9,7 @@ dependencies:
   - distgen
   - matplotlib
 # Developer
+  - bmad
   - pytest
   - jupyterlab>=3
   - ipywidgets

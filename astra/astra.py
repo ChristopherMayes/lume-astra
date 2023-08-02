@@ -7,6 +7,7 @@ import platform
 import traceback
 from time import time
 from copy import deepcopy
+import functools
 
 import h5py
 import numpy as np
@@ -20,7 +21,7 @@ from .control import ControlGroup
 from .fieldmaps import load_fieldmaps, write_fieldmaps
 from .generator import AstraGenerator
 from .plot import plot_stats_with_layout, plot_fieldmaps
-
+from .interfaces.bmad import astra_from_tao
 
 from pmd_beamphysics import ParticleGroup, single_particle
 from pmd_beamphysics.interfaces.astra import parse_astra_phase_file
@@ -31,7 +32,7 @@ import numpy as np
 import h5py
 import yaml
 
-
+import warnings
 
 
 
@@ -287,40 +288,31 @@ class Astra(CommandWrapper):
         self.write_input()
 
         runscript = self.get_run_script()
+        tools.make_executable(os.path.join(self.path, 'run'))
         run_info['run_script'] = ' '.join(runscript)
 
-        try:
-            if self.timeout:
-                res = tools.execute2(runscript, timeout=timeout, cwd=self.path)
-                log = res['log']
-                self.error = res['error']
-                run_info['why_error'] = res['why_error']
-                # Log file must have this to have finished properly
-                if log.find('finished simulation') == -1:
-                    run_info['error'] = True
-                    run_info.update({'error': True, 'why_error': "Couldn't find finished simulation"})
+        if self.timeout:
+            res = tools.execute2(runscript, timeout=timeout, cwd=self.path)
+            log = res['log']
+            self.error = res['error']
+            run_info['why_error'] = res['why_error']
+            # Log file must have this to have finished properly
+            if log.find('finished simulation') == -1:
+                raise ValueError("Couldn't find finished simulation")
 
-            else:
-                # Interactive output, for Jupyter
-                log = []
-                for path in tools.execute(runscript, cwd=self.path):
-                    self.vprint(path, end="")
-                    log.append(path)
+        else:
+            # Interactive output, for Jupyter
+            log = []
+            for path in tools.execute(runscript, cwd=self.path):
+                self.vprint(path, end="")
+                log.append(path)
 
-            self.log = log
+        self.log = log
 
-            if parse_output:
-                self.load_output()
-        except Exception as ex:
+        if parse_output:
+            self.load_output()
 
-            err = str(traceback.format_exc())
-
-            print('Run Aborted', err)
-            self.error = True
-            run_info['why_error'] = err
-        finally:
-            run_info['run_time'] = time() - t1
-            run_info['run_error'] = self.error
+        run_info['run_time'] = time() - t1
 
         self.finished = True
 
@@ -421,34 +413,47 @@ class Astra(CommandWrapper):
 
         return h5
 
-    def write_fieldmaps(self):
+    def write_fieldmaps(self, path=None):
         """
         Writes any loaded fieldmaps to path
         """
+        if path is None:
+            path = self.path         
 
         if self.fieldmap:
-            write_fieldmaps(self.fieldmap, self.path)
-            self.vprint(f'{len(self.fieldmap)} fieldmaps written to {self.path}')
+            write_fieldmaps(self.fieldmap, path)
+            self.vprint(f'{len(self.fieldmap)} fieldmaps written to {path}')
 
-    def write_input(self, input_filename=None):
+    def write_input(self, input_filename=None, path=None, make_symlinks=True):
         """
         Writes all input. If fieldmaps have been loaded, these will also be written.
         """
+        
+        if path is None:
+            path = self.path        
 
         if self.initial_particles:
-            fname = self.write_initial_particles()
+            fname = self.write_initial_particles(path=path)
             self.input['newrun']['distribution'] = fname
 
-        self.write_fieldmaps()
+        self.write_fieldmaps(path=path)
 
-        self.write_input_file()
+        self.write_input_file(path=path, make_symlinks=make_symlinks)
 
-    def write_input_file(self):
-        make_symlinks = self.use_temp_dir
-        writers.write_namelists(self.input, self.input_file, make_symlinks=make_symlinks, verbose=self.verbose)
+    def write_input_file(self, path=None, make_symlinks=True):
+        if path is None:
+            path = self.path
+            input_file = self.input_file
+        else:
+            input_file = os.path.join(path, 'astra.in')
+            
+        writers.write_namelists(self.input, input_file, make_symlinks=make_symlinks, verbose=self.verbose)
 
-    def write_initial_particles(self, fname=None):
-        fname = fname or os.path.join(self.path, 'astra.particles')
+    def write_initial_particles(self, fname=None, path=None):
+        if path is None:
+            path = self.path  
+        
+        fname = fname or os.path.join(path, 'astra.particles')
         # 
         if len(self.initial_particles) == 1:
             probe = True
@@ -665,6 +670,13 @@ class Astra(CommandWrapper):
         """
         p0 = single_particle(x=x0, px=px0, y=y0, py=py0, z=z0, pz=pz0, t=t0, weight=weight, status=status, species=species)
         return self.track(p0, z=z)
+    
+    
+    
+    @classmethod
+    @functools.wraps(astra_from_tao) 
+    def from_tao(cls, tao):
+        return astra_from_tao(tao, cls=cls)    
         
             
             
@@ -839,8 +851,9 @@ DEFAULT_INPUT = {
             'track_all': True,
             'xoff': 0,
             'yoff': 0},    
+    
 'output':  {'c_emits': True,
-            'cathodes': True,
+            'cathodes': False,
             'emits': True,
             'high_res': True,
             'landfs': True,
@@ -864,7 +877,7 @@ DEFAULT_INPUT = {
             'max_count': 10,
             'max_scale': 0.01,
             'min_grid': 4e-07,
-            'nlong_in': 20,
+            'nlong_in': 43,
             'nrad': 20,
             'nxf': 32,
             'nyf': 32,
