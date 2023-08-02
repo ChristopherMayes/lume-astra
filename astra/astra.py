@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 
+import tempfile
+import shutil
 import os
+import platform
 import traceback
 from time import time
+from copy import deepcopy
+import functools
 
 import h5py
 import numpy as np
@@ -16,9 +21,9 @@ from .control import ControlGroup
 from .fieldmaps import load_fieldmaps, write_fieldmaps
 from .generator import AstraGenerator
 from .plot import plot_stats_with_layout, plot_fieldmaps
+from .interfaces.bmad import astra_from_tao
 
-
-from pmd_beamphysics import ParticleGroup
+from pmd_beamphysics import ParticleGroup, single_particle
 from pmd_beamphysics.interfaces.astra import parse_astra_phase_file
 
 
@@ -27,13 +32,9 @@ import numpy as np
 import h5py
 import yaml
 
-import tempfile
-import shutil
-import os, platform
-from time import time
-import traceback
+import warnings
 
-from copy import deepcopy
+
 
 class Astra(CommandWrapper):
 
@@ -82,9 +83,11 @@ class Astra(CommandWrapper):
             if group:
                 for k, v in group.items():
                     self.add_group(k, **v)
-        else:
-            self.vprint('Warning: Input file does not exist. Not configured.')
+        else:            
+            self.vprint('Using default input: 1 m drift lattice')
             self.original_input_file = 'astra.in'
+            self.input = deepcopy(DEFAULT_INPUT)
+            self.configure()
 
     def add_group(self, name, **kwargs):
         """
@@ -149,20 +152,29 @@ class Astra(CommandWrapper):
             pstats.append(P[key])
         return np.array(pstats)
 
+    
     def configure(self):
-        self.configure_astra(workdir=self.path)
-
-    def configure_astra(self, input_filepath=None, workdir=None):
-
-        if input_filepath:
-            self.load_input(input_filepath)
-
-        # Check that binary exists
+        self.setup_workdir(self._workdir)
         self.command = lumetools.full_path(self.command)
-
-        self.setup_workdir(workdir)
+        self.vprint("Configured to run in:", self.path)
         self.input_file = os.path.join(self.path, self.original_input_file)
-        self.configured = True
+        self.configured = True    
+    
+    
+ #   def configure(self):
+ #       self.configure_astra(workdir=self.path)
+#
+ #   def configure_astra(self, input_filepath=None, workdir=None):
+#
+ #  #     if input_filepath:
+ #  #         self.load_input(input_filepath)
+#
+ #       # Check that binary exists
+ #       #self.command = lumetools.full_path(self.command)
+#
+ #       self.setup_workdir(self._workdir)
+ #       #self.input_file = os.path.join(self.path, self.original_input_file)
+ #       self.configured = True
 
     def load_fieldmaps(self, search_paths=[]):
         """
@@ -276,40 +288,31 @@ class Astra(CommandWrapper):
         self.write_input()
 
         runscript = self.get_run_script()
+        tools.make_executable(os.path.join(self.path, 'run'))
         run_info['run_script'] = ' '.join(runscript)
 
-        try:
-            if self.timeout:
-                res = tools.execute2(runscript, timeout=timeout, cwd=self.path)
-                log = res['log']
-                self.error = res['error']
-                run_info['why_error'] = res['why_error']
-                # Log file must have this to have finished properly
-                if log.find('finished simulation') == -1:
-                    run_info['error'] = True
-                    run_info.update({'error': True, 'why_error': "Couldn't find finished simulation"})
+        if self.timeout:
+            res = tools.execute2(runscript, timeout=timeout, cwd=self.path)
+            log = res['log']
+            self.error = res['error']
+            run_info['why_error'] = res['why_error']
+            # Log file must have this to have finished properly
+            if log.find('finished simulation') == -1:
+                raise ValueError("Couldn't find finished simulation")
 
-            else:
-                # Interactive output, for Jupyter
-                log = []
-                for path in tools.execute(runscript, cwd=self.path):
-                    self.vprint(path, end="")
-                    log.append(path)
+        else:
+            # Interactive output, for Jupyter
+            log = []
+            for path in tools.execute(runscript, cwd=self.path):
+                self.vprint(path, end="")
+                log.append(path)
 
-            self.log = log
+        self.log = log
 
-            if parse_output:
-                self.load_output()
-        except Exception as ex:
+        if parse_output:
+            self.load_output()
 
-            err = str(traceback.format_exc())
-
-            print('Run Aborted', err)
-            self.error = True
-            run_info['why_error'] = err
-        finally:
-            run_info['run_time'] = time() - t1
-            run_info['run_error'] = self.error
+        run_info['run_time'] = time() - t1
 
         self.finished = True
 
@@ -410,35 +413,53 @@ class Astra(CommandWrapper):
 
         return h5
 
-    def write_fieldmaps(self):
+    def write_fieldmaps(self, path=None):
         """
         Writes any loaded fieldmaps to path
         """
+        if path is None:
+            path = self.path         
 
         if self.fieldmap:
-            write_fieldmaps(self.fieldmap, self.path)
-            self.vprint(f'{len(self.fieldmap)} fieldmaps written to {self.path}')
+            write_fieldmaps(self.fieldmap, path)
+            self.vprint(f'{len(self.fieldmap)} fieldmaps written to {path}')
 
-    def write_input(self, input_filename=None):
+    def write_input(self, input_filename=None, path=None, make_symlinks=True):
         """
         Writes all input. If fieldmaps have been loaded, these will also be written.
         """
+        
+        if path is None:
+            path = self.path        
 
         if self.initial_particles:
-            fname = self.write_initial_particles()
+            fname = self.write_initial_particles(path=path)
             self.input['newrun']['distribution'] = fname
 
-        self.write_fieldmaps()
+        self.write_fieldmaps(path=path)
 
-        self.write_input_file()
+        self.write_input_file(path=path, make_symlinks=make_symlinks)
 
-    def write_input_file(self):
-        make_symlinks = self.use_temp_dir
-        writers.write_namelists(self.input, self.input_file, make_symlinks=make_symlinks, verbose=self.verbose)
+    def write_input_file(self, path=None, make_symlinks=True):
+        if path is None:
+            path = self.path
+            input_file = self.input_file
+        else:
+            input_file = os.path.join(path, 'astra.in')
+            
+        writers.write_namelists(self.input, input_file, make_symlinks=make_symlinks, verbose=self.verbose)
 
-    def write_initial_particles(self, fname=None):
-        fname = fname or os.path.join(self.path, 'astra.particles')
-        self.initial_particles.write_astra(fname)
+    def write_initial_particles(self, fname=None, path=None):
+        if path is None:
+            path = self.path  
+        
+        fname = fname or os.path.join(path, 'astra.particles')
+        # 
+        if len(self.initial_particles) == 1:
+            probe = True
+        else:
+            probe = False
+        self.initial_particles.write_astra(fname, probe=probe)
         self.vprint(f'Initial particles written to {fname}')
         return fname
 
@@ -579,7 +600,86 @@ class Astra(CommandWrapper):
         else:
             raise ValueError(f'{name} does not exist in eles or groups of the Impact object.')
 
+            
+    
+    # Tracking
+    #---------
+    def track(self, particles, z=None):
+        """
+        Track a ParticleGroup. An optional stopping z can be given.
 
+        If successful, returns a ParticleGroup with the final particles.
+        
+        Otherwise, returns None
+        
+        """
+       
+        self.initial_particles = particles
+        if z is not None:
+            self['output:zstop'] = z
+            
+        # Assure phase space output is turned on
+        nr = self.input['newrun']
+        if 'zphase' not in nr:
+            nr['zphase'] = 1
+        if nr['zphase'] < 1:
+            nr['zphase'] = 1
+        # Turn particle output on.
+        nr['phases'] = True
+    
+        self.run()
+    
+        if 'particles' in self.output:
+            if len(self.output['particles']) == 0:
+                return None
+            
+            final_particles = self.output['particles'][-1]
+            
+            # Special case to remove probe particles
+            if len(self.initial_particles) == 1:
+                final_particles = final_particles[-1]        
+            return final_particles
+            
+        else:
+            return None       
+        
+    def track1(self,
+                  x0=0,
+                  px0=0,
+                  y0=0,
+                  py0=0,
+                  z0=0,
+                  pz0=1e-15,
+                  t0=0,
+                  weight=1,
+                  status=1,
+                  z=None, # final z
+                  species='electron'):
+        """
+        Tracks a single particle with starting coordinates:
+            x0, y0, z0 in meters
+            px0, py0, pz0 in eV/c
+            t0 in seconds
+
+        to a position 'z' in meters
+
+        If successful, returns a ParticleGroup with the final particle.
+
+        Otherwise, returns None
+
+        """
+        p0 = single_particle(x=x0, px=px0, y=y0, py=py0, z=z0, pz=pz0, t=t0, weight=weight, status=status, species=species)
+        return self.track(p0, z=z)
+    
+    
+    
+    @classmethod
+    @functools.wraps(astra_from_tao) 
+    def from_tao(cls, tao):
+        return astra_from_tao(tao, cls=cls)    
+        
+            
+            
 def set_astra(astra_object, generator_input, settings, verbose=False):
     """
     Searches astra and generator objects for keys in settings, and sets their values to the appropriate input
@@ -734,3 +834,57 @@ def run_astra_with_generator(settings=None,
     return A
 # Usage:
 # Aout = run_astra_with_generator(settings={'zstop':2, 'lspch':False}, astra_input_file=ASTRA_TEMPLATE,generator_input_file=GENERATOR_TEMPLATE, astra_bin=ASTRA_BIN, generator_bin=GENERATOR_BIN, verbose=True)
+
+
+
+DEFAULT_INPUT = {
+ 'newrun': {'auto_phase': True,
+            'check_ref_part': False,
+            'distribution': 'astra.particles',
+            'h_max': 0.0075,
+            'h_min': 0,
+            'head': "'Drift example'",
+            'phase_scan': True,
+            'q_schottky': 0,
+            'run': 1,
+            'toff': 0,
+            'track_all': True,
+            'xoff': 0,
+            'yoff': 0},    
+    
+'output':  {'c_emits': True,
+            'cathodes': False,
+            'emits': True,
+            'high_res': True,
+            'landfs': True,
+            'larmors': False,
+            'lmagnetized': True,
+            'lproject_emit': False,
+            'lsub_rot': False,
+            'phases': True,
+            'refs': True,
+            'tchecks': False,
+            'tracks': True,
+            'zemit': 100,
+            'zphase': 1,
+            'zstart': 0,
+            'zstop': 1},   
+'charge': {
+            'lspch': False,    
+            'cell_var': 2,
+            'lmirror': False,
+            'lspch3d': False,
+            'max_count': 10,
+            'max_scale': 0.01,
+            'min_grid': 4e-07,
+            'nlong_in': 43,
+            'nrad': 20,
+            'nxf': 32,
+            'nyf': 32,
+            'nzf': 32},
+}
+
+
+
+
+

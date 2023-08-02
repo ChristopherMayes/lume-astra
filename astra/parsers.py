@@ -153,7 +153,7 @@ def parse_astra_output_file(filePath, standardize_labels=True,):
     factors = OutputColumnFactors[type]
      
     for i in range(len(keys)):
-        print(filePath, keys[i])
+        #print(filePath, keys[i])
         
         d[keys[i]] = data[:,i]*factors[i]
 
@@ -394,7 +394,21 @@ def fix_input_paths(input_dict, root='', prefixes=['file_', 'distribution', 'q_t
                 #print(key, val, newval)
                 input_dict[nl][key] = newval                
                 
-                
+         
+        
+def find_max_pos(astra_input):
+    """
+    Find the maximum center position of elements in the Astra input dict
+    """
+    zmax = 0
+    for group in ['cavity', 'solenoid', 'quadrupole']:
+        if group in astra_input:
+            nl = astra_input[group]
+            for key in nl:
+                if '_pos' in key:
+                    zmax = max(zmax, nl[key])
+                    
+    return zmax        
 
 # ------------------------------------------------------------------ 
 # ------------------------- Astra particles ------------------------ 

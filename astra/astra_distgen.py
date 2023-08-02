@@ -190,8 +190,7 @@ def evaluate_astra_with_distgen(settings,
 
     #Recreate Generator object for fingerprint, proper archiving
     # TODO: make this cleaner
-    G = Generator()
-    G.input = A.distgen_input
+    G = Generator(A.distgen_input)
     
     fingerprint = fingerprint_astra_with_distgen(A, G)
     output['fingerprint'] = fingerprint
