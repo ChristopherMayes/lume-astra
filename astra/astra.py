@@ -437,7 +437,7 @@ class Astra(CommandWrapper):
             self.input['newrun']['distribution'] = fname
 
         self.write_fieldmaps(path=path)
-
+        
         self.write_input_file(path=path, make_symlinks=make_symlinks)
 
     def write_input_file(self, path=None, make_symlinks=True):
@@ -445,7 +445,7 @@ class Astra(CommandWrapper):
             path = self.path
             input_file = self.input_file
         else:
-            input_file = os.path.join(path, 'astra.in')
+            input_file = os.path.join(path, self.original_input_file)
             
         writers.write_namelists(self.input, input_file, make_symlinks=make_symlinks, verbose=self.verbose)
 
