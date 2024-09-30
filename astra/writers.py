@@ -28,8 +28,8 @@ def namelist_lines(namelist_dict, name):
         elif type(value) == type([]) or isinstance(value, np.ndarray): # lists or np arrays
             liststr = ''
             for item in value:
-                liststr += str(item) + ' '
-            line = key + ' = ' + liststr 
+                liststr = liststr + str(item) + ','
+            line = key + ' = ' + "(" + liststr[:-1] + ")"
         elif type(value) == type('a'): # strings
             line = key + ' = ' + "'" + value.strip("''") + "'"  # input may need apostrophes
        
