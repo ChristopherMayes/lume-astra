@@ -12,7 +12,7 @@ def fstr(s):
     """
     Makes a fixed string for h5 files
     """
-    return np.string_(s)
+    return np.bytes_(s)
 
 
 
@@ -59,7 +59,7 @@ def opmd_init(h5, basePath='/screen/%T/', particlesPath='./' ):
 #----------------------------        
 # Searching archives
 
-def is_astra_archive(h5, key='dataType', value=np.string_('lume-astra')):
+def is_astra_archive(h5, key='dataType', value=np.bytes_('lume-astra')):
     """
     Checks if an h5 handle is a lume-astra archive
     """
