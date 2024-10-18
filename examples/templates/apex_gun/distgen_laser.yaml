@@ -1,5 +1,6 @@
 n_particle: 10000
 random_type: hammersley
+species: electron
 start:
   MTE:
     units: meV
