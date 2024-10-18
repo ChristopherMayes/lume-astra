@@ -63,7 +63,7 @@ def bmad_cavity(astra_object, ix,
     voltage, _ = accelerating_voltage_and_phase(z0, Ez0, freq)
     
     z_start = pos + z0.min()
-    L = round(z0.ptp(), 9)
+    L = round(np.ptp(z0), 9)
     
     # Fill in name
     name = name.format(ix=ix)
@@ -133,7 +133,7 @@ def bmad_solenoid(astra_object, ix,
     B_hard = B2L/BL * bmax
     
     z_start = pos + z0.min()
-    L = round(z0.ptp(), 9)   
+    L = round(np.ptp(z0), 9)   
     
     # Prevent wapping (will fix in Bmad in the future)
     if z_start < 0:

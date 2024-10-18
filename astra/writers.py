@@ -27,9 +27,15 @@ def namelist_lines(namelist_dict, name):
             line= key + ' = ' + str(value) 
         elif type(value) == type([]) or isinstance(value, np.ndarray): # lists or np arrays
             liststr = ''
-            for item in value:
-                liststr = liststr + str(item) + ','
-            line = key + ' = ' + "(" + liststr[:-1] + ")"
+            # Special case for dipole Double Complex items
+            if key.upper() in ('D1', 'D2', 'D3', 'D4'):
+                for item in value:
+                    liststr = liststr + str(item) + ','
+                line = key + ' = ' + "(" + liststr[:-1] + ")"
+            else:
+                for item in value:
+                    liststr += str(item) + ' '
+                line = key + ' = ' + liststr 
         elif type(value) == type('a'): # strings
             line = key + ' = ' + "'" + value.strip("''") + "'"  # input may need apostrophes
        
@@ -116,7 +122,7 @@ def fstr(s):
     """
     Makes a fixed string for h5 files
     """
-    return np.string_(s)
+    return np.bytes_(s)
 
 
 

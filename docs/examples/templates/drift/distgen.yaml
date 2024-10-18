@@ -1,7 +1,7 @@
 
 n_particle: 20000
 random_type: hammersley
-
+species: electron
 start:
   tstart:
     units: sec
